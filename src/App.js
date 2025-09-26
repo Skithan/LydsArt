@@ -1,7 +1,7 @@
 import React, { useState, useRef} from 'react';
 import './App.css';
 import Header from './Header';
-// import Footer from './Footer';
+import Footer from './Footer';
 
 function App() {
   // Touch swipe state
@@ -101,8 +101,6 @@ function App() {
         <div className="arrow-scroll-wrapper">
           <div
             className={`scroll-card single${expanded ? ' expanded' : ''}`}
-            onMouseEnter={() => setExpanded(true)}
-            onMouseLeave={() => setExpanded(false)}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
@@ -207,10 +205,12 @@ function App() {
                 />
               ))}
             </div>
+            
+     
           </div>
         </div>
       </div>
-     {/* <Footer /> */}
+  {expanded && <Footer />}
     </div>
   );
 }
