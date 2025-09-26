@@ -15,7 +15,7 @@
   margin: 0.3rem 0;
   text-align: center;
   letter-spacing: 1px;
-  font-family: 'Comic Sans MS', 'Brush Script MT', cursive, sans-serif;
+  font-family: 'Inter', 'Segoe UI', 'Arial', sans-serif;
   text-shadow: 0 2px 8px #000a;
 }
 
@@ -148,7 +148,7 @@
   font-size: 2rem;
   color: #fff;
   text-align: center;
-  font-family: 'Pacifico', 'Comic Sans MS', 'Brush Script MT', cursive, sans-serif;
+  font-family: 'Inter', 'Segoe UI', 'Arial', sans-serif;
   margin-top: 0.5rem;
   text-shadow: 0 2px 8px #000a;
 }
@@ -189,7 +189,7 @@
   min-width: 100vw;
   min-height: 100vh;
   z-index: 0;
-  background: radial-gradient(circle at 50% 50%, #d4e160 0%, #bfc58e 80%, #fafafadf 100%);
+  background: radial-gradient(circle at 50% 50%, #f5df35 0%, #c9c97b 80%, #fafafadf 100%);
   animation: flowRadialBG 10s ease-in-out infinite alternate;
   pointer-events: none;
 }
