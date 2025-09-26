@@ -55,7 +55,7 @@ function MainApp() {
     return dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   }
   const cards = [
-    { img: process.env.PUBLIC_URL + '/Headshot.jpeg', title: 'Lydia Paterson', text: "Hi I'm Lydia.. contact info...", medium:'N/A', size: 'N/A', price: 'N/A' , date: 'N/A', sold: true},
+    { img: process.env.PUBLIC_URL + '/Headshot.jpeg', title: 'Lydia Paterson', text: "Hi I'm Lydia.. contact info...", instagram: "https://www.instagram.com/lydiapatersonart/", medium:'N/A', size: 'N/A', price: 'N/A' , date: 'N/A', sold: true},
     { img: process.env.PUBLIC_URL + '/AnUptownPerspective2.jpeg',title: 'An Uptown Perspective', medium:'Acrylic', text: 'N/A',size: '18"x24"',price: '$200' , date: '20250611', sold: false},
     { img: process.env.PUBLIC_URL + '/ComfortInChange.jpeg', title: 'Comfort In Change', text: 'sharing some thoughts from the painting process: ', medium: 'Oil on Stetched Canvas', size: '24"x30"', price: '$200', date: '20240527', sold: false},
     { img: process.env.PUBLIC_URL + '/EndOfSummerFlowers.jpeg', title: 'End Of Summer Flowers', text: 'N/A', medium: 'Acrylic on Panel', size: '18"x24"', price: '$200', date: '20250810', sold: false},
@@ -213,6 +213,14 @@ function MainApp() {
             >
 
               {cards[current].text !== 'N/A' ? <div className="card-detail-row">{cards[current].text}</div> : null}
+              {current === 0 && (
+                <div className="card-detail-row" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '2rem 0' }}>
+                  <a href="https://www.instagram.com/lydiapatersonart/" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: '#fff', textDecoration: 'none', fontWeight: 500, gap: '1rem', padding: '1rem 2rem' }}>
+                    <img src={process.env.PUBLIC_URL + '/InstaLogo.png'} alt="Instagram" style={{ width: '72px', height: '72px', objectFit: 'contain', marginBottom: '1rem' }} />
+                    <span style={{ fontSize: '1.5rem', letterSpacing: '0.05em' }}>Instagram</span>
+                  </a>
+                </div>
+              )}
               {cards[current].size !== 'N/A' ? <div className="card-detail-row"><strong>Size:</strong> {cards[current].size}</div> : null}
               {cards[current].medium !== 'N/A' ? <div className="card-detail-row"><strong>Medium:</strong> {cards[current].medium}</div> : null}
               {cards[current].price !== 'N/A' && !cards[current].sold ? <div className="card-detail-row"><strong>Price:</strong> {cards[current].price}</div> : null}
