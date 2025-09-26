@@ -23,18 +23,18 @@ function MainApp() {
     // Horizontal swipe
     if (touchStartX.current !== null && touchEndX.current !== null) {
       const diffX = touchEndX.current - touchStartX.current;
-      if (diffX > 80) {
+      if (diffX > 100) {
         goLeft();
-      } else if (diffX < -80) {
+      } else if (diffX < -100) {
         goRight();
       }
     }
     // Vertical swipe
     if (touchStartY.current !== null && touchEndY.current !== null) {
       const diffY = touchEndY.current - touchStartY.current;
-      if (!expanded && diffY < -80) {
+      if (!expanded && diffY < -100) {
         setExpanded(true); // swipe up to expand
-      } else if (expanded && diffY > 80) {
+      } else if (expanded && diffY > 100) {
         setExpanded(false); // swipe down to collapse
       }
     }
