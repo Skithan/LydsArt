@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState} from 'react';
 import './App.css';
 import Header from './Header';
-import Footer from './Footer';
+// import Footer from './Footer';
 
 function App() {
   // Utility to format date string 'YYYYMMDD' to 'Month Day, Year'
@@ -70,12 +70,7 @@ function App() {
   };
 
   const handleExpand = () => setExpanded((prev) => !prev);
-  // For multi-image cards
-  const handleImgLeft = () => setImgIdx((prev) => prev > 0 ? prev - 1 : prev);
-  const handleImgRight = () => {
-    const imgs = cards[current].imgs;
-    if (imgs && imgIdx < imgs.length - 1) setImgIdx((prev) => prev + 1);
-  };
+
 
   return (
     <div className="App">
