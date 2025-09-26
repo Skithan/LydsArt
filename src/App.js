@@ -1,9 +1,12 @@
-import React, { useState, useRef} from 'react';
+import React, { useState, useRef } from 'react';
 import './App.css';
 import Header from './Header';
 import Footer from './Footer';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import ReservePiece from './ReservePiece';
 
-function App() {
+
+function MainApp() {
   // Touch swipe state
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
@@ -16,10 +19,10 @@ function App() {
     touchEndX.current = e.changedTouches[0].screenX;
     if (touchStartX.current !== null && touchEndX.current !== null) {
       const diff = touchEndX.current - touchStartX.current;
-      if (diff > 50) {
-        goLeft(); // swipe right to left (show previous)
-      } else if (diff < -50) {
-        goRight(); // swipe left to right (show next)
+      if (diff > 80) {
+        goLeft();
+      } else if (diff < -80) {
+        goRight();
       }
     }
     touchStartX.current = null;
@@ -80,6 +83,7 @@ function App() {
   const [expanded, setExpanded] = useState(false);
   const [imgIdx, setImgIdx] = useState(0); 
   const cardCount = cards.length;
+  const navigate = useNavigate();
 
   const goLeft = () => {
     setImgIdx(0);
@@ -91,7 +95,6 @@ function App() {
   };
 
   const handleExpand = () => setExpanded((prev) => !prev);
-
 
   return (
     <div className="App">
@@ -196,10 +199,11 @@ function App() {
                   <div className="card-detail-row"><strong>Date Completed:</strong> {formatDate(cards[current].date)}</div>
                 ) : null}
 
-       
               {!cards[current].sold && (
                 <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginBottom: '2rem', marginTop: '1.5rem' }}>
-                  <button className="arrow-btn" style={{ minWidth: '12rem', padding: '0.5rem 1.5rem', fontSize: '1.3rem', whiteSpace: 'nowrap' }}>Reserve Piece</button>
+                  <button className="arrow-btn" style={{ minWidth: '12rem', padding: '0.5rem 1.5rem', fontSize: '1.3rem', whiteSpace: 'nowrap' }}
+                    onClick={() => navigate('/reserve', { state: { card: cards[current] } })}
+                  >Reserve Piece</button>
                 </div>
               )}
 
@@ -215,9 +219,21 @@ function App() {
           </div>
         </div>
       </div>
-  {expanded && <Footer />}
+      {expanded && <Footer />}
     </div>
   );
 }
 
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainApp />} />
+        <Route path="/reserve" element={<ReservePiece />} />
+      </Routes>
+    </Router>
+  );
+}
+
 export default App;
+// ...existing code...
