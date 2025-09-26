@@ -13,11 +13,21 @@ function MainApp() {
   const touchEndY = useRef(null);
 
   // Touch event handlers
+  const isZooming = useRef(false);
   const handleTouchStart = (e) => {
+    if (e.touches && e.touches.length > 1) {
+      isZooming.current = true;
+      return;
+    }
+    isZooming.current = false;
     touchStartX.current = e.changedTouches[0].screenX;
     touchStartY.current = e.changedTouches[0].screenY;
   };
   const handleTouchEnd = (e) => {
+    if (isZooming.current) {
+      isZooming.current = false;
+      return;
+    }
     touchEndX.current = e.changedTouches[0].screenX;
     touchEndY.current = e.changedTouches[0].screenY;
     // Horizontal swipe
