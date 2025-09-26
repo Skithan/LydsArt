@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import './App.css';
 import Header from './Header';
 import Footer from './Footer';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+// import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 // Removed ReservePiece import
 
 function MainApp() {
