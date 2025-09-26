@@ -3,8 +3,7 @@ import './App.css';
 import Header from './Header';
 import Footer from './Footer';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-import ReservePiece from './ReservePiece';
-
+// Removed ReservePiece import
 
 function MainApp() {
   // Touch swipe state
@@ -83,7 +82,13 @@ function MainApp() {
   const [expanded, setExpanded] = useState(false);
   const [imgIdx, setImgIdx] = useState(0); 
   const cardCount = cards.length;
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
+  const handleReserve = () => {
+    const card = cards[current];
+    const subject = encodeURIComponent(`Reserve: ${card.title}`);
+    const body = encodeURIComponent(`Hi, I would like to buy this piece.`);
+    window.location.href = `mailto:ethanalward@outlook.com?subject=${subject}&body=${body}`;
+  };
 
   const goLeft = () => {
     setImgIdx(0);
@@ -202,7 +207,7 @@ function MainApp() {
               {!cards[current].sold && (
                 <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginBottom: '2rem', marginTop: '1.5rem' }}>
                   <button className="arrow-btn" style={{ minWidth: '12rem', padding: '0.5rem 1.5rem', fontSize: '1.3rem', whiteSpace: 'nowrap' }}
-                    onClick={() => navigate('/reserve', { state: { card: cards[current] } })}
+                    onClick={handleReserve}
                   >Reserve Piece</button>
                 </div>
               )}
@@ -225,15 +230,7 @@ function MainApp() {
 }
 
 function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<MainApp />} />
-        <Route path="/reserve" element={<ReservePiece />} />
-      </Routes>
-    </Router>
-  );
+  return <MainApp />;
 }
 
 export default App;
-// ...existing code...
