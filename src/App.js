@@ -25,7 +25,7 @@ function App() {
     touchStartX.current = null;
     touchEndX.current = null;
   };
-  // Utility to format date string 'YYYYMMDD' to 'Month Day, Year'
+
   function formatDate(dateStr) {
     if (!dateStr || dateStr === 'N/A') return '';
     if (dateStr.length < 8) return dateStr;
@@ -37,7 +37,7 @@ function App() {
     return dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   }
   const cards = [
-    { img: process.env.PUBLIC_URL + '/Headshot.jpeg', title: 'Lydia Paterson', text: "Hi I'm Lydia.. contact info...", medium:'N/A', size: 'N/A', price: 'N/A' , date: 'N/A', sold: false},
+    { img: process.env.PUBLIC_URL + '/Headshot.jpeg', title: 'Lydia Paterson', text: "Hi I'm Lydia.. contact info...", medium:'N/A', size: 'N/A', price: 'N/A' , date: 'N/A', sold: true},
     { img: process.env.PUBLIC_URL + '/AnUptownPerspective2.jpeg',title: 'An Uptown Perspective', medium:'Acrylic', text: 'N/A',size: '18"x24"',price: '$200' , date: '20250611', sold: false},
     { img: process.env.PUBLIC_URL + '/ComfortInChange.jpeg', title: 'Comfort In Change', text: 'sharing some thoughts from the painting process: ', medium: 'Oil on Stetched Canvas', size: '24"x30"', price: '$200', date: '20240527', sold: false},
     { img: process.env.PUBLIC_URL + '/EndOfSummerFlowers.jpeg', title: 'End Of Summer Flowers', text: 'N/A', medium: 'Acrylic on Panel', size: '18"x24"', price: '$200', date: '20250810', sold: false},
@@ -179,22 +179,29 @@ function App() {
             <div
               className={`card-details${expanded ? ' show' : ''}`}
               style={{
-                maxHeight: expanded ? '200px' : '0',
+                maxHeight: expanded ? '350px' : '0',
                 opacity: expanded ? 1 : 0,
                 transition: 'all 0.7s cubic-bezier(.77,0,.18,1)',
                 overflow: 'hidden',
                 marginTop: expanded ? '2rem' : '0',
+                marginBottom: expanded ? '5.5rem' : '0',
               }}
             >
 
               {cards[current].text !== 'N/A' ? <div className="card-detail-row">{cards[current].text}</div> : null}
               {cards[current].size !== 'N/A' ? <div className="card-detail-row"><strong>Size:</strong> {cards[current].size}</div> : null}
               {cards[current].medium !== 'N/A' ? <div className="card-detail-row"><strong>Medium:</strong> {cards[current].medium}</div> : null}
-              {cards[current].price !== 'N/A' ? <div className="card-detail-row"><strong>Price:</strong> {cards[current].price}</div> : null}
+              {cards[current].price !== 'N/A' && !cards[current].sold ? <div className="card-detail-row"><strong>Price:</strong> {cards[current].price}</div> : null}
                 {cards[current].date && cards[current].date !== 'N/A' ? (
                   <div className="card-detail-row"><strong>Date Completed:</strong> {formatDate(cards[current].date)}</div>
                 ) : null}
 
+       
+              {!cards[current].sold && (
+                <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginBottom: '2rem', marginTop: '1.5rem' }}>
+                  <button className="arrow-btn" style={{ minWidth: '12rem', padding: '0.5rem 1.5rem', fontSize: '1.3rem', whiteSpace: 'nowrap' }}>Reserve Piece</button>
+                </div>
+              )}
 
             </div>
             <div className="card-scrollbar">
