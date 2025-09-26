@@ -16,7 +16,7 @@ function App() {
     return dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   }
   const cards = [
-    { img: process.env.PUBLIC_URL + '/Headshot.jpeg', title: 'Lydia Paterson', text: "Hi I'm Lydia.. contact info...", medium:'N/A', size: 'N/A', price: 'N/A' , date: 'N/A', sold: false},
+    { img: process.env.PUBLIC_URL + '/Headshot.jpeg', title: 'Lydia  dkfjdjk Paterson', text: "Hi I'm Lydia.. contact info...", medium:'N/A', size: 'N/A', price: 'N/A' , date: 'N/A', sold: false},
     { img: process.env.PUBLIC_URL + '/AnUptownPerspective2.jpeg',title: 'An Uptown Perspective', medium:'Acrylic', text: 'N/A',size: '18"x24"',price: '$200' , date: '20250611', sold: false},
     { img: process.env.PUBLIC_URL + '/ComfortInChange.jpeg', title: 'Comfort In Change', text: 'sharing some thoughts from the painting process: ', medium: 'Oil on Stetched Canvas', size: '24"x30"', price: '$200', date: '20240527', sold: false},
     { img: process.env.PUBLIC_URL + '/EndOfSummerFlowers.jpeg', title: 'End Of Summer Flowers', text: 'N/A', medium: 'Acrylic on Panel', size: '18"x24"', price: '$200', date: '20250810', sold: false},
