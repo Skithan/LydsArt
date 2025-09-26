@@ -186,7 +186,7 @@
   width: 100vw;
   height: 100vh;
   z-index: 0;
-  background: radial-gradient(circle at 50% 50%, #65a781ce 0%, #1c741cdf 80%, #04410d 100%);
+  background: radial-gradient(circle at 50% 50%, #d4e160 0%, #bfc58e 80%, #fafafadf 100%);
   animation: flowRadialBG 10s ease-in-out infinite alternate;
   pointer-events: none;
 }
