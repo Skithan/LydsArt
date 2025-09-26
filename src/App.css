@@ -78,7 +78,7 @@
 }
 
 .arrow-btn {
-  background: rgba(20,90,31,0.7);
+  background: rgba(198, 210, 145, 0.7);
   color: #fff;
   border: none;
   font-size: 3rem;
@@ -95,7 +95,7 @@
   z-index: 2;
 }
 .arrow-btn:hover {
-  background: #228B22;
+  background: rgba(174, 186, 122, 0.7);
   transform: scale(1.08);
 }
 
@@ -189,7 +189,7 @@
   min-width: 100vw;
   min-height: 100vh;
   z-index: 0;
-  background: radial-gradient(circle at 50% 50%, #f5df35 0%, #c9c97b 80%, #fafafadf 100%);
+  background: radial-gradient(circle at 50% 50%, #e4e3de 0%, #c9c97b 80%, #fafafadf 100%);
   animation: flowRadialBG 10s ease-in-out infinite alternate;
   pointer-events: none;
 }

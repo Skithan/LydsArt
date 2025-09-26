@@ -87,7 +87,7 @@ function MainApp() {
       date: '20231210',
       sold: false
     },
-    { img: process.env.PUBLIC_URL + '/KingSquareAtNight.jpeg', title: 'King Square At Night', text: 'N/A', medium: 'Oil on Canvas', size: '18"x24"', price: '$200',date: '2022052', sold: false},
+    { img: process.env.PUBLIC_URL + '/KingSquareAtNight.jpeg', title: 'King Square At Night', text: 'N/A', medium: 'Oil on Canvas', size: '18"x24"', price: '$200',date: '20220502', sold: false},
     { img: process.env.PUBLIC_URL + '/NoDogsOnTheCouch.jpeg', title: 'No Dogs On The Couch', text: 'N/A', medium: 'Oil on Canvas', size: '18"x24"', price: 'N/A',date: '20221201', sold: false},
     { img: process.env.PUBLIC_URL + '/SharingATemporaryHome.jpeg', title: 'Sharing A Temporary Home', text: 'N/A', medium: 'Acrylic on Canvas', size: '3\'x5\'', price: '$200',date: '20231103', sold: false},
     { img: process.env.PUBLIC_URL + '/SimonAndGarfunkelKids.jpeg', title: 'Simon And Garfunkel Kids', text: 'N/A', medium: 'Acrylic on Canvas', size: 'N/A', price: 'N/A',date: '20240822', sold: false},
