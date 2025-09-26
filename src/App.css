@@ -132,14 +132,14 @@
 }
 
 .scroll-img {
-  width: 70vw;
-  max-width: 700px;
-  height: 60vh;
-  max-height: 60vh;
-  aspect-ratio: 1/1;
-  object-fit: cover;
-  border-radius: 2rem;
-  margin-bottom: 2rem;
+  display: block;
+  max-width: 75vw;
+  max-height: 75vh;
+  height: auto;
+  width: auto;
+  object-fit: contain;
+  border-radius: 1rem;
+  margin-bottom: 1rem;
   box-shadow: 0 4px 32px #0008;
 }
 
@@ -180,11 +180,13 @@
 }
 
 .animated-bg {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
+  min-width: 100vw;
+  min-height: 100vh;
   z-index: 0;
   background: radial-gradient(circle at 50% 50%, #d4e160 0%, #bfc58e 80%, #fafafadf 100%);
   animation: flowRadialBG 10s ease-in-out infinite alternate;
