@@ -163,7 +163,7 @@ function App() {
               style={{ background: 'none', border: 'none', color: '#ffffffff', cursor: 'pointer', font: 'inherit', padding: 0 }}
               aria-pressed={expanded}
             >
-              click for info
+              {expanded ? '' : 'click for info'}
             </button>
             <div className="arrow-btn-row">
               <button className="arrow-btn left" onClick={goLeft} aria-label="Previous card" disabled={current === 0} style={current === 0 ? { opacity: 0.4, cursor: 'not-allowed' } : {}}>&#8592;</button>
