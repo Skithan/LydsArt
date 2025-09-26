@@ -9,23 +9,39 @@ function MainApp() {
   // Touch swipe state
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
+  const touchStartY = useRef(null);
+  const touchEndY = useRef(null);
 
   // Touch event handlers
   const handleTouchStart = (e) => {
     touchStartX.current = e.changedTouches[0].screenX;
+    touchStartY.current = e.changedTouches[0].screenY;
   };
   const handleTouchEnd = (e) => {
     touchEndX.current = e.changedTouches[0].screenX;
+    touchEndY.current = e.changedTouches[0].screenY;
+    // Horizontal swipe
     if (touchStartX.current !== null && touchEndX.current !== null) {
-      const diff = touchEndX.current - touchStartX.current;
-      if (diff > 80) {
+      const diffX = touchEndX.current - touchStartX.current;
+      if (diffX > 80) {
         goLeft();
-      } else if (diff < -80) {
+      } else if (diffX < -80) {
         goRight();
+      }
+    }
+    // Vertical swipe
+    if (touchStartY.current !== null && touchEndY.current !== null) {
+      const diffY = touchEndY.current - touchStartY.current;
+      if (!expanded && diffY < -80) {
+        setExpanded(true); // swipe up to expand
+      } else if (expanded && diffY > 80) {
+        setExpanded(false); // swipe down to collapse
       }
     }
     touchStartX.current = null;
     touchEndX.current = null;
+    touchStartY.current = null;
+    touchEndY.current = null;
   };
 
   function formatDate(dateStr) {
