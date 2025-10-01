@@ -66,7 +66,7 @@ const filterIcon = (
   </svg>
 );
 
-const Artwork = () => {
+const Artwork = (props) => {
   const [current, setCurrent] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const [imgIdx, setImgIdx] = useState(0); 
@@ -79,6 +79,8 @@ const Artwork = () => {
   const touchStartY = useRef(null);
   const touchEndY = useRef(null);
   const isZooming = useRef(false);
+
+  const onReserve = props.onReserve;
 
   // Get unique values for Medium and Size
   const mediums = Array.from(new Set(cards.map(card => card.medium).filter(v => v && v !== 'N/A')));
@@ -137,10 +139,19 @@ const Artwork = () => {
   };
 
   const handleReserve = () => {
-    const card = cards[current];
-    const subject = encodeURIComponent(`Reserve: ${card.title}`);
-    const body = encodeURIComponent(`Hi, I would like to buy this piece.`);
-    window.location.href = `mailto:ethanalward@outlook.com?subject=${subject}&body=${body}`;
+    if (onReserve) {
+      const card = filteredCards[current];
+      onReserve({
+        title: card.title,
+        size: card.size,
+        price: card.price,
+        medium: card.medium,
+        imgs: card.imgs || (card.img ? [card.img] : []),
+        text: card.text,
+        date: card.date,
+        sold: card.sold
+      });
+    }
   };
 
   const goLeft = () => {
@@ -380,9 +391,9 @@ const Artwork = () => {
             ) : null}
             {filteredCards.length > 0 && !filteredCards[current].sold && (
               <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginBottom: '2rem', marginTop: '1.5rem' }}>
-                <button className="arrow-btn" style={{ minWidth: '12rem', padding: '0.5rem 1.5rem', fontSize: '1.3rem', whiteSpace: 'nowrap' }}
-                  onClick={handleReserve}
-                >Reserve Piece</button>
+                <button className="arrow-btn" style={{ minWidth: '12rem', padding: '0.5rem 1.5rem', fontSize: '1.3rem', whiteSpace: 'nowrap', width: '100%' }} onClick={handleReserve}>
+                  Reserve Piece
+                </button>
               </div>
             )}
           </div>

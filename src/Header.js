@@ -18,6 +18,7 @@ function Header({ onNavigate }) {
           <li><button className="nav-link-btn" onClick={() => { onNavigate && onNavigate('home'); setMenuOpen(false); }}>Home</button></li>
           <li><button className="nav-link-btn" onClick={() => { onNavigate && onNavigate('artwork'); setMenuOpen(false); }}>Artwork</button></li>
           <li><button className="nav-link-btn" onClick={() => { onNavigate && onNavigate('contact'); setMenuOpen(false); }}>Contact</button></li>
+           <li><button className="nav-link-btn" onClick={() => { onNavigate && onNavigate('cart'); setMenuOpen(false); }}>Cart</button></li>
         </ul>
       </nav>
     </header>

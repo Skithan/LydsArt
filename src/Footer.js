@@ -28,6 +28,7 @@ function Footer() {
   });
 
   return (
+
     <div className="savannah-grass-container">
       {grassBlades}
     </div>
