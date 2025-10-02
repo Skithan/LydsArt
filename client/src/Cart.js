@@ -128,7 +128,7 @@ const Cart = (props) => {
         </div>
       )}
 
-      {/* Payment form */}
+
       {!clientSecret && !paymentCompleted && (
         <>
           <p style={{ fontSize: '1.2rem', marginBottom: '2rem', textAlign: 'center' }}>
@@ -224,7 +224,6 @@ const Cart = (props) => {
         </div>
       )}
       
-      {/* Payment Success Message */}
       {paymentCompleted && (
         <div style={{ 
           textAlign: 'center',

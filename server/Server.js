@@ -15,6 +15,7 @@ app.use(cors({
 // Checkout session endpoint
 app.post('/create-checkout-session', async (req, res) => {
   console.log('Received request: /create-checkout-session');
+  console.log(req.headers.origin);
   try {
     const { line_items, customer_email, customer_name } = req.body;
     
