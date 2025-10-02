@@ -21,12 +21,12 @@ app.post('/create-checkout-session', async (req, res) => {
     
     // Create Checkout Session
     const session = await stripe.checkout.sessions.create({
-      ui_mode: 'embedded', // Use 'embedded' for embedded checkout
+      ui_mode: 'embedded', 
       payment_method_types: ['card'],
       line_items: line_items,
       customer_email: customer_email,
       mode: 'payment',
-      return_url: `${req.headers.origin}/return?session_id={CHECKOUT_SESSION_ID}`,
+      return_url: `${req.headers.origin}`,
     });
     
     res.json({ clientSecret: session.client_secret });
