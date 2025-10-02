@@ -1,30 +1,54 @@
-// This test secret API key is a placeholder. Don't include personal details in requests with this key.
-// To see your test secret API key embedded in code samples, sign in to your Stripe account.
-// You can also find your test secret API key at https://dashboard.stripe.com/test/apikeys.
-const stripe = require('stripe')('sk_test_51SD4ntAIRFwBRpKYIq5QksYC2UrTIththTXZvRT8b3cYec8X9oQPSOKFiDrLBTKkoLCJDdjuUJGkcJdtdLxhydzQ00prdK7bjT');
 const express = require('express');
+const stripe = require('stripe')('sk_test_51SD4ntAIRFwBRpKYIq5QksYC2UrTIththTXZvRT8b3cYec8X9oQPSOKFiDrLBTKkoLCJDdjuUJGkcJdtdLxhydzQ00prdK7bjT');
+const cors = require('cors');
 const app = express();
-app.use(express.static('public'));
+
+// Middleware
 app.use(express.json());
+app.use(cors({
+  origin: 'http://localhost:3001', // Allow your React frontend
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
 
-const YOUR_DOMAIN = 'http://localhost:3001';
-
+// Checkout session endpoint
 app.post('/create-checkout-session', async (req, res) => {
-  console.log('Received POST from Cart.js:', req.body);
   try {
-    const { line_items, customer_email } = req.body;
+    const { line_items, customer_email, customer_name } = req.body;
+    
+    // Create Checkout Session
     const session = await stripe.checkout.sessions.create({
+      ui_mode: 'embedded', // Use 'embedded' for embedded checkout
       payment_method_types: ['card'],
-      line_items,
+      line_items: line_items,
+      customer_email: customer_email,
       mode: 'payment',
-      success_url: `${YOUR_DOMAIN}?success=true`,
-      cancel_url: `${YOUR_DOMAIN}?canceled=true`,
-      customer_email,
+      return_url: `${req.headers.origin}/return?session_id={CHECKOUT_SESSION_ID}`,
     });
-    res.json({ url: session.url });
+    
+    res.json({ clientSecret: session.client_secret });
+    
+  } catch (error) {
+    console.error('Checkout session error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get session status endpoint
+app.get('/session-status', async (req, res) => {
+  try {
+    const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
+    res.json({
+      status: session.status,
+      customer_email: session.customer_details?.email
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-app.listen(3001, () => console.log('Running on port 3001'));
+// Start server
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

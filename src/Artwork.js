@@ -13,10 +13,10 @@ function formatDate(dateStr) {
 }
 
 const cards = [
-  { img: process.env.PUBLIC_URL + '/AnUptownPerspective2.jpeg',title: 'An Uptown Perspective', medium:'Acrylic', text: 'N/A',size: '18"x24"',price: '$200' , date: '20250611', sold: false},
-  { img: process.env.PUBLIC_URL + '/ComfortInChange.jpeg', title: 'Comfort In Change', text: 'sharing some thoughts from the painting process: ', medium: 'Oil on Stetched Canvas', size: '24"x30"', price: '$200', date: '20240527', sold: false},
-  { img: process.env.PUBLIC_URL + '/EndOfSummerFlowers.jpeg', title: 'End Of Summer Flowers', text: 'N/A', medium: 'Acrylic on Panel', size: '18"x24"', price: '$200', date: '20250810', sold: false},
-  { img: process.env.PUBLIC_URL + '/FalseLight.jpeg', title: 'False Light', text: 'N/A', medium: 'Acrylic on Canvas', size: '18"x24"', price: '$200', date: '20250822', sold: false},
+  { img: process.env.PUBLIC_URL + '/AnUptownPerspective2.jpeg',title: 'An Uptown Perspective', medium:'Acrylic', text: 'N/A',size: '18"x24"',price: '$1' , date: '20250611', sold: false},
+  { img: process.env.PUBLIC_URL + '/ComfortInChange.jpeg', title: 'Comfort In Change', text: 'sharing some thoughts from the painting process: ', medium: 'Oil on Stetched Canvas', size: '24"x30"', price: '$1', date: '20240527', sold: false},
+  { img: process.env.PUBLIC_URL + '/EndOfSummerFlowers.jpeg', title: 'End Of Summer Flowers', text: 'N/A', medium: 'Acrylic on Panel', size: '18"x24"', price: '$1', date: '20250810', sold: false},
+  { img: process.env.PUBLIC_URL + '/FalseLight.jpeg', title: 'False Light', text: 'N/A', medium: 'Acrylic on Canvas', size: '18"x24"', price: '$1', date: '20250822', sold: false},
   { img: process.env.PUBLIC_URL + '/FamiliarFaces.jpeg', title: 'Familiar Faces', text: 'N/A', medium: 'Acrylic on Canvas', size: '18"x24"', price: 'N/A', date: '20250817', sold: false},
   { imgs: [
       process.env.PUBLIC_URL + '/SillyHeart1.jpeg',
@@ -28,7 +28,7 @@ const cards = [
     text: 'N/A',
     medium: 'Wood & Mixed Media',
     size: '1"x6"',
-    price: '$200 each',
+  price: '$1',
     date: '20230129',
     sold: false
   },
@@ -40,13 +40,13 @@ const cards = [
     text: 'N/A',
     medium: 'Wood & Mixed Media',
     size: '3\'x4\'x2\'',
-    price: '$200',
+  price: '$1',
     date: '20231210',
     sold: false
   },
-  { img: process.env.PUBLIC_URL + '/KingSquareAtNight.jpeg', title: 'King Square At Night', text: 'N/A', medium: 'Oil on Canvas', size: '18"x24"', price: '$200',date: '20220502', sold: false},
+  { img: process.env.PUBLIC_URL + '/KingSquareAtNight.jpeg', title: 'King Square At Night', text: 'N/A', medium: 'Oil on Canvas', size: '18"x24"', price: '$1',date: '20220502', sold: false},
   { img: process.env.PUBLIC_URL + '/NoDogsOnTheCouch.jpeg', title: 'No Dogs On The Couch', text: 'N/A', medium: 'Oil on Canvas', size: '18"x24"', price: 'N/A',date: '20221201', sold: false},
-  { img: process.env.PUBLIC_URL + '/SharingATemporaryHome.jpeg', title: 'Sharing A Temporary Home', text: 'N/A', medium: 'Acrylic on Canvas', size: '3\'x5\'', price: '$200',date: '20231103', sold: false},
+  { img: process.env.PUBLIC_URL + '/SharingATemporaryHome.jpeg', title: 'Sharing A Temporary Home', text: 'N/A', medium: 'Acrylic on Canvas', size: '3\'x5\'', price: '$1',date: '20231103', sold: false},
   { img: process.env.PUBLIC_URL + '/SimonAndGarfunkelKids.jpeg', title: 'Simon And Garfunkel Kids', text: 'N/A', medium: 'Acrylic on Canvas', size: 'N/A', price: 'N/A',date: '20240822', sold: false},
   { img: process.env.PUBLIC_URL + '/YellowFrog.jpeg', title: 'Yellow Frog', text: 'N/A', medium: 'Oil on Canvas', size: 'N/A', price: 'N/A',date: '20240219', sold: false},
   { img: process.env.PUBLIC_URL + '/BlueFrog.jpeg', title: 'Blue Frog', text: 'N/A', medium: 'Oil on Canvas', size: 'N/A', price: 'N/A',date: '20240219', sold: false},
