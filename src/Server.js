@@ -7,9 +7,10 @@ const app = express();
 app.use(express.static('public'));
 app.use(express.json());
 
-const YOUR_DOMAIN = 'http://localhost:4242';
+const YOUR_DOMAIN = 'http://localhost:3001';
 
 app.post('/create-checkout-session', async (req, res) => {
+  console.log('Received POST from Cart.js:', req.body);
   try {
     const { line_items, customer_email } = req.body;
     const session = await stripe.checkout.sessions.create({
@@ -26,4 +27,4 @@ app.post('/create-checkout-session', async (req, res) => {
   }
 });
 
-app.listen(4242, () => console.log('Running on port 4242'));
+app.listen(3001, () => console.log('Running on port 3001'));

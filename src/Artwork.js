@@ -80,6 +80,8 @@ const Artwork = (props) => {
   const touchEndY = useRef(null);
   const isZooming = useRef(false);
 
+  console.log('props', props);
+
   const onReserve = props.onReserve;
 
   // Get unique values for Medium and Size

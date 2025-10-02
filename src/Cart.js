@@ -6,7 +6,6 @@ const STRIPE_PK = 'pk_test_51NxxxxxxReplaceWithYourKey';
 
 const Cart = (props) => {
   const [showForm, setShowForm] = useState(true);
-  // Accept card prop
   const card = props.card;
   return (
     <section id="cart" className="cart-section" style={{
@@ -18,6 +17,9 @@ const Cart = (props) => {
           <div style={{ color: '#6d4c1b', fontSize: '1.1rem', marginBottom: '0.3rem' }}><strong>Medium:</strong> {card.medium}</div>
           <div style={{ color: '#6d4c1b', fontSize: '1.1rem', marginBottom: '0.3rem' }}><strong>Size:</strong> {card.size}</div>
           <div style={{ color: '#6d4c1b', fontSize: '1.1rem', marginBottom: '0.3rem' }}><strong>Price:</strong> {card.price}</div>
+          <div style={{ color: '#6d4c1b', fontSize: '1.1rem', marginBottom: '0.3rem' }}><strong>Description:</strong> {card.text}</div>
+          <div style={{ color: '#6d4c1b', fontSize: '1.1rem', marginBottom: '0.3rem' }}><strong>Date Completed:</strong> {card.date}</div>
+          <div style={{ color: '#6d4c1b', fontSize: '1.1rem', marginBottom: '0.3rem' }}><strong>Sold:</strong> {card.sold ? 'Yes' : 'No'}</div>
           {card.imgs && card.imgs.length > 0 && (
             <img src={card.imgs[0]} alt={card.title} style={{ width: '100%', maxWidth: '320px', borderRadius: '1rem', marginTop: '0.7rem', boxShadow: '0 2px 8px #0002' }} />
           )}
@@ -26,44 +28,53 @@ const Cart = (props) => {
       <p style={{ fontSize: '1.2rem', marginBottom: '2rem', textAlign: 'center' }}>Please enter your payment details to reserve your selected artwork. All transactions are securely processed.</p>
       {showForm && (
         <form
-          style={{ width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '1.2rem' }}
+          style={{width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '1.2rem' }}
           onSubmit={async (e) => {
             e.preventDefault();
+            console.log('Form submitted');
             const email = e.target.email.value.trim();
+            const name = e.target.name.value.trim();
+            console.log('Name:', name);
+            console.log('Email:', email);
             // Simple email validation
             const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
             if (!emailPattern.test(email)) {
+              console.log('Invalid email');
               alert('Please enter a valid email address.');
               return;
             }
             // Prepare Stripe line_items
-            const price = card.price && card.price.startsWith('$') ? parseInt(card.price.replace(/[^\d]/g, '')) : 200;
+            console.log('Card price:', card.price);
             const line_items = [
               {
-                price_data: {
-                  currency: 'usd',
-                  product_data: {
-                    name: card.title,
-                    description: card.medium + (card.size ? `, ${card.size}` : ''),
-                  },
-                  unit_amount: price * 100,
-                },
+                price_data: card.price,
                 quantity: 1,
-              },
+              }
             ];
-            const res = await fetch('/create-checkout-session', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ line_items, customer_email: email }),
-            });
-            const data = await res.json();
-            if (data.url) {
-              window.location.href = data.url;
-            } else {
-              alert('Error creating checkout session: ' + (data.error || 'Unknown error'));
+            console.log('Line items:', line_items);
+            try {
+              const res = await fetch('/create-checkout-session', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ line_items, customer_email: email }),
+              });
+              console.log('Fetch response status:', res.status);
+              const data = await res.json();
+              console.log('Stripe session response:', data);
+              if (data.url) {
+                console.log('Redirecting to Stripe Checkout:', data.url);
+                window.location.href = data.url;
+              } else {
+                console.log('Stripe error:', data.error);
+                alert('Error creating checkout session: ' + (data.error || 'Unknown error'));
+              }
+            } catch (err) {
+              console.log('Network or fetch error:', err);
+              alert('Network error: ' + err.message);
             }
           }}
         >
+            
           <input type="text" name="name" placeholder="Name on Card" required style={{ padding: '0.7rem 1rem', borderRadius: '1rem', border: '1px solid #e7d3a1', fontSize: '1.1rem', fontFamily: 'Inter, Segoe UI, Arial, sans-serif' }} />
           <input type="email" name="email" placeholder="Email" required style={{ padding: '0.7rem 1rem', borderRadius: '1rem', border: '1px solid #e7d3a1', fontSize: '1.1rem', fontFamily: 'Inter, Segoe UI, Arial, sans-serif' }} />
           <button type="submit" style={{ background: '#6d4c1b', color: '#fff', border: 'none', borderRadius: '1rem', padding: '0.7rem 1.5rem', fontWeight: 600, fontSize: '1.2rem', cursor: 'pointer', boxShadow: '0 2px 8px #f3e3b322', transition: 'background 0.2s, color 0.2s' }}>Pay & Reserve</button>
