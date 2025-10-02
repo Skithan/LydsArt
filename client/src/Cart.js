@@ -6,7 +6,6 @@ import {
 } from '@stripe/react-stripe-js';
 import './App.css';
 
-// Initialize Stripe with your publishable key
 const stripePromise = loadStripe("pk_live_51SDjlOCEuCzvJ0oaiT8gqxhMZLbDwQyAo5gJIPCD6WcHxvhVA2i7GXYKzdzWMlbqrne3uyxEv5cv3SuuCXDq3Ea200wvEI8HnU");
 
 const Cart = (props) => {
@@ -52,7 +51,7 @@ const Cart = (props) => {
     
     try {
       // Call your server to create a checkout session
-      const response = await fetch('https://lydiapaterson.netlify.app/create-checkout-session', {
+      const response = await fetch('https://lydsart.onrender.com/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -210,8 +209,7 @@ const Cart = (props) => {
           </form>
         </>
       )}
-      
-      {/* Embedded Checkout */}
+
       {clientSecret && !paymentCompleted && (
         <div style={{ width: '100%', maxWidth: '450px' }}>
           <EmbeddedCheckoutProvider
