@@ -115,10 +115,13 @@ const Cart = (props) => {
       {card && (
         <div style={{ background: '#fffbe6', borderRadius: '1rem', boxShadow: '0 2px 8px #f3e3b322', padding: '1.2rem', marginBottom: '2rem', width: '100%', maxWidth: '400px' }}>
           <h3 style={{ color: '#6d4c1b', fontWeight: 600, fontSize: '1.3rem', marginBottom: '0.7rem' }}>{card.title}</h3>
-          <div style={{ color: '#6d4c1b', fontSize: '1.1rem', marginBottom: '0.3rem' }}><strong>Medium:</strong> {card.medium}</div>
-          <div style={{ color: '#6d4c1b', fontSize: '1.1rem', marginBottom: '0.3rem' }}><strong>Size:</strong> {card.size}</div>
-          <div style={{ color: '#6d4c1b', fontSize: '1.1rem', marginBottom: '0.3rem' }}><strong>Price:</strong> {card.price}</div>
-          <div style={{ color: '#6d4c1b', fontSize: '1.1rem', marginBottom: '0.3rem' }}><strong>Description:</strong> {card.text}</div>
+          {Object.entries(card).map(([key, value]) => (
+            key !== 'imgs' ? (
+              <div key={key} style={{ color: '#6d4c1b', fontSize: '1.1rem', marginBottom: '0.3rem' }}>
+                <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {String(value)}
+              </div>
+            ) : null
+          ))}
           {card.imgs && card.imgs.length > 0 && (
             <img src={card.imgs[0]} alt={card.title} style={{ width: '100%', maxWidth: '320px', borderRadius: '1rem', marginTop: '0.7rem', boxShadow: '0 2px 8px #0002' }} />
           )}
