@@ -111,7 +111,7 @@ const Cart = (props) => {
         Reserve & Checkout
       </h2>
       
-      {/* Display artwork details */}
+   
       {card && (
         <div style={{ background: '#fffbe6', borderRadius: '1rem', boxShadow: '0 2px 8px #f3e3b322', padding: '1.2rem', marginBottom: '2rem', width: '100%', maxWidth: '400px' }}>
           <h3 style={{ color: '#6d4c1b', fontWeight: 600, fontSize: '1.3rem', marginBottom: '0.7rem' }}>{card.title}</h3>
@@ -132,7 +132,7 @@ const Cart = (props) => {
       {!clientSecret && !paymentCompleted && (
         <>
           <p style={{ fontSize: '1.2rem', marginBottom: '2rem', textAlign: 'center' }}>
-            Please enter your payment details to reserve your selected artwork. All transactions are securely processed.
+            Please enter your payment details below.
           </p>
           
           {error && (
