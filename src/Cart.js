@@ -52,7 +52,7 @@ const Cart = (props) => {
     
     try {
       // Call your server to create a checkout session
-      const response = await fetch('http://localhost:3000/create-checkout-session', {
+      const response = await fetch('https://lydiapaterson.netlify.app/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
