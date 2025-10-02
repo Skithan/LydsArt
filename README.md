@@ -1,2 +1,2 @@
 # LydsArt
-Site for Lydia Patterson to display her art 
+Site for Lydia Paterson to display her art 
