@@ -7,7 +7,7 @@ import {
 import './App.css';
 
 // Initialize Stripe with your publishable key
-const stripePromise = loadStripe("pk_test_51SDjlOCEuCzvJ0oatthNjrZwagKIPVXprr72ybLQnWcNDzGQR6I1P4N7AzNwVOcL4pR3r8rChCpyPONDDHr7YgUN00o5vgOT7O");
+const stripePromise = loadStripe("pk_live_51SDjlOCEuCzvJ0oaiT8gqxhMZLbDwQyAo5gJIPCD6WcHxvhVA2i7GXYKzdzWMlbqrne3uyxEv5cv3SuuCXDq3Ea200wvEI8HnU");
 
 const Cart = (props) => {
   const card = props.card;

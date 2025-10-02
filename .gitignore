@@ -1,0 +1,7 @@
+.env
+# Other files to ignore
+node_modules/
+build/
+dist/
+.env.local
+.env.production
