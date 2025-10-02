@@ -14,6 +14,7 @@ app.use(cors({
 
 // Checkout session endpoint
 app.post('/create-checkout-session', async (req, res) => {
+  console.log('Received request: /create-checkout-session');
   try {
     const { line_items, customer_email, customer_name } = req.body;
     
@@ -37,6 +38,7 @@ app.post('/create-checkout-session', async (req, res) => {
 
 // Get session status endpoint
 app.get('/session-status', async (req, res) => {
+  console.log('Received request: /session-status');
   try {
     const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
     res.json({

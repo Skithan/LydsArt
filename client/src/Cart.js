@@ -51,6 +51,7 @@ const Cart = (props) => {
     
     try {
       // Call your server to create a checkout session
+      console.log('sending request to server : /create-checkout-session');
       const response = await fetch('https://lydsart.onrender.com/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
