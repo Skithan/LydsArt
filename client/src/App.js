@@ -1,22 +1,20 @@
 import React, { useState } from 'react';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './Header';
-import Footer from './Footer';
 import Home from './Home';
 import Artwork from './Artwork';
 import Contact from './Contact';
 import Cart from './Cart';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
 import ThankYou from './ThankYou';
 
+import './App.css';
 
-
-function MainApp() {
+// MainApp handles navigation between pages using local state
+const MainApp = () => {
   const [page, setPage] = useState('home');
   const [cartData, setCartData] = useState(null);
 
-  // Handler for navigation
+  // Handles navigation and passes data to Cart if needed
   const handleNav = (target, data) => {
     setPage(target);
     if (target === 'cart' && data) {
@@ -25,30 +23,26 @@ function MainApp() {
   };
 
   return (
-    <div className="App">
-      <div className="animated-bg" aria-hidden="true"></div>
-      <div className="content">
-        <Header onNavigate={handleNav} />
-        {page === 'home' && <Home />}
-        {page === 'artwork' && <Artwork onReserve={data => handleNav('cart', data)} />}
-        {page === 'contact' && <Contact />}
-        {page === 'cart' && <Cart card={cartData} />}
-        {page === 'success' && <ThankYou />}
-        <Footer/>
-      </div>
-    </div>
+    <>
+      <Header onNavigate={handleNav} />
+      {page === 'home' && <Home />}
+      {page === 'artwork' && <Artwork onReserve={data => handleNav('cart', data)} />}
+      {page === 'contact' && <Contact />}
+      {page === 'cart' && <Cart card={cartData} />}
+    </>
   );
-}
+};
 
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<MainApp />} />
-        <Route path="/success" element={<ThankYou />} />
-      </Routes>
-    </Router>
-  );
-}
+// Router handles browser navigation and deep linking
+const App = () => (
+  <Router>
+    <Routes>
+      {/* Main app at root path */}
+      <Route path="/" element={<MainApp />} />
+      {/* Thank you page for Stripe return_url */}
+      <Route path="/success" element={<ThankYou />} />
+    </Routes>
+  </Router>
+);
 
 export default App;
