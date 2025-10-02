@@ -296,7 +296,8 @@
     background: linear-gradient(90deg, #f7ecd0 0%, #f3e3b3 100%);
     position: absolute;
     top: 100%;
-    right: 0;
+  left: 50%;
+  transform: translateX(-50%);
     min-width: 180px;
     border-radius: 0 0 1.2rem 1.2rem;
     box-shadow: 0 4px 24px #f3e3b366;
@@ -305,6 +306,8 @@
   }
   .nav-list.open {
     display: flex;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
 
