@@ -198,20 +198,6 @@
   z-index: 1;
 }
 
-@keyframes flowRadialBG {
-  0% {
-    background-size: 100% 100%;
-    filter: blur(0px);
-  }
-  50% {
-    background-size: 120% 120%;
-    filter: blur(1.5px);
-  }
-  100% {
-    background-size: 100% 100%;
-    filter: blur(0px);
-  }
-}
 
 
 /* Header styles */
