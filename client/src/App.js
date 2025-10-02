@@ -6,6 +6,9 @@ import Home from './Home';
 import Artwork from './Artwork';
 import Contact from './Contact';
 import Cart from './Cart';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+import ThankYou from './ThankYou';
 
 
 
@@ -30,6 +33,7 @@ function MainApp() {
         {page === 'artwork' && <Artwork onReserve={data => handleNav('cart', data)} />}
         {page === 'contact' && <Contact />}
         {page === 'cart' && <Cart card={cartData} />}
+        {page === 'success' && <ThankYou />}
         <Footer/>
       </div>
     </div>
@@ -37,7 +41,14 @@ function MainApp() {
 }
 
 function App() {
-  return <MainApp />;
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainApp />} />
+        <Route path="/success" element={<ThankYou />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;

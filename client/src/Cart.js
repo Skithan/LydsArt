@@ -6,7 +6,9 @@ import {
 } from '@stripe/react-stripe-js';
 import './App.css';
 
-const stripePromise = loadStripe("pk_live_51SDjlOCEuCzvJ0oaiT8gqxhMZLbDwQyAo5gJIPCD6WcHxvhVA2i7GXYKzdzWMlbqrne3uyxEv5cv3SuuCXDq3Ea200wvEI8HnU");
+// pk_live_51SDjlOCEuCzvJ0oaiT8gqxhMZLbDwQyAo5gJIPCD6WcHxvhVA2i7GXYKzdzWMlbqrne3uyxEv5cv3SuuCXDq3Ea200wvEI8HnU
+
+const stripePromise = loadStripe("pk_test_51SD4ntAIRFwBRpKYibrGELI4OvWSI0wN54CmUcJZ8Q5MfYOw2G06PByDev26MsemQSlEmzLicN3z3UQoeAhnWWww00UMJtCrGO");
 
 const Cart = (props) => {
   const card = props.card;
