@@ -11,8 +11,8 @@ import Footer from './Footer';
 import './App.css';
 
 const App = () => (
-  <div className="animated-bg" style={{ minHeight: '100vh' }}>
-    <Router>
+  <Router>
+    <div className="animated-bg" style={{ minHeight: '100vh' }}>
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -22,8 +22,8 @@ const App = () => (
         <Route path="/success" element={<ThankYou />} />
       </Routes>
       <Footer />
-    </Router>
-  </div>
+    </div>
+  </Router>
 );
 
 export default App;

@@ -18,8 +18,8 @@ const ThankYou = () => {
   }, []);
 
   return (
-    <div>
-      <h2>Thank You!</h2>
+      <div className="ThankYou">
+        <h2 className="thankyou-title">Thank You!</h2>
       {status === 'complete' ? (
         <p>
           Your purchase was successful.<br />
