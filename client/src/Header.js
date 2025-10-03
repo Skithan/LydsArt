@@ -19,7 +19,7 @@ function Header() {
 
   return (
     <header className="Header">
-      <div className="header-title">Lydia Paterson Art</div>
+      <div className="header-title">Lydia Paterson</div>
       
       <button className="menu-toggle" onClick={toggleMenu}>
         <span className={`hamburger ${isMenuOpen ? 'open' : ''}`}>
@@ -29,8 +29,8 @@ function Header() {
         </span>
       </button>
 
-      <nav className={`header-nav ${isMenuOpen ? 'nav-open' : ''}`}>
-        <ul className="nav-list">
+      <nav className={`header-nav`}>
+        <ul className={`nav-list ${isMenuOpen ? 'open' : ''}`}>
           <li><button className="nav-link-btn" type="button"
             onClick={() => handleClick('/', 'Home')}
           >Home</button></li>

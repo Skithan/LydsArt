@@ -259,6 +259,55 @@
   font-size: 2.4rem;
   cursor: pointer;
   margin-bottom: 0.7rem;
+  padding: 0.5rem;
+  position: relative;
+  z-index: 101;
+}
+
+.hamburger {
+  display: block;
+  position: relative;
+  width: 25px;
+  height: 20px;
+}
+
+.hamburger span {
+  display: block;
+  position: absolute;
+  height: 3px;
+  width: 100%;
+  background: #8c6a2a;
+  border-radius: 2px;
+  opacity: 1;
+  left: 0;
+  transition: 0.25s ease-in-out;
+}
+
+.hamburger span:nth-child(1) {
+  top: 0px;
+}
+
+.hamburger span:nth-child(2) {
+  top: 8px;
+}
+
+.hamburger span:nth-child(3) {
+  top: 16px;
+}
+
+.hamburger.open span:nth-child(1) {
+  top: 8px;
+  transform: rotate(135deg);
+}
+
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+  left: -60px;
+}
+
+.hamburger.open span:nth-child(3) {
+  top: 8px;
+  transform: rotate(-135deg);
 }
 .nav-list {
   display: flex;
@@ -295,6 +344,11 @@
   outline: none;
 }
 @media (max-width: 700px) {
+  .header-title {
+    font-size: 2rem;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+  }
   .header-nav {
     align-items: flex-end;
   }
