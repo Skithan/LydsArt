@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './Header';
 import Home from './Home';
@@ -7,6 +7,7 @@ import Contact from './Contact';
 import Cart from './Cart';
 import ThankYou from './ThankYou';
 import Footer from './Footer';
+import './App.css';
 
 const App = () => (
   <div className="animated-bg">
