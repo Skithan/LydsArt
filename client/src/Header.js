@@ -9,7 +9,7 @@ function Header() {
   const handleClick = (path, label) => {
     alert(`Header button pressed: ${label}`);
     setLastPressed(label);
-    navigate(path);
+    navigate(path); 
   };
 
   return (
