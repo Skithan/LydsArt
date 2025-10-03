@@ -198,20 +198,6 @@
   z-index: 1;
 }
 
-@keyframes flowRadialBG {
-  0% {
-    background-size: 100% 100%;
-    filter: blur(0px);
-  }
-  50% {
-    background-size: 120% 120%;
-    filter: blur(1.5px);
-  }
-  100% {
-    background-size: 100% 100%;
-    filter: blur(0px);
-  }
-}
 
 
 /* Header styles */
@@ -245,6 +231,31 @@
   flex-direction: column;
   align-items: center;
 }
+/* ThankYou styles to match Header */
+.ThankYou {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(90deg, #f7ecd0 0%, #f3e3b3 100%);
+  padding: 2.2rem 0 1.2rem 0;
+  font-family: 'Playfair Display', 'Inter', 'Segoe UI', 'Arial', serif;
+  font-size: 2.6rem;
+  color: #6d4c1b;
+  letter-spacing: 2.5px;
+  position: relative;
+  z-index: 10;
+  box-shadow: 0 4px 24px #f3e3b366;
+  border-bottom: 2px solid #e7d3a1;
+}
+.thankyou-title {
+  font-weight: 700;
+  font-size: 2.6rem;
+  margin-bottom: 0.7rem;
+  letter-spacing: 3px;
+  color: #8c6a2a;
+  text-shadow: 0 2px 12px #f3e3b355, 0 1px 0 #fffbe6;
+  font-family: 'Playfair Display', 'Inter', serif;
+}
 .menu-toggle {
   display: none;
   background: none;
@@ -275,6 +286,12 @@
   transition: background 0.2s, color 0.2s, box-shadow 0.2s;
   cursor: pointer;
   box-shadow: 0 2px 8px #f3e3b322;
+}
+/* Stronger hover effect for header nav buttons */
+.nav-link-btn.header-hover {
+  background: linear-gradient(90deg, #f3e3b3 0%, #fffbe6 100%) !important;
+  color: #a67c3a !important;
+  box-shadow: 0 4px 16px #f3e3b355 !important;
 }
 .nav-link-btn:hover, .nav-link-btn:focus {
   background: linear-gradient(90deg, #f3e3b3 0%, #fffbe6 100%);

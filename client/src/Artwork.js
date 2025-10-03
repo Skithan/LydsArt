@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './App.css';
 
 function formatDate(dateStr) {
@@ -66,7 +67,7 @@ const filterIcon = (
   </svg>
 );
 
-const Artwork = (props) => {
+const Artwork = () => {
   const [current, setCurrent] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const [imgIdx, setImgIdx] = useState(0); 
@@ -80,9 +81,7 @@ const Artwork = (props) => {
   const touchEndY = useRef(null);
   const isZooming = useRef(false);
 
-  console.log('props', props);
-
-  const onReserve = props.onReserve;
+  const navigate = useNavigate();
 
   // Get unique values for Medium and Size
   const mediums = Array.from(new Set(cards.map(card => card.medium).filter(v => v && v !== 'N/A')));
@@ -141,9 +140,9 @@ const Artwork = (props) => {
   };
 
   const handleReserve = () => {
-    if (onReserve) {
-      const card = filteredCards[current];
-      onReserve({
+    const card = filteredCards[current];
+    navigate('/cart', {
+      state: {
         title: card.title,
         size: card.size,
         price: card.price,
@@ -152,8 +151,8 @@ const Artwork = (props) => {
         text: card.text,
         date: card.date,
         sold: card.sold
-      });
-    }
+      }
+    });
   };
 
   const goLeft = () => {
