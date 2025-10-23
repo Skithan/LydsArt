@@ -358,7 +358,6 @@
   .nav-list.open {
     display: flex;
     left: 50%;
-    transform: translateX(-50%);
   }
 }
 
