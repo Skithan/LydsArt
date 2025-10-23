@@ -82,6 +82,7 @@ const Artwork = () => {
   const touchStartY = useRef(null);
   const touchEndY = useRef(null);
   const isZooming = useRef(false);
+  const filterRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -102,6 +103,25 @@ const Artwork = () => {
     setCurrent(0);
     setImgIdx(0);
   }, [selectedMedium, selectedSize, selectedPrice]);
+
+  // Handle clicking outside the filter dropdown to close it
+  React.useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setFilterOpen(false);
+      }
+    };
+
+    if (filterOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [filterOpen]);
 
   const handleTouchStart = (e) => {
     if (e.touches && e.touches.length > 1) {
@@ -201,9 +221,9 @@ const Artwork = () => {
 
   return (
     <section id="artwork" style={{ marginTop: '1rem' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '2rem' }}>
-        <div style={{ position: 'relative', marginBottom: '1.5rem', width: 'fit-content', display: 'flex', gap: '1rem' }}>
-         <br></br>
+      <div style={{ display: 'flex',  position: 'relative', flexDirection: 'column', alignItems: 'center', marginBottom: '1rem' ,gap: '1rem',  }}>
+        <div ref={filterRef} style={{ position: 'relative', marginBottom: '1.5rem', width: 'fit-content', display: 'flex', gap: '1rem' }}>
+
           <button
             className="filter-dropdown-btn"
             onClick={() => setFilterOpen(open => !open)}
