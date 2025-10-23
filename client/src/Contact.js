@@ -4,7 +4,7 @@ import './App.css';
 const Contact = () => (
   <section id="contact" className="contact-section" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '3rem', gap: '2rem' }}>
 
-    <h2 style={{ fontWeight: 700, fontSize: '1.2rem', color: '#8c6a2a', textShadow: '0 2px 12px #f3e3b355, 0 1px 0 #fffbe6' }}>
+    <h2 style={{ fontWeight: 700, fontSize: '1.2rem', color: '#333333' }}>
       Checkout my Instagram
     </h2>
 

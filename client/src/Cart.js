@@ -94,22 +94,29 @@ const Cart = () => {
   };
 
   return (
-    <section id="cart" className="cart-section" style={{
-      display: 'flex', 
-      flexDirection: 'column', 
-      alignItems: 'center', 
-      minHeight: 'auto', 
-      justifyContent: 'flex-start', 
-      background: '#fdf6e3', 
-      boxShadow: '0 4px 24px rgba(0, 0, 0, 0.15)', 
-      borderRadius: '1.2rem', 
-      margin: '2rem auto 4rem auto', 
-      maxWidth: '520px', 
-      padding: '2.5rem 2rem', 
-      fontFamily: 'Playfair Display, Inter, Segoe UI, Arial, serif', 
-      color: '#333333', 
-      letterSpacing: '2px'
+    <div style={{ 
+      height: '100vh', 
+      overflowY: 'auto', 
+      WebkitOverflowScrolling: 'touch',
+      scrollBehavior: 'smooth',
+      padding: '2rem 0'
     }}>
+      <section id="cart" className="cart-section" style={{
+        display: 'flex', 
+        flexDirection: 'column', 
+        alignItems: 'center', 
+        minHeight: '150vh',
+        justifyContent: 'flex-start', 
+        background: '#fdf6e3', 
+        boxShadow: '0 4px 24px rgba(0, 0, 0, 0.15)', 
+        borderRadius: '1.2rem', 
+        margin: '2rem auto 4rem auto', 
+        maxWidth: '520px', 
+        padding: '2.5rem 2rem', 
+        fontFamily: 'Playfair Display, Inter, Segoe UI, Arial, serif', 
+        color: '#333333', 
+        letterSpacing: '2px'
+      }}>
       <h2 style={{ fontWeight: 700, fontSize: '2.2rem', marginBottom: '1.5rem', color: '#333333', textShadow: '0 2px 12px rgba(0, 0, 0, 0.1), 0 1px 0 #ffffff' }}>
         Reserve & Checkout
       </h2>
@@ -252,6 +259,7 @@ const Cart = () => {
         </div>
       )}
     </section>
+    </div>
   );
 };
 

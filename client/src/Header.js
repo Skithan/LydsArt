@@ -40,12 +40,12 @@ function Header() {
           <li><button className="nav-link-btn" type="button"
             onClick={() => handleClick('/contact', 'Contact')}
           >Contact</button></li>
-          <li><button className="nav-link-btn" type="button"
+          {/* <li><button className="nav-link-btn" type="button"
             onClick={() => handleClick('/cart', 'Cart')}
           >Cart</button></li>
           <li><button className="nav-link-btn" type="button"
             onClick={() => handleClick('/success', 'Thank You')}
-          >Thank You</button></li>
+          >Thank You</button></li> */}
         </ul>
         {/* {lastPressed && (
           <div style={{ marginTop: '1rem', color: '#333333', fontWeight: 600, fontSize: '1.1rem', textAlign: 'center' }}>

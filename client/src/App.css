@@ -533,21 +533,33 @@
   }
 }
 
-/* Cart Section Scrolling Styles */
+/* Cart Scrolling Container Styles */
+.cart-section {
+  scroll-snap-type: y proximity;
+}
+
 .cart-section::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 .cart-section::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 3px;
+  background: rgba(253, 246, 227, 0.5);
+  border-radius: 4px;
 }
 
 .cart-section::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 3px;
+  background: rgba(102, 102, 102, 0.6);
+  border-radius: 4px;
 }
 
 .cart-section::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(102, 102, 102, 0.8);
+}
+
+/* Add extra content at bottom for extensive scrolling */
+.cart-section::after {
+  content: '';
+  display: block;
+  height: 50vh;
+  width: 100%;
 }
