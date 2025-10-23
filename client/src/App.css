@@ -462,6 +462,27 @@
   outline: none;
 }
 
+.filter-search-btn {
+  margin-top: 0.5rem;
+  background: #333333;
+  color: #ffffff;
+  border: none;
+  border-radius: 1rem;
+  padding: 0.5rem 1.5rem;
+  font-weight: 600;
+  font-family: 'Playfair Display', 'Inter', serif;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: background 0.2s, color 0.2s;
+  flex: 1;
+}
+
+.filter-search-btn:hover, .filter-search-btn:focus {
+  background: #1a1a1a;
+  color: #ffffff;
+  outline: none;
+}
+
 .expand-toggle-btn {
   background: #fdf6e3;
   border: none;

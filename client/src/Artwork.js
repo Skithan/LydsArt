@@ -50,7 +50,7 @@ const cards = [
   { img: process.env.PUBLIC_URL + '/SharingATemporaryHome.jpeg', title: 'Sharing A Temporary Home', text: 'N/A', medium: 'Acrylic on Canvas', size: '3\'x5\'', price: '$1',date: '20231103', sold: false},
   { img: process.env.PUBLIC_URL + '/SimonAndGarfunkelKids.jpeg', title: 'Simon And Garfunkel Kids', text: 'N/A', medium: 'Acrylic on Canvas', size: 'N/A', price: 'N/A',date: '20240822', sold: false},
   { img: process.env.PUBLIC_URL + '/YellowFrog.jpeg', title: 'Yellow Frog', text: 'N/A', medium: 'Oil on Canvas', size: 'N/A', price: 'N/A',date: '20240219', sold: false},
-  { img: process.env.PUBLIC_URL + '/BlueFrog.jpeg', title: 'Blue Frog', text: 'N/A', medium: 'Oil on Canvas', size: 'N/A', price: 'N/A',date: '20240219', sold: false},
+  { img: process.env.PUBLIC_URL + '/BlueFrog.jpeg', title: 'Blue Frog', text: 'N/A', medium: 'Oil on Canvas', size: 'N/A', price: '$2',date: '20240219', sold: false},
 ];
 
 const filterIcon = (
@@ -74,7 +74,8 @@ const Artwork = () => {
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedMedium, setSelectedMedium] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
-  const [gridView, setGridView] = useState(false);
+  const [selectedPrice, setSelectedPrice] = useState('');
+  const [gridView, setGridView] = useState(true);
   const cardCount = cards.length;
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
@@ -84,21 +85,23 @@ const Artwork = () => {
 
   const navigate = useNavigate();
 
-  // Get unique values for Medium and Size
+  // Get unique values for Medium, Size, and Price
   const mediums = Array.from(new Set(cards.map(card => card.medium).filter(v => v && v !== 'N/A')));
   const sizes = Array.from(new Set(cards.map(card => card.size).filter(v => v && v !== 'N/A')));
+  const prices = Array.from(new Set(cards.map(card => card.price).filter(v => v && v !== 'N/A'))).sort();
 
-  // Filter cards by selected medium and size
+  // Filter cards by selected medium, size, and price
   const filteredCards = cards.filter(card => {
     const mediumMatch = selectedMedium ? card.medium === selectedMedium : true;
     const sizeMatch = selectedSize ? card.size === selectedSize : true;
-    return mediumMatch && sizeMatch;
+    const priceMatch = selectedPrice ? card.price === selectedPrice : true;
+    return mediumMatch && sizeMatch && priceMatch;
   });
 
   React.useEffect(() => {
     setCurrent(0);
     setImgIdx(0);
-  }, [selectedMedium, selectedSize]);
+  }, [selectedMedium, selectedSize, selectedPrice]);
 
   const handleTouchStart = (e) => {
     if (e.touches && e.touches.length > 1) {
@@ -242,10 +245,29 @@ const Artwork = () => {
                   {sizes.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
-              <button
-                className="filter-clear-btn"
-                onClick={() => { setSelectedMedium(''); setSelectedSize(''); setFilterOpen(false); }}
-              >Clear</button>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
+                <label htmlFor="price-select">Price</label>
+                <select
+                  id="price-select"
+                  value={selectedPrice}
+                  onChange={e => setSelectedPrice(e.target.value)}
+                >
+                  <option value="">All</option>
+                  {prices.map(p => <option key={p} value={p}>{p}</option>)}
+                </select>
+              </div>
+              <div style={{ display: 'flex', gap: '0.8rem', marginTop: '1rem' }}>
+                <button
+                  className="filter-search-btn"
+                  onClick={() => setFilterOpen(false)}
+                >
+                  Search
+                </button>
+                <button
+                  className="filter-clear-btn"
+                  onClick={() => { setSelectedMedium(''); setSelectedSize(''); setSelectedPrice(''); setFilterOpen(false); }}
+                >Clear</button>
+              </div>
             </div>
           )}
         </div>
