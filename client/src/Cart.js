@@ -107,7 +107,7 @@ const Cart = () => {
         alignItems: 'center', 
         minHeight: '150vh',
         justifyContent: 'flex-start', 
-        background: '#fdf6e3', 
+        background: '#f7f7f0dd', 
         boxShadow: '0 4px 24px rgba(0, 0, 0, 0.15)', 
         borderRadius: '1.2rem', 
         margin: '2rem auto 4rem auto', 
