@@ -3,7 +3,7 @@ import './App.css';
 import { useNavigate } from 'react-router-dom';
 
 function Header() {
-  const [lastPressed, setLastPressed] = useState('');
+//   const [lastPressed, setLastPressed] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
