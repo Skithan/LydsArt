@@ -8,7 +8,7 @@ function Header() {
   const navigate = useNavigate();
 
   const handleClick = (path, label) => {
-    setLastPressed(label);
+    // setLastPressed(label);
     navigate(path);
     setIsMenuOpen(false); // Close mobile menu after navigation
   };
