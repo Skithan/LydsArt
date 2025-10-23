@@ -320,7 +320,7 @@ const Artwork = () => {
           ) : (
             filteredCards.map((card, index) => (
               <div key={index} className="grid-card" style={{
-                background: '#fdf6e3',
+                background: 'f7f7f0dd',
                 borderRadius: '1rem',
                 padding: '1.5rem',
                 boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
@@ -445,7 +445,7 @@ const Artwork = () => {
                   objectFit: 'contain',
                   borderRadius: '1.2rem',
                   boxShadow: '0 4px 32px #0008',
-                  background: '#fdf6e3',
+                  background: '#f7f7f0dd',
                   aspectRatio: '4/3',
                   display: 'block',
                 }}
@@ -483,7 +483,7 @@ const Artwork = () => {
                 objectFit: 'contain',
                 borderRadius: '1.2rem',
                 boxShadow: '0 4px 32px #0008',
-                background: '#fdf6e3',
+                background: '#f7f7f0dd',
                 aspectRatio: '4/3',
                 display: 'block',
               }}

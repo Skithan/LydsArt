@@ -170,7 +170,7 @@
   min-width: 100vw;
   min-height: 100vh;
   z-index: 0;
-  background: #fdf6e3;
+  background: #f7f7f0dd;
 }
 
 .content {
@@ -185,16 +185,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #fdf6e3;
+  background: #f7f7f0dd;
   padding: 2.2rem 0 1.2rem 0;
   font-family: 'Playfair Display', 'Inter', 'Segoe UI', 'Arial', serif;
   font-size: 2.6rem;
-  color: #4a4a4a;
+  color: #333333;
   letter-spacing: 2.5px;
   position: relative;
   z-index: 10;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-  border-bottom: 2px solid #e8e0d6;
+  border-bottom: 2px solid #333333;
 }
 .header-title {
   font-weight: 700;
@@ -216,7 +216,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #fdf6e3;
+  background: #f7f7f0dd;
   padding: 2.2rem 0 1.2rem 0;
   font-family: 'Playfair Display', 'Inter', 'Segoe UI', 'Arial', serif;
   font-size: 2.6rem;
@@ -225,7 +225,7 @@
   position: relative;
   z-index: 10;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-  border-bottom: 2px solid #e8e0d6;
+  border-bottom: 2px solid #333333;
 }
 .thankyou-title {
   font-weight: 700;
@@ -344,7 +344,7 @@
     display: none;
     flex-direction: column;
     gap: 1.5rem;
-    background: #fdf6e3;
+    background: #f7f7f0dd;
     position: absolute;
     top: 100%;
   left: 50%;
@@ -363,7 +363,7 @@
 }
 
 .filter-dropdown-btn {
-  background: #fdf6e3;
+  background: #f7f7f0dd;
   border: none;
   color: #4a4a4a;
   padding: 0.7rem 1.5rem;
@@ -386,7 +386,7 @@
   outline: none;
 }
 .filter-dropdown-menu {
-  background: #fdf6e3;
+  background: #f7f7f0dd;
   border-radius: 1.2rem;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
   padding: 1.2rem 1.5rem;
@@ -484,7 +484,7 @@
 }
 
 .expand-toggle-btn {
-  background: #fdf6e3;
+  background: #f7f7f0dd;
   border: none;
   color: #4a4a4a;
   padding: 0.7rem 1.5rem;
@@ -573,7 +573,7 @@
 }
 
 .cart-section::-webkit-scrollbar-track {
-  background: rgba(253, 246, 227, 0.5);
+  background: rgba(247, 247, 240, 0.5);
   border-radius: 4px;
 }
 
@@ -611,7 +611,7 @@
 }
 
 .single-card-scroll-container::-webkit-scrollbar-track {
-  background: rgba(253, 246, 227, 0.5);
+  background: rgba(247, 247, 240, 0.5);
   border-radius: 4px;
 }
 
@@ -628,7 +628,7 @@
 .card-details.show {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
-  scrollbar-color: rgba(102, 102, 102, 0.6) rgba(253, 246, 227, 0.5);
+  scrollbar-color: rgba(102, 102, 102, 0.6) rgba(247, 247, 240, 0.5);
 }
 
 .card-details.show::-webkit-scrollbar {
@@ -636,7 +636,7 @@
 }
 
 .card-details.show::-webkit-scrollbar-track {
-  background: rgba(253, 246, 227, 0.3);
+  background: rgba(247, 247, 240, 0.3);
   border-radius: 3px;
 }
 

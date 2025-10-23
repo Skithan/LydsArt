@@ -8,7 +8,7 @@ const Contact = () => (
       Checkout my Instagram
     </h2>
 
-    <div style={{ width: '100%', maxWidth: '400px', minHeight: '480px', display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#fffbe6', borderRadius: '1rem', boxShadow: '0 2px 12px #0002', padding: '1rem' }}>
+    <div style={{ width: '100%', maxWidth: '400px', minHeight: '480px', display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#f7f7f0dd', borderRadius: '1rem', boxShadow: '0 2px 12px #0002', padding: '1rem' }}>
       <iframe
         src="https://www.instagram.com/lydiapatersonart/embed"
         title="Instagram Feed"
