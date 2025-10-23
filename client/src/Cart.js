@@ -101,27 +101,27 @@ const Cart = () => {
       alignItems: 'center', 
       minHeight: '70vh', 
       justifyContent: 'center', 
-      background: 'linear-gradient(90deg, #f7ecd0 0%, #f3e3b3 100%)', 
-      boxShadow: '0 4px 24px #f3e3b366', 
+      background: '#fdf6e3', 
+      boxShadow: '0 4px 24px rgba(0, 0, 0, 0.15)', 
       borderRadius: '1.2rem', 
       margin: '2rem auto', 
       maxWidth: '520px', 
       padding: '2.5rem 2rem', 
       fontFamily: 'Playfair Display, Inter, Segoe UI, Arial, serif', 
-      color: '#6d4c1b', 
+      color: '#333333', 
       letterSpacing: '2px'
     }}>
-      <h2 style={{ fontWeight: 700, fontSize: '2.2rem', marginBottom: '1.5rem', color: '#8c6a2a', textShadow: '0 2px 12px #f3e3b355, 0 1px 0 #fffbe6' }}>
+      <h2 style={{ fontWeight: 700, fontSize: '2.2rem', marginBottom: '1.5rem', color: '#333333', textShadow: '0 2px 12px rgba(0, 0, 0, 0.1), 0 1px 0 #ffffff' }}>
         Reserve & Checkout
       </h2>
       
    
       {card && (
-        <div style={{ background: '#fffbe6', borderRadius: '1rem', boxShadow: '0 2px 8px #f3e3b322', padding: '1.2rem', marginBottom: '2rem', width: '100%', maxWidth: '400px' }}>
-          <h3 style={{ color: '#6d4c1b', fontWeight: 600, fontSize: '1.3rem', marginBottom: '0.7rem' }}>{card.title}</h3>
+        <div style={{ background: '#f8f8f8', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', padding: '1.2rem', marginBottom: '2rem', width: '100%', maxWidth: '400px' }}>
+          <h3 style={{ color: '#333333', fontWeight: 600, fontSize: '1.3rem', marginBottom: '0.7rem' }}>{card.title}</h3>
           {Object.entries(card).map(([key, value]) => (
             key !== 'imgs' ? (
-              <div key={key} style={{ color: '#6d4c1b', fontSize: '1.1rem', marginBottom: '0.3rem' }}>
+              <div key={key} style={{ color: '#4a4a4a', fontSize: '1.1rem', marginBottom: '0.3rem' }}>
                 <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {String(value)}
               </div>
             ) : null
@@ -172,9 +172,11 @@ const Cart = () => {
               style={{ 
                 padding: '0.7rem 1rem', 
                 borderRadius: '1rem', 
-                border: '1px solid #e7d3a1', 
+                border: '1px solid #d0d0d0', 
                 fontSize: '1.1rem', 
-                fontFamily: 'Inter, Segoe UI, Arial, sans-serif' 
+                fontFamily: 'Inter, Segoe UI, Arial, sans-serif',
+                background: '#ffffff',
+                color: '#333333'
               }} 
             />
             
@@ -186,9 +188,11 @@ const Cart = () => {
               style={{ 
                 padding: '0.7rem 1rem', 
                 borderRadius: '1rem', 
-                border: '1px solid #e7d3a1', 
+                border: '1px solid #d0d0d0', 
                 fontSize: '1.1rem', 
-                fontFamily: 'Inter, Segoe UI, Arial, sans-serif' 
+                fontFamily: 'Inter, Segoe UI, Arial, sans-serif',
+                background: '#ffffff',
+                color: '#333333'
               }} 
             />
             
@@ -196,7 +200,7 @@ const Cart = () => {
               type="submit" 
               disabled={isProcessing}
               style={{ 
-                background: isProcessing ? '#a89976' : '#6d4c1b', 
+                background: isProcessing ? '#888888' : '#666666', 
                 color: '#fff', 
                 border: 'none', 
                 borderRadius: '1rem', 
@@ -204,7 +208,7 @@ const Cart = () => {
                 fontWeight: 600, 
                 fontSize: '1.2rem', 
                 cursor: isProcessing ? 'not-allowed' : 'pointer', 
-                boxShadow: '0 2px 8px #f3e3b322', 
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', 
                 transition: 'background 0.2s, color 0.2s', 
                 marginTop: '2rem' 
               }}
@@ -232,7 +236,7 @@ const Cart = () => {
         <div style={{ 
           textAlign: 'center',
           padding: '2rem',
-          background: '#f0f7e6',
+          background: '#f0f8f0',
           borderRadius: '1rem',
           maxWidth: '400px',
           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
@@ -240,10 +244,10 @@ const Cart = () => {
           <h3 style={{ color: '#2e7d32', marginBottom: '1rem' }}>
             Payment Successful!
           </h3>
-          <p style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>
+          <p style={{ fontSize: '1.1rem', marginBottom: '1rem', color: '#333333' }}>
             Thank you for your purchase! Your artwork reservation is complete.
           </p>
-          <p>
+          <p style={{ color: '#4a4a4a' }}>
             You will receive a confirmation email shortly.
           </p>
         </div>

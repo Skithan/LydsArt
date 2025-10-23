@@ -48,7 +48,7 @@ function Header() {
           >Thank You</button></li>
         </ul>
         {lastPressed && (
-          <div style={{ marginTop: '1rem', color: '#a67c3a', fontWeight: 600, fontSize: '1.1rem', textAlign: 'center' }}>
+          <div style={{ marginTop: '1rem', color: '#333333', fontWeight: 600, fontSize: '1.1rem', textAlign: 'center' }}>
             Last pressed: {lastPressed}
           </div>
         )}

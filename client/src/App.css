@@ -10,7 +10,7 @@
 }
 
 .card-detail-row {
-  color: #6d4c1b;
+  color: #4a4a4a;
   font-size: 1.2rem;
   margin: 0.3rem 0;
   text-align: center;
@@ -45,12 +45,12 @@
   width: 14px;
   height: 6px;
   border-radius: 3px;
-  background: #6d4c1b41;
+  background: rgba(150, 150, 150, 0.3);
   transition: background 0.3s, width 0.3s;
   display: inline-block;
 }
 .card-scrollbar-dot.active {
-  background: #6d4c1b;
+  background: #666666;
   width: 28px;
 }
 .arrow-btn-row {
@@ -74,7 +74,7 @@
 }
 
 .arrow-btn {
-  background: #6d4c1b;
+  background: #666666;
   color: #fff;
   border: none;
   font-size: 3rem;
@@ -83,7 +83,7 @@
   height: 3.5rem;
   margin: 0 1rem;
   cursor: pointer;
-  box-shadow: 0 2px 8px #f3e3b322;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -91,8 +91,8 @@
   z-index: 2;
 }
 .arrow-btn:hover {
-  background: #a67c3a;
-  color: #fffbe6;
+  background: #444444;
+  color: #ffffff;
   transform: scale(1.08);
 }
 
@@ -143,30 +143,15 @@
 
 .scroll-text {
   font-size: 2rem;
-  color: #6d4c1b;
+  color: #4a4a4a;
   text-align: center;
   font-family: 'Inter', 'Segoe UI', 'Arial', sans-serif;
   margin-top: 0.5rem;
 }
-.savannah-grass-container {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100vw;
-  height: 110px;
-  pointer-events: none;
-  z-index: -1;
-  display: block;
-}
 
-.savannah-grass-blade {
-  position: absolute;
-  bottom: 0;
-  border-radius: 0 0 12px 12px;
-  background: #b5a642;
-  box-shadow: 0 0 2px #b5a64244;
-  transition: height 0.3s, background 0.3s;
-  will-change: height, background;
+.footer {
+  /* Simple footer styling if needed */
+  margin-top: auto;
 }
 
 .App {
@@ -185,7 +170,7 @@
   min-width: 100vw;
   min-height: 100vh;
   z-index: 0;
-  background: radial-gradient(circle at 50% 50%, #fffbe6 0%, #f7ecd0 60%, #f3e3b3 80%, #f5e9c6 100%);
+  background: #fdf6e3;
 }
 
 .content {
@@ -200,24 +185,24 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: linear-gradient(90deg, #f7ecd0 0%, #f3e3b3 100%);
+  background: #fdf6e3;
   padding: 2.2rem 0 1.2rem 0;
   font-family: 'Playfair Display', 'Inter', 'Segoe UI', 'Arial', serif;
   font-size: 2.6rem;
-  color: #6d4c1b;
+  color: #4a4a4a;
   letter-spacing: 2.5px;
   position: relative;
   z-index: 10;
-  box-shadow: 0 4px 24px #f3e3b366;
-  border-bottom: 2px solid #e7d3a1;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  border-bottom: 2px solid #e8e0d6;
 }
 .header-title {
   font-weight: 700;
   font-size: 2.6rem;
   margin-bottom: 0.7rem;
   letter-spacing: 3px;
-  color: #8c6a2a;
-  text-shadow: 0 2px 12px #f3e3b355, 0 1px 0 #fffbe6;
+  color: #333333;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.1), 0 1px 0 #ffffff;
   font-family: 'Playfair Display', 'Inter', serif;
 }
 .header-nav {
@@ -231,31 +216,31 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: linear-gradient(90deg, #f7ecd0 0%, #f3e3b3 100%);
+  background: #fdf6e3;
   padding: 2.2rem 0 1.2rem 0;
   font-family: 'Playfair Display', 'Inter', 'Segoe UI', 'Arial', serif;
   font-size: 2.6rem;
-  color: #6d4c1b;
+  color: #4a4a4a;
   letter-spacing: 2.5px;
   position: relative;
   z-index: 10;
-  box-shadow: 0 4px 24px #f3e3b366;
-  border-bottom: 2px solid #e7d3a1;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  border-bottom: 2px solid #e8e0d6;
 }
 .thankyou-title {
   font-weight: 700;
   font-size: 2.6rem;
   margin-bottom: 0.7rem;
   letter-spacing: 3px;
-  color: #8c6a2a;
-  text-shadow: 0 2px 12px #f3e3b355, 0 1px 0 #fffbe6;
+  color: #333333;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.1), 0 1px 0 #ffffff;
   font-family: 'Playfair Display', 'Inter', serif;
 }
 .menu-toggle {
   display: none;
   background: none;
   border: none;
-  color: #8c6a2a;
+  color: #333333;
   font-size: 2.4rem;
   cursor: pointer;
   margin-bottom: 0.7rem;
@@ -276,7 +261,7 @@
   position: absolute;
   height: 3px;
   width: 100%;
-  background: #8c6a2a;
+  background: #333333;
   border-radius: 2px;
   opacity: 1;
   left: 0;
@@ -320,7 +305,7 @@
 .nav-link-btn {
   background: none;
   border: none;
-  color: #6d4c1b;
+  color: #4a4a4a;
   font-size: 1.35rem;
   font-family: 'Playfair Display', 'Inter', serif;
   font-weight: 600;
@@ -329,18 +314,18 @@
   border-radius: 1.2rem;
   transition: background 0.2s, color 0.2s, box-shadow 0.2s;
   cursor: pointer;
-  box-shadow: 0 2px 8px #f3e3b322;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 /* Stronger hover effect for header nav buttons */
 .nav-link-btn.header-hover {
-  background: linear-gradient(90deg, #f3e3b3 0%, #fffbe6 100%) !important;
-  color: #a67c3a !important;
-  box-shadow: 0 4px 16px #f3e3b355 !important;
+  background: #f0f0f0 !important;
+  color: #333333 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
 }
 .nav-link-btn:hover, .nav-link-btn:focus {
-  background: linear-gradient(90deg, #f3e3b3 0%, #fffbe6 100%);
-  color: #a67c3a;
-  box-shadow: 0 4px 16px #f3e3b355;
+  background: #f0f0f0;
+  color: #333333;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   outline: none;
 }
 @media (max-width: 700px) {
@@ -359,7 +344,7 @@
     display: none;
     flex-direction: column;
     gap: 1.5rem;
-    background: linear-gradient(90deg, #f7ecd0 0%, #f3e3b3 100%);
+    background: #fdf6e3;
     position: absolute;
     top: 100%;
   left: 50%;
@@ -378,9 +363,9 @@
 }
 
 .filter-dropdown-btn {
-  background: linear-gradient(90deg, #f7ecd0 0%, #f3e3b3 100%);
+  background: #fdf6e3;
   border: none;
-  color: #6d4c1b;
+  color: #4a4a4a;
   padding: 0.7rem 1.5rem;
   border-radius: 2rem;
   font-size: 1.1rem;
@@ -389,30 +374,33 @@
   display: flex;
   align-items: center;
   gap: 0.7rem;
-  box-shadow: 0 2px 8px #f3e3b322;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   min-width: 120px;
   transition: background 0.2s, color 0.2s, box-shadow 0.2s;
 }
 .filter-dropdown-btn:hover, .filter-dropdown-btn:focus {
-  background: linear-gradient(90deg, #f3e3b3 0%, #fffbe6 100%);
-  color: #a67c3a;
-  box-shadow: 0 4px 16px #f3e3b355;
+  background: #f0f0f0;
+  color: #333333;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   outline: none;
 }
 .filter-dropdown-menu {
-  background: linear-gradient(90deg, #f7ecd0 0%, #f3e3b3 100%);
+  background: #fdf6e3;
   border-radius: 1.2rem;
-  box-shadow: 0 4px 24px #f3e3b366;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
   padding: 1.2rem 1.5rem;
   min-width: 220px;
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
   z-index: 100;
+  position: absolute;
+  top: 110%;
+  left: 0;
 }
 .filter-dropdown-menu label {
-  color: #8c6a2a;
+  color: #333333;
   font-weight: 600;
   font-size: 1rem;
  font-family: 'Playfair Display', 'Inter', serif;
@@ -422,34 +410,54 @@
   padding: 0.5rem 1rem;
   border-radius: 1rem;
   font-size: 1rem;
-  background: #f3e3b3;
-  color: #6d4c1b;
+  background: #f0f0f0;
+  color: #4a4a4a;
   border: none;
   font-weight: 500;
   font-family: 'Playfair Display', 'Inter', serif;
-  box-shadow: 0 2px 8px #f3e3b322;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: background 0.2s, color 0.2s;
 }
 .filter-dropdown-menu select:focus {
-  background: #fffbe6;
-  color: #a67c3a;
+  background: #e8e8e8;
+  color: #333333;
   outline: none;
 }
 .filter-dropdown-menu button {
   margin-top: 0.5rem;
-  background: #f3e3b3;
-  color: #6d4c1b;
+  background: #666666;
+  color: #ffffff;
   border: none;
   border-radius: 1rem;
   padding: 0.5rem 1rem;
   font-weight: 600;
   font-family: 'Playfair Display', 'Inter', serif;
   cursor: pointer;
-  box-shadow: 0 2px 8px #f3e3b322;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: background 0.2s, color 0.2s;
 }
 .filter-dropdown-menu button:hover, .filter-dropdown-menu button:focus {
-  background: #fffbe6;
-  color: #a67c3a;
+  background: #444444;
+  color: #ffffff;
+  outline: none;
+}
+
+.filter-clear-btn {
+  margin-top: 0.5rem;
+  background: #666666;
+  color: #ffffff;
+  border: none;
+  border-radius: 1rem;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  font-family: 'Playfair Display', 'Inter', serif;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: background 0.2s, color 0.2s;
+}
+
+.filter-clear-btn:hover, .filter-clear-btn:focus {
+  background: #444444;
+  color: #ffffff;
   outline: none;
 }

@@ -54,7 +54,7 @@ const cards = [
 ];
 
 const filterIcon = (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6d4c1b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle' }}>
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#333333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle' }}>
     <line x1="4" y1="21" x2="4" y2="14" />
     <line x1="4" y1="10" x2="4" y2="3" />
     <line x1="12" y1="21" x2="12" y2="12" />
@@ -173,27 +173,6 @@ const Artwork = () => {
          <br></br>
           <button
             className="filter-dropdown-btn"
-            style={{
-              background: 'linear-gradient(90deg, #f7ecd0 0%, #f3e3b3 100%)',
-              border: 'none',
-              color: '#6d4c1b',
-              padding: '0.7rem 1.5rem',
-              borderRadius: '2rem',
-              fontSize: '1.1rem',
-              fontFamily: 'Inter, Segoe UI, Arial, sans-serif',
-              fontWeight: 600,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.7rem',
-              boxShadow: '0 2px 8px #f3e3b322',
-              cursor: 'pointer',
-              minWidth: '120px',
-              transition: 'background 0.2s, color 0.2s, box-shadow 0.2s',
-            }}
-            onMouseOver={e => e.currentTarget.style.background = 'linear-gradient(90deg, #f3e3b3 0%, #fffbe6 100%)'}
-            onMouseOut={e => e.currentTarget.style.background = 'linear-gradient(90deg, #f7ecd0 0%, #f3e3b3 100%)'}
-            onFocus={e => e.currentTarget.style.background = 'linear-gradient(90deg, #f3e3b3 0%, #fffbe6 100%)'}
-            onBlur={e => e.currentTarget.style.background = 'linear-gradient(90deg, #f7ecd0 0%, #f3e3b3 100%)'}
             onClick={() => setFilterOpen(open => !open)}
             aria-haspopup="true"
             aria-expanded={filterOpen}
@@ -204,47 +183,31 @@ const Artwork = () => {
           {filterOpen && (
             <div
               className="filter-dropdown-menu"
-              style={{
-                position: 'absolute',
-                top: '110%',
-                left: 0,
-                background: 'linear-gradient(90deg, #f7ecd0 0%, #f3e3b3 100%)',
-                borderRadius: '1.2rem',
-                boxShadow: '0 2px 16px #0008',
-                padding: '1.2rem 1.5rem',
-                zIndex: 100,
-                minWidth: '220px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '1.2rem',
-              }}
             >
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
-                <label htmlFor="medium-select" style={{ color: '#6d4c1b', fontWeight: 500, fontSize: '1rem' }}>Medium</label>
+                <label htmlFor="medium-select">Medium</label>
                 <select
                   id="medium-select"
                   value={selectedMedium}
                   onChange={e => setSelectedMedium(e.target.value)}
-                  style={{ padding: '0.5rem 1rem', borderRadius: '1rem', fontSize: '1rem', background: '#6d4c1b', color: '#fff', border: 'none', fontWeight: 500 }}
                 >
                   <option value="">All</option>
                   {mediums.map(m => <option key={m} value={m}>{m}</option>)}
                 </select>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
-                <label htmlFor="size-select" style={{ color: '#6d4c1b', fontWeight: 500, fontSize: '1rem' }}>Size</label>
+                <label htmlFor="size-select">Size</label>
                 <select
                   id="size-select"
                   value={selectedSize}
                   onChange={e => setSelectedSize(e.target.value)}
-                  style={{ padding: '0.5rem 1rem', borderRadius: '1rem', fontSize: '1rem', background: '#6d4c1b', color: '#fff', border: 'none', fontWeight: 500 }}
                 >
                   <option value="">All</option>
                   {sizes.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
               <button
-                style={{ marginTop: '0.5rem', background: '#6d4c1b', color: '#fff', border: 'none', borderRadius: '1rem', padding: '0.5rem 1rem', fontWeight: 500, cursor: 'pointer' }}
+                className="filter-clear-btn"
                 onClick={() => { setSelectedMedium(''); setSelectedSize(''); setFilterOpen(false); }}
               >Clear</button>
             </div>
@@ -275,7 +238,7 @@ const Artwork = () => {
           } : {}}
         >
           {filteredCards.length === 0 ? (
-            <div style={{ color: '#fff', fontSize: '1.3rem', textAlign: 'center', margin: '2rem' }}>No artwork found for this filter.</div>
+            <div style={{ color: '#333333', fontSize: '1.3rem', textAlign: 'center', margin: '2rem' }}>No artwork found for this filter.</div>
           ) : filteredCards[current].imgs ? (
             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
               <button 
@@ -285,7 +248,7 @@ const Artwork = () => {
                 style={{
                   background: 'none',
                   border: 'none',
-                  color: '#6d4c1b',
+                  color: '#333333',
                   cursor: imgIdx === 0 ? 'not-allowed' : 'pointer',
                   fontSize: '2.5rem',
                   opacity: imgIdx === 0 ? 0.4 : 1,
@@ -309,7 +272,7 @@ const Artwork = () => {
                   objectFit: 'contain',
                   borderRadius: '1.2rem',
                   boxShadow: '0 4px 32px #0008',
-                  background: '#f7ecd0',
+                  background: '#fdf6e3',
                   aspectRatio: '4/3',
                   display: 'block',
                 }}
@@ -321,7 +284,7 @@ const Artwork = () => {
                 style={{
                   background: 'none',
                   border: 'none',
-                  color: '#6d4c1b',
+                  color: '#333333',
                   cursor: imgIdx === filteredCards[current].imgs.length - 1 ? 'not-allowed' : 'pointer',
                   fontSize: '2.5rem',
                   opacity: imgIdx === filteredCards[current].imgs.length - 1 ? 0.4 : 1,
@@ -347,7 +310,7 @@ const Artwork = () => {
                 objectFit: 'contain',
                 borderRadius: '1.2rem',
                 boxShadow: '0 4px 32px #0008',
-                background: '#f7ecd0',
+                background: '#fdf6e3',
                 aspectRatio: '4/3',
                 display: 'block',
               }}
@@ -356,7 +319,7 @@ const Artwork = () => {
           <button 
             className="click-indicator" 
             onClick={handleExpand}
-            style={{ background: 'none', border: 'none', color: '#6d4c1b', cursor: 'pointer', font: 'inherit', padding: 0 }}
+            style={{ background: 'none', border: 'none', color: '#333333', cursor: 'pointer', font: 'inherit', padding: 0 }}
             aria-pressed={expanded}
           >
             {expanded ? 'click to expand' : 'click for details'}
