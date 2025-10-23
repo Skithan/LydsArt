@@ -132,22 +132,38 @@ const Artwork = () => {
     }
     
     // Single card view touch handling
-    // Horizontal swipe
-    if (touchStartX.current !== null && touchEndX.current !== null) {
-      const diffX = touchEndX.current - touchStartX.current;
-      if (diffX > 125) {
-        goLeft();
-      } else if (diffX < -125) {
-        goRight();
+    // When card is expanded, prioritize vertical scrolling over expand/collapse gestures
+    if (expanded) {
+      // Only handle horizontal swipes for navigation when expanded
+      if (touchStartX.current !== null && touchEndX.current !== null) {
+        const diffX = touchEndX.current - touchStartX.current;
+        const diffY = Math.abs((touchEndY.current || 0) - (touchStartY.current || 0));
+        // Only respond to horizontal swipes if they're more pronounced than vertical movement
+        if (Math.abs(diffX) > 125 && Math.abs(diffX) > diffY * 2) {
+          if (diffX > 125) {
+            goLeft();
+          } else if (diffX < -125) {
+            goRight();
+          }
+        }
       }
-    }
-    // Vertical swipe
-    if (touchStartY.current !== null && touchEndY.current !== null) {
-      const diffY = touchEndY.current - touchStartY.current;
-      if (!expanded && diffY < -125) {
-        setExpanded(true); // swipe up to expand
-      } else if (expanded && diffY > 125) {
-        setExpanded(false); // swipe down to collapse
+    } else {
+      // When not expanded, handle both horizontal and vertical swipes
+      // Horizontal swipe
+      if (touchStartX.current !== null && touchEndX.current !== null) {
+        const diffX = touchEndX.current - touchStartX.current;
+        if (diffX > 125) {
+          goLeft();
+        } else if (diffX < -125) {
+          goRight();
+        }
+      }
+      // Vertical swipe
+      if (touchStartY.current !== null && touchEndY.current !== null) {
+        const diffY = touchEndY.current - touchStartY.current;
+        if (diffY < -125) {
+          setExpanded(true); // swipe up to expand
+        }
       }
     }
     touchStartX.current = null;
@@ -184,7 +200,7 @@ const Artwork = () => {
   const handleExpand = () => setExpanded((prev) => !prev);
 
   return (
-    <section id="artwork" style={{ marginTop: '3rem' }}>
+    <section id="artwork" style={{ marginTop: '1rem' }}>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '2rem' }}>
         <div style={{ position: 'relative', marginBottom: '1.5rem', width: 'fit-content', display: 'flex', gap: '1rem' }}>
          <br></br>
@@ -278,12 +294,13 @@ const Artwork = () => {
         <div 
           className="artwork-grid-container" 
           style={{
-            height: '70vh',
-            overflowY: 'auto',
+            height: '75vh',
+            maxHeight: 'calc(100vh - 200px)',
+            overflowY: 'scroll',
             overflowX: 'hidden',
             WebkitOverflowScrolling: 'touch',
             scrollBehavior: 'smooth',
-            padding: '0 2rem',
+            padding: '0 2rem 4rem 2rem',
             maxWidth: '1200px',
             margin: '0 auto'
           }}
@@ -294,7 +311,7 @@ const Artwork = () => {
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
             gap: '2rem',
-            paddingBottom: '2rem'
+            paddingBottom: '8rem'
           }}>
           {filteredCards.length === 0 ? (
             <div style={{ gridColumn: '1 / -1', color: '#333333', fontSize: '1.3rem', textAlign: 'center', margin: '2rem' }}>
@@ -358,29 +375,41 @@ const Artwork = () => {
         </div>
       ) : (
         // Single Card View
-        <div className="arrow-scroll-wrapper">
-          <div
-            className={`scroll-card single${expanded ? ' expanded' : ''}`}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-            style={!expanded ? {
-              width: '420px',
-              maxWidth: '90vw',
-              minHeight: '420px',
-              height: '75vh',
-              boxSizing: 'border-box',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: 'none',
-              boxShadow: 'none',
-              borderRadius: '2rem',
-              marginBottom: '0',
-              padding: '0',
-              transition: 'all 0.7s cubic-bezier(.77,0,.18,1)',
-            } : {}}
-          >
+        <div 
+          className="single-card-scroll-container"
+          style={{
+            height: '75vh',
+            maxHeight: 'calc(100vh - 200px)',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            WebkitOverflowScrolling: 'touch',
+            scrollBehavior: 'smooth',
+            paddingBottom: '4rem'
+          }}
+        >
+          <div className="arrow-scroll-wrapper">
+            <div
+              className={`scroll-card single${expanded ? ' expanded' : ''}`}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              style={!expanded ? {
+                width: '420px',
+                maxWidth: '90vw',
+                minHeight: '420px',
+                height: 'auto',
+                boxSizing: 'border-box',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'none',
+                boxShadow: 'none',
+                borderRadius: '2rem',
+                marginBottom: '8rem',
+                padding: '0',
+                transition: 'all 0.7s cubic-bezier(.77,0,.18,1)',
+              } : {}}
+            >
           {filteredCards.length === 0 ? (
             <div style={{ color: '#333333', fontSize: '1.3rem', textAlign: 'center', margin: '2rem' }}>No artwork found for this filter.</div>
           ) : filteredCards[current].imgs ? (
@@ -485,9 +514,11 @@ const Artwork = () => {
               maxHeight: expanded ? '350px' : '0',
               opacity: expanded ? 1 : 0,
               transition: 'all 0.7s cubic-bezier(.77,0,.18,1)',
-              overflow: 'hidden',
+              overflow: expanded ? 'auto' : 'hidden',
               marginTop: expanded ? '2rem' : '0',
               marginBottom: expanded ? '5.5rem' : '0',
+              WebkitOverflowScrolling: 'touch',
+              scrollBehavior: 'smooth'
             }}
           >
             {filteredCards.length > 0 && filteredCards[current].text !== 'N/A' ? <div className="card-detail-row">{filteredCards[current].text}</div> : null}
@@ -515,10 +546,9 @@ const Artwork = () => {
           </div>
         </div>
         </div>
+        </div>
       )}
-</section>
-
-  );
+    </section>  );
 };
 
 export default Artwork;

@@ -510,7 +510,15 @@
 
 /* Artwork Grid Scrolling Styles */
 .artwork-grid-container {
-  scroll-snap-type: y proximity;
+  scroll-snap-type: none;
+  position: relative;
+}
+
+.artwork-grid-container::after {
+  content: '';
+  display: block;
+  height: 20vh;
+  width: 100%;
 }
 
 .artwork-grid-container::-webkit-scrollbar {
@@ -532,7 +540,8 @@
 }
 
 .grid-card {
-  scroll-snap-align: start;
+  scroll-snap-align: none;
+  margin-bottom: 1rem;
 }
 
 /* Responsive grid adjustments */
@@ -583,4 +592,59 @@
   display: block;
   height: 50vh;
   width: 100%;
+}
+
+/* Single Card Scroll Container Styles */
+.single-card-scroll-container {
+  position: relative;
+}
+
+.single-card-scroll-container::after {
+  content: '';
+  display: block;
+  height: 30vh;
+  width: 100%;
+}
+
+.single-card-scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.single-card-scroll-container::-webkit-scrollbar-track {
+  background: rgba(253, 246, 227, 0.5);
+  border-radius: 4px;
+}
+
+.single-card-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(102, 102, 102, 0.6);
+  border-radius: 4px;
+}
+
+.single-card-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 102, 102, 0.8);
+}
+
+/* Expanded Card Details Scrolling Styles */
+.card-details.show {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(102, 102, 102, 0.6) rgba(253, 246, 227, 0.5);
+}
+
+.card-details.show::-webkit-scrollbar {
+  width: 6px;
+}
+
+.card-details.show::-webkit-scrollbar-track {
+  background: rgba(253, 246, 227, 0.3);
+  border-radius: 3px;
+}
+
+.card-details.show::-webkit-scrollbar-thumb {
+  background: rgba(102, 102, 102, 0.5);
+  border-radius: 3px;
+}
+
+.card-details.show::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 102, 102, 0.7);
 }
