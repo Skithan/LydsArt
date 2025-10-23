@@ -47,11 +47,11 @@ function Header() {
             onClick={() => handleClick('/success', 'Thank You')}
           >Thank You</button></li>
         </ul>
-        {lastPressed && (
+        {/* {lastPressed && (
           <div style={{ marginTop: '1rem', color: '#333333', fontWeight: 600, fontSize: '1.1rem', textAlign: 'center' }}>
             Last pressed: {lastPressed}
           </div>
-        )}
+        )} */}
       </nav>
     </header>
   );

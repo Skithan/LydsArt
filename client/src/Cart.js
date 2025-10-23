@@ -7,7 +7,6 @@ import {
 } from '@stripe/react-stripe-js';
 import './App.css';
 
-// pk_live_51SDjlOCEuCzvJ0oaiT8gqxhMZLbDwQyAo5gJIPCD6WcHxvhVA2i7GXYKzdzWMlbqrne3uyxEv5cv3SuuCXDq3Ea200wvEI8HnU
 
 const stripePromise = loadStripe("pk_test_51SD4ntAIRFwBRpKYibrGELI4OvWSI0wN54CmUcJZ8Q5MfYOw2G06PByDev26MsemQSlEmzLicN3z3UQoeAhnWWww00UMJtCrGO");
 
@@ -99,12 +98,12 @@ const Cart = () => {
       display: 'flex', 
       flexDirection: 'column', 
       alignItems: 'center', 
-      minHeight: '70vh', 
-      justifyContent: 'center', 
+      minHeight: 'auto', 
+      justifyContent: 'flex-start', 
       background: '#fdf6e3', 
       boxShadow: '0 4px 24px rgba(0, 0, 0, 0.15)', 
       borderRadius: '1.2rem', 
-      margin: '2rem auto', 
+      margin: '2rem auto 4rem auto', 
       maxWidth: '520px', 
       padding: '2.5rem 2rem', 
       fontFamily: 'Playfair Display, Inter, Segoe UI, Arial, serif', 

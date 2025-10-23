@@ -74,6 +74,7 @@ const Artwork = () => {
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedMedium, setSelectedMedium] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
+  const [gridView, setGridView] = useState(false);
   const cardCount = cards.length;
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
@@ -108,6 +109,7 @@ const Artwork = () => {
     touchStartX.current = e.changedTouches[0].screenX;
     touchStartY.current = e.changedTouches[0].screenY;
   };
+  
   const handleTouchEnd = (e) => {
     if (isZooming.current) {
       isZooming.current = false;
@@ -115,6 +117,18 @@ const Artwork = () => {
     }
     touchEndX.current = e.changedTouches[0].screenX;
     touchEndY.current = e.changedTouches[0].screenY;
+    
+    // In grid view, allow native scrolling - only handle swipes for navigation
+    if (gridView) {
+      // Allow native vertical scrolling in grid view
+      touchStartX.current = null;
+      touchEndX.current = null;
+      touchStartY.current = null;
+      touchEndY.current = null;
+      return;
+    }
+    
+    // Single card view touch handling
     // Horizontal swipe
     if (touchStartX.current !== null && touchEndX.current !== null) {
       const diffX = touchEndX.current - touchStartX.current;
@@ -167,9 +181,9 @@ const Artwork = () => {
   const handleExpand = () => setExpanded((prev) => !prev);
 
   return (
-    <section id="artwork">
+    <section id="artwork" style={{ marginTop: '3rem' }}>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '2rem' }}>
-        <div style={{ position: 'relative', marginBottom: '1.5rem', width: 'fit-content' }}>
+        <div style={{ position: 'relative', marginBottom: '1.5rem', width: 'fit-content', display: 'flex', gap: '1rem' }}>
          <br></br>
           <button
             className="filter-dropdown-btn"
@@ -179,6 +193,28 @@ const Artwork = () => {
           >
             {filterIcon}
             <span>Filter</span>
+          </button>
+          
+          <button
+            className="expand-toggle-btn"
+            onClick={() => setGridView(prev => !prev)}
+            aria-pressed={gridView}
+          >
+            {gridView ? (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#333333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle' }}>
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <line x1="9" y1="9" x2="15" y2="15"/>
+                <line x1="15" y1="9" x2="9" y2="15"/>
+              </svg>
+            ) : (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#333333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle' }}>
+                <rect x="3" y="3" width="7" height="7"/>
+                <rect x="14" y="3" width="7" height="7"/>
+                <rect x="14" y="14" width="7" height="7"/>
+                <rect x="3" y="14" width="7" height="7"/>
+              </svg>
+            )}
+            <span>{gridView ? 'Single' : 'Grid'}</span>
           </button>
           {filterOpen && (
             <div
@@ -214,29 +250,115 @@ const Artwork = () => {
           )}
         </div>
       </div>
-      <div className="arrow-scroll-wrapper">
-        <div
-          className={`scroll-card single${expanded ? ' expanded' : ''}`}
+      
+      {gridView ? (
+        // Grid View
+        <div 
+          className="artwork-grid-container" 
+          style={{
+            height: '70vh',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            WebkitOverflowScrolling: 'touch',
+            scrollBehavior: 'smooth',
+            padding: '0 2rem',
+            maxWidth: '1200px',
+            margin: '0 auto'
+          }}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
-          style={!expanded ? {
-            width: '420px',
-            maxWidth: '90vw',
-            minHeight: '420px',
-            height: '75vh',
-            boxSizing: 'border-box',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'none',
-            boxShadow: 'none',
-            borderRadius: '2rem',
-            marginBottom: '0',
-            padding: '0',
-            transition: 'all 0.7s cubic-bezier(.77,0,.18,1)',
-          } : {}}
         >
+          <div className="artwork-grid" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '2rem',
+            paddingBottom: '2rem'
+          }}>
+          {filteredCards.length === 0 ? (
+            <div style={{ gridColumn: '1 / -1', color: '#333333', fontSize: '1.3rem', textAlign: 'center', margin: '2rem' }}>
+              No artwork found for this filter.
+            </div>
+          ) : (
+            filteredCards.map((card, index) => (
+              <div key={index} className="grid-card" style={{
+                background: '#fdf6e3',
+                borderRadius: '1rem',
+                padding: '1.5rem',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                cursor: 'pointer'
+              }}
+              onClick={() => {
+                setCurrent(index);
+                setGridView(false);
+                setImgIdx(0);
+              }}
+              onMouseOver={e => {
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.15)';
+              }}
+              onMouseOut={e => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.1)';
+              }}
+              >
+                <img
+                  src={card.imgs ? card.imgs[0] : card.img}
+                  alt={card.title}
+                  style={{
+                    width: '100%',
+                    height: '200px',
+                    objectFit: 'cover',
+                    borderRadius: '0.5rem',
+                    marginBottom: '1rem'
+                  }}
+                />
+                <h3 style={{ color: '#333333', fontSize: '1.2rem', marginBottom: '0.5rem', fontWeight: 600 }}>
+                  {card.title}
+                </h3>
+                <p style={{ color: '#4a4a4a', fontSize: '0.9rem', marginBottom: '0.3rem' }}>
+                  <strong>Medium:</strong> {card.medium}
+                </p>
+                {card.size !== 'N/A' && (
+                  <p style={{ color: '#4a4a4a', fontSize: '0.9rem', marginBottom: '0.3rem' }}>
+                    <strong>Size:</strong> {card.size}
+                  </p>
+                )}
+                {card.price !== 'N/A' && !card.sold && (
+                  <p style={{ color: '#666666', fontSize: '1rem', fontWeight: 600 }}>
+                    {card.price}
+                  </p>
+                )}
+              </div>
+            ))
+          )}
+          </div>
+        </div>
+      ) : (
+        // Single Card View
+        <div className="arrow-scroll-wrapper">
+          <div
+            className={`scroll-card single${expanded ? ' expanded' : ''}`}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            style={!expanded ? {
+              width: '420px',
+              maxWidth: '90vw',
+              minHeight: '420px',
+              height: '75vh',
+              boxSizing: 'border-box',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'none',
+              boxShadow: 'none',
+              borderRadius: '2rem',
+              marginBottom: '0',
+              padding: '0',
+              transition: 'all 0.7s cubic-bezier(.77,0,.18,1)',
+            } : {}}
+          >
           {filteredCards.length === 0 ? (
             <div style={{ color: '#333333', fontSize: '1.3rem', textAlign: 'center', margin: '2rem' }}>No artwork found for this filter.</div>
           ) : filteredCards[current].imgs ? (
@@ -370,8 +492,10 @@ const Artwork = () => {
             ))}
           </div>
         </div>
-      </div>
-    </section>
+        </div>
+      )}
+</section>
+
   );
 };
 
