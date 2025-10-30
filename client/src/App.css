@@ -362,7 +362,7 @@
 }
 
 .filter-dropdown-btn {
-  background: #ffffffdd;
+  background: #ffffff;
   border: none;
   color: #4a4a4a;
   padding: 0.7rem 1.5rem;
@@ -379,13 +379,13 @@
   transition: background 0.2s, color 0.2s, box-shadow 0.2s;
 }
 .filter-dropdown-btn:hover, .filter-dropdown-btn:focus {
-  background: #f0f0f0;
+  background: #ffffff;
   color: #333333;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   outline: none;
 }
 .filter-dropdown-menu {
-  background: #ffffffdd;
+  background: #ffffff;
   border-radius: 1.2rem;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
   padding: 1.2rem 1.5rem;
