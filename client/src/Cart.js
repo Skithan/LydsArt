@@ -34,14 +34,13 @@ const Cart = () => {
     }
     
     // Prepare payment data
-    const price = card && parseInt(card.price.replace(/[^\d]/g, '')); 
-    
     const line_items = [{
       price_data: {
         currency: 'cad',
         product_data: {
           name: card.title,
-          description: card.medium
+          description: card.medium,
+          price: parseInt(card.price.replace(/[^\d]/g, ''))
         },
       },
       quantity: 1,
