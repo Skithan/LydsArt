@@ -40,8 +40,8 @@ const Cart = () => {
         product_data: {
           name: card.title,
           description: card.medium,
-          price: parseInt(card.price.replace(/[^\d]/g, ''))
         },
+        unit_amount: parseInt(card.price.replace(/[^\d]/g, ''))
       },
       quantity: 1,
     }];
