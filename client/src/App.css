@@ -305,7 +305,7 @@
 .nav-link-btn {
   background: none;
   border: none;
-  color: #4a4a4a;
+  color: #4a4a4a00;
   font-size: 1.35rem;
   font-family: 'Playfair Display', 'Inter', serif;
   font-weight: 600;
@@ -318,7 +318,7 @@
 }
 /* Stronger hover effect for header nav buttons */
 .nav-link-btn.header-hover {
-  background: #f0f0f0 !important;
+  background: #ffffff !important;
   color: #333333 !important;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
 }
@@ -344,7 +344,7 @@
     display: none;
     flex-direction: column;
     gap: 1.5rem;
-    background: #ffffffdd;
+    background: #ffffff;
     position: absolute;
     top: 100%;
   left: 50%;

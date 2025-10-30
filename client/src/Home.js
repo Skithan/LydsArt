@@ -92,6 +92,7 @@ const Home = () => {
         >
           Browse
         </button>
+        <br></br>
       </div>
     </section>
     </div>
