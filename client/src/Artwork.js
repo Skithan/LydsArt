@@ -2,57 +2,22 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
 
-function formatDate(dateStr) {
-  if (!dateStr || dateStr === 'N/A') return '';
-  if (dateStr.length < 8) return dateStr;
-  const year = dateStr.slice(0, 4);
-  const month = dateStr.slice(4, 6);
-  const day = dateStr.slice(6, 8);
-  const dateObj = new Date(`${year}-${month}-${day}`);
-  if (isNaN(dateObj)) return dateStr;
-  return dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-}
-
+//artwork data 
 const cards = [
-  { img: process.env.PUBLIC_URL + '/AnUptownPerspective2.jpeg',title: 'An Uptown Perspective', medium:'Acrylic', text: 'N/A',size: '18"x24"',price: '$1' , date: '20250611', sold: false},
-  { img: process.env.PUBLIC_URL + '/ComfortInChange.jpeg', title: 'Comfort In Change', text: 'N/A', medium: 'Oil on Stetched Canvas', size: '24"x30"', price: '$1', date: '20240527', sold: false},
-  { img: process.env.PUBLIC_URL + '/EndOfSummerFlowers.jpeg', title: 'End Of Summer Flowers', text: 'N/A', medium: 'Acrylic on Panel', size: '18"x24"', price: '$1', date: '20250810', sold: false},
-  { img: process.env.PUBLIC_URL + '/FalseLight.jpeg', title: 'False Light', text: 'N/A', medium: 'Acrylic on Canvas', size: '18"x24"', price: '$1', date: '20250822', sold: false},
-  { img: process.env.PUBLIC_URL + '/FamiliarFaces.jpeg', title: 'Familiar Faces', text: 'N/A', medium: 'Acrylic on Canvas', size: '18"x24"', price: 'N/A', date: '20250817', sold: false},
-  { imgs: [
-      process.env.PUBLIC_URL + '/SillyHeart1.jpeg',
-      process.env.PUBLIC_URL + '/SillyHeart2.jpeg',
-      process.env.PUBLIC_URL + '/SillyHeart3.jpeg',
-      process.env.PUBLIC_URL + '/SillyHeart4.jpeg',
-    ],
-    title: 'Silly Hearts',
-    text: 'N/A',
-    medium: 'Wood & Mixed Media',
-    size: '1"x6"',
-  price: '$1',
-    date: '20230129',
-    sold: false
-  },
-  { imgs: [
-      process.env.PUBLIC_URL + '/HabitualRoutines1.jpeg',
-      process.env.PUBLIC_URL + '/HabitualRoutines2.jpeg',
-  ],
-    title: 'Habitual Routines',
-    text: 'N/A',
-    medium: 'Wood & Mixed Media',
-    size: '3\'x4\'x2\'',
-  price: '$1',
-    date: '20231210',
-    sold: false
-  },
-  { img: process.env.PUBLIC_URL + '/KingSquareAtNight.jpeg', title: 'King Square At Night', text: 'N/A', medium: 'Oil on Canvas', size: '18"x24"', price: '$1',date: '20220502', sold: false},
-  { img: process.env.PUBLIC_URL + '/NoDogsOnTheCouch.jpeg', title: 'No Dogs On The Couch', text: 'N/A', medium: 'Oil on Canvas', size: '18"x24"', price: 'N/A',date: '20221201', sold: false},
-  { img: process.env.PUBLIC_URL + '/SharingATemporaryHome.jpeg', title: 'Sharing A Temporary Home', text: 'N/A', medium: 'Acrylic on Canvas', size: '3\'x5\'', price: '$1',date: '20231103', sold: false},
-  { img: process.env.PUBLIC_URL + '/SimonAndGarfunkelKids.jpeg', title: 'Simon And Garfunkel Kids', text: 'N/A', medium: 'Acrylic on Canvas', size: 'N/A', price: 'N/A',date: '20240822', sold: false},
-  { img: process.env.PUBLIC_URL + '/YellowFrog.jpeg', title: 'Yellow Frog', text: 'N/A', medium: 'Oil on Canvas', size: 'N/A', price: 'N/A',date: '20240219', sold: false},
-  { img: process.env.PUBLIC_URL + '/BlueFrog.jpeg', title: 'Blue Frog', text: 'N/A', medium: 'Oil on Canvas', size: 'N/A', price: '$2',date: '20240219', sold: false},
+  { img: process.env.PUBLIC_URL + '/AnUptownPerspective2.jpeg',title: 'An Uptown Perspective', medium:'Acrylic on Canvas',size: '18"x24"',price: 'N/A' , date: '2025', sold: true},
+  { img: process.env.PUBLIC_URL + '/ComfortInChange.jpeg', title: 'Comfort In Change',  medium: 'Oil on Stetched Canvas', size: '24"x30"', price: 'N/A', date: '2024', sold: true},
+  { img: process.env.PUBLIC_URL + '/EndOfSummerFlowers.jpeg', title: 'End Of Summer Flowers',  medium: 'Acrylic on Wood Panel', size: '18"x24"', price: '$400', date: '2025', sold: false},
+  { img: process.env.PUBLIC_URL + '/FalseLight.jpeg', title: 'False Light', medium: 'Acrylic on Canvas', size: '18"x24"', price: 'N/A', date: '2025', sold: true},
+  { img: process.env.PUBLIC_URL + '/FamiliarFaces.jpeg', title: 'Familiar Faces', medium: 'Acrylic on Canvas', size: '18"x24"', price: 'N/A', date: '2025', sold: true},
+  { img: process.env.PUBLIC_URL + '/KingSquareAtNight.jpeg', title: 'King Square At Night', medium: 'Oil on Canvas', size: '18"x24"', price: 'N/A',date: '2022', sold: true},
+  { img: process.env.PUBLIC_URL + '/NoDogsOnTheCouch.jpeg', title: 'No Dogs On The Couch',  medium: 'Oil on Canvas', size: '18"x24"', price: 'N/A',date: '2022', sold: true},
+  { img: process.env.PUBLIC_URL + '/SharingATemporaryHome.jpeg', title: 'Sharing A Temporary Home',  medium: 'Acrylic on Canvas', size: '48"x60"', price: '$5000',date: '2023', sold: false},
+  { img: process.env.PUBLIC_URL + '/SimonAndGarfunkelKids.jpeg', title: 'Simon And Garfunkel Kids',  medium: 'Acrylic on Canvas', size: 'N/A', price: 'N/A',date: '2024', sold: true},
+  { img: process.env.PUBLIC_URL + '/YellowFrog.jpeg', title: 'Yellow Frog',  medium: 'Oil on Canvas', size: '24"x30"', price: 'N/A',date: '2024', sold: true},
+  { img: process.env.PUBLIC_URL + '/BlueFrog.jpeg', title: 'Blue Frog',  medium: 'Oil on Canvas', size: '24"x30"', price: 'N/A',date: '2024', sold: true},
 ];
 
+//fiter button image svg
 const filterIcon = (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#333333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle' }}>
     <line x1="4" y1="21" x2="4" y2="14" />
@@ -74,7 +39,7 @@ const Artwork = () => {
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedMedium, setSelectedMedium] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
-  const [selectedPrice, setSelectedPrice] = useState('');
+  const [selectedSoldStatus, setSelectedSoldStatus] = useState('');
   const [gridView, setGridView] = useState(true);
   const cardCount = cards.length;
   const touchStartX = useRef(null);
@@ -86,25 +51,65 @@ const Artwork = () => {
 
   const navigate = useNavigate();
 
-  // Get unique values for Medium, Size, and Price
-  const mediums = Array.from(new Set(cards.map(card => card.medium).filter(v => v && v !== 'N/A')));
-  const sizes = Array.from(new Set(cards.map(card => card.size).filter(v => v && v !== 'N/A')));
-  const prices = Array.from(new Set(cards.map(card => card.price).filter(v => v && v !== 'N/A'))).sort();
+  // Get base filtered cards for determining available filter options
+  const getBaseFilteredCards = () => {
+    return cards.filter(card => {
+      const soldMatch = selectedSoldStatus === '' ? true : 
+                       selectedSoldStatus === 'sold' ? card.sold === true : 
+                       card.sold === false;
+      return soldMatch;
+    });
+  };
 
-  // Filter cards by selected medium, size, and price
+  // Get available mediums based on current size and sold status filters
+  const getAvailableMediums = () => {
+    const baseCards = getBaseFilteredCards();
+    const relevantCards = selectedSize ? 
+      baseCards.filter(card => card.size === selectedSize) : 
+      baseCards;
+    return Array.from(new Set(relevantCards.map(card => card.medium).filter(v => v && v !== 'N/A')));
+  };
+
+  // Get available sizes based on current medium and sold status filters
+  const getAvailableSizes = () => {
+    const baseCards = getBaseFilteredCards();
+    const relevantCards = selectedMedium ? 
+      baseCards.filter(card => card.medium === selectedMedium) : 
+      baseCards;
+    return Array.from(new Set(relevantCards.map(card => card.size).filter(v => v && v !== 'N/A')));
+  };
+
+  // Get dynamic filter options
+  const availableMediums = getAvailableMediums();
+  const availableSizes = getAvailableSizes();
+
+  // Filter cards by selected medium, size, and sold status
   const filteredCards = cards.filter(card => {
     const mediumMatch = selectedMedium ? card.medium === selectedMedium : true;
     const sizeMatch = selectedSize ? card.size === selectedSize : true;
-    const priceMatch = selectedPrice ? card.price === selectedPrice : true;
-    return mediumMatch && sizeMatch && priceMatch;
+    const soldMatch = selectedSoldStatus === '' ? true : 
+                     selectedSoldStatus === 'sold' ? card.sold === true : 
+                     card.sold === false;
+    return mediumMatch && sizeMatch && soldMatch;
   });
 
   React.useEffect(() => {
     setCurrent(0);
     setImgIdx(0);
-  }, [selectedMedium, selectedSize, selectedPrice]);
+  }, [selectedMedium, selectedSize, selectedSoldStatus]);
+
+  // Auto-clear invalid filter selections when other filters change
+  React.useEffect(() => {
+    if (selectedMedium && !availableMediums.includes(selectedMedium)) {
+      setSelectedMedium('');
+    }
+    if (selectedSize && !availableSizes.includes(selectedSize)) {
+      setSelectedSize('');
+    }
+  }, [selectedMedium, selectedSize, selectedSoldStatus, availableMediums, availableSizes]);
 
   // Handle clicking outside the filter dropdown to close it
+  //uses the below swiping detection 
   React.useEffect(() => {
     const handleClickOutside = (event) => {
       if (filterRef.current && !filterRef.current.contains(event.target)) {
@@ -123,6 +128,8 @@ const Artwork = () => {
     };
   }, [filterOpen]);
 
+
+  //swiping detection 
   const handleTouchStart = (e) => {
     if (e.touches && e.touches.length > 1) {
       isZooming.current = true;
@@ -132,7 +139,7 @@ const Artwork = () => {
     touchStartX.current = e.changedTouches[0].screenX;
     touchStartY.current = e.changedTouches[0].screenY;
   };
-  
+  //swiping detection 
   const handleTouchEnd = (e) => {
     if (isZooming.current) {
       isZooming.current = false;
@@ -191,7 +198,19 @@ const Artwork = () => {
     touchStartY.current = null;
     touchEndY.current = null;
   };
+  //swapping visible cards
+  const goLeft = () => {
+    setImgIdx(0);
+    setCurrent((prev) => (prev === 0 ? cardCount - 1 : prev - 1));
+  };
+    //swapping visible cards
+  const goRight = () => {
+    setImgIdx(0);
+    setCurrent((prev) => (prev === cardCount - 1 ? 0 : prev + 1));
+  };
 
+
+  //when Reserve piece button is clicked, send card data to Cart page
   const handleReserve = () => {
     const card = filteredCards[current];
     navigate('/cart', {
@@ -208,15 +227,7 @@ const Artwork = () => {
     });
   };
 
-  const goLeft = () => {
-    setImgIdx(0);
-    setCurrent((prev) => (prev === 0 ? cardCount - 1 : prev - 1));
-  };
-  const goRight = () => {
-    setImgIdx(0);
-    setCurrent((prev) => (prev === cardCount - 1 ? 0 : prev + 1));
-  };
-
+//switches card view to reveal info 
   const handleExpand = () => setExpanded((prev) => !prev);
 
   return (
@@ -267,7 +278,7 @@ const Artwork = () => {
                   onChange={e => setSelectedMedium(e.target.value)}
                 >
                   <option value="">All</option>
-                  {mediums.map(m => <option key={m} value={m}>{m}</option>)}
+                  {availableMediums.map(m => <option key={m} value={m}>{m}</option>)}
                 </select>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
@@ -278,18 +289,19 @@ const Artwork = () => {
                   onChange={e => setSelectedSize(e.target.value)}
                 >
                   <option value="">All</option>
-                  {sizes.map(s => <option key={s} value={s}>{s}</option>)}
+                  {availableSizes.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
-                <label htmlFor="price-select">Price</label>
+                <label htmlFor="sold-select">Availability</label>
                 <select
-                  id="price-select"
-                  value={selectedPrice}
-                  onChange={e => setSelectedPrice(e.target.value)}
+                  id="sold-select"
+                  value={selectedSoldStatus}
+                  onChange={e => setSelectedSoldStatus(e.target.value)}
                 >
                   <option value="">All</option>
-                  {prices.map(p => <option key={p} value={p}>{p}</option>)}
+                  <option value="available">Available</option>
+                  <option value="sold">Sold</option>
                 </select>
               </div>
               <div style={{ display: 'flex', gap: '0.8rem', marginTop: '1rem' }}>
@@ -301,7 +313,7 @@ const Artwork = () => {
                 </button>
                 <button
                   className="filter-clear-btn"
-                  onClick={() => { setSelectedMedium(''); setSelectedSize(''); setSelectedPrice(''); setFilterOpen(false); }}
+                  onClick={() => { setSelectedMedium(''); setSelectedSize(''); setSelectedSoldStatus(''); setFilterOpen(false); }}
                 >Clear</button>
               </div>
             </div>
@@ -345,7 +357,8 @@ const Artwork = () => {
                 padding: '1.5rem',
                 boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
                 transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                position: 'relative'
               }}
               onClick={() => {
                 setCurrent(index);
@@ -361,17 +374,35 @@ const Artwork = () => {
                 e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.1)';
               }}
               >
-                <img
-                  src={card.imgs ? card.imgs[0] : card.img}
-                  alt={card.title}
-                  style={{
-                    width: '100%',
-                    height: '200px',
-                    objectFit: 'cover',
-                    borderRadius: '0.5rem',
-                    marginBottom: '1rem'
-                  }}
-                />
+                <div style={{ position: 'relative' }}>
+                  <img
+                    src={card.imgs ? card.imgs[0] : card.img}
+                    alt={card.title}
+                    style={{
+                      width: '100%',
+                      height: '200px',
+                      objectFit: 'cover',
+                      borderRadius: '0.5rem',
+                      marginBottom: '1rem'
+                    }}
+                  />
+                  {card.sold && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '0.5rem',
+                      right: '0.5rem',
+                      background: 'rgba(0, 0, 0, 0.62)',
+                      borderRadius: '0.5rem',
+                      padding: '0.5rem 1rem',
+                      color: 'white',
+                      fontSize: '1rem',
+                      letterSpacing: '1px',
+                      fontFamily: 'Inter, Segoe UI, Arial, sans-serif',
+                    }}>
+                      SOLD
+                    </div>
+                  )}
+                </div>
                 <h3 style={{ color: '#333333', fontSize: '1.2rem', marginBottom: '0.5rem', fontWeight: 600 }}>
                   {card.title}
                 </h3>
@@ -451,25 +482,43 @@ const Artwork = () => {
               >
                 &#8592;
               </button>
-              <img
-                src={filteredCards[current].imgs[imgIdx]}
-                alt={filteredCards[current].title + ' ' + (imgIdx + 1)}
-                className={`scroll-img${expanded ? ' shrink' : ''}`}
-                onClick={handleExpand}
-                style={{
-                  cursor: 'pointer',
-                  transition: 'all 0.7s cubic-bezier(.77,0,.18,1)',
-                  maxHeight: expanded ? '320px' : '55vh',
-                  width: 'auto',
-                  maxWidth: expanded ? '95%' : '98vw',
-                  objectFit: 'contain',
-                  borderRadius: '1.2rem',
-                  boxShadow: '0 4px 32px #0008',
-                  background: '#f7f7f0dd',
-                  aspectRatio: '4/3',
-                  display: 'block',
-                }}
-              />
+              <div style={{ position: 'relative' }}>
+                <img
+                  src={filteredCards[current].imgs[imgIdx]}
+                  alt={filteredCards[current].title + ' ' + (imgIdx + 1)}
+                  className={`scroll-img${expanded ? ' shrink' : ''}`}
+                  onClick={handleExpand}
+                  style={{
+                    cursor: 'pointer',
+                    transition: 'all 0.7s cubic-bezier(.77,0,.18,1)',
+                    maxHeight: expanded ? '320px' : '55vh',
+                    width: 'auto',
+                    maxWidth: expanded ? '95%' : '98vw',
+                    objectFit: 'contain',
+                    borderRadius: '1.2rem',
+                    boxShadow: '0 4px 32px #0008',
+                    background: '#f7f7f0dd',
+                    aspectRatio: '4/3',
+                    display: 'block',
+                  }}
+                />
+                {filteredCards[current].sold && (
+                  <div style={{
+                      position: 'absolute',
+                      top: '0.5rem',
+                      right: '0.5rem',
+                      background: 'rgba(0, 0, 0, 0.62)',
+                      borderRadius: '0.5rem',
+                      padding: '0.5rem 1rem',
+                      color: 'white',
+                      fontSize: '1rem',
+                      letterSpacing: '1px',
+                      fontFamily: 'Inter, Segoe UI, Arial, sans-serif',
+                  }}>
+                    SOLD
+                  </div>
+                )}
+              </div>
               <button 
                 className="img-arrow right" 
                 onClick={() => setImgIdx(idx => idx < filteredCards[current].imgs.length - 1 ? idx + 1 : idx)} 
@@ -489,25 +538,43 @@ const Artwork = () => {
               </button>
             </div>
           ) : (
-            <img
-              src={filteredCards[current].img}
-              alt={filteredCards[current].title}
-              className={`scroll-img${expanded ? ' shrink' : ''}`}
-              onClick={handleExpand}
-              style={{
-                cursor: 'pointer',
-                transition: 'all 0.7s cubic-bezier(.77,0,.18,1)',
-                maxHeight: expanded ? '320px' : '55vh',
-                width: 'auto',
-                maxWidth: expanded ? '95%' : '98vw',
-                objectFit: 'contain',
-                borderRadius: '1.2rem',
-                boxShadow: '0 4px 32px #0008',
-                background: '#f7f7f0dd',
-                aspectRatio: '4/3',
-                display: 'block',
-              }}
-            />
+            <div style={{ position: 'relative' }}>
+              <img
+                src={filteredCards[current].img}
+                alt={filteredCards[current].title}
+                className={`scroll-img${expanded ? ' shrink' : ''}`}
+                onClick={handleExpand}
+                style={{
+                  cursor: 'pointer',
+                  transition: 'all 0.7s cubic-bezier(.77,0,.18,1)',
+                  maxHeight: expanded ? '320px' : '55vh',
+                  width: 'auto',
+                  maxWidth: expanded ? '95%' : '98vw',
+                  objectFit: 'contain',
+                  borderRadius: '1.2rem',
+                  boxShadow: '0 4px 32px #0008',
+                  background: '#f7f7f0dd',
+                  aspectRatio: '4/3',
+                  display: 'block',
+                }}
+              />
+              {filteredCards[current].sold && (
+                <div style={{
+                  position: 'absolute',
+                  top: '1rem',
+                  right: '1rem',
+                  background: 'rgba(0, 0, 0, 0.62)',
+                  borderRadius: '0.5rem',
+                  padding: '0.5rem 1rem',
+                  color: 'white',
+                  fontSize: '1rem',
+                  letterSpacing: '1px',
+                  fontFamily: 'Inter, Segoe UI, Arial, sans-serif',
+                }}>
+                  SOLD
+                </div>
+              )}
+            </div>
           )}
           <button 
             className="click-indicator" 
@@ -541,12 +608,12 @@ const Artwork = () => {
               scrollBehavior: 'smooth'
             }}
           >
-            {filteredCards.length > 0 && filteredCards[current].text !== 'N/A' ? <div className="card-detail-row">{filteredCards[current].text}</div> : null}
+           
             {filteredCards.length > 0 && filteredCards[current].size !== 'N/A' ? <div className="card-detail-row"><strong>Size:</strong> {filteredCards[current].size}</div> : null}
             {filteredCards.length > 0 && filteredCards[current].medium !== 'N/A' ? <div className="card-detail-row"><strong>Medium:</strong> {filteredCards[current].medium}</div> : null}
             {filteredCards.length > 0 && filteredCards[current].price !== 'N/A' && !filteredCards[current].sold ? <div className="card-detail-row"><strong>Price:</strong> {filteredCards[current].price}</div> : null}
             {filteredCards.length > 0 && filteredCards[current].date && filteredCards[current].date !== 'N/A' ? (
-              <div className="card-detail-row"><strong>Date Completed:</strong> {formatDate(filteredCards[current].date)}</div>
+              <div className="card-detail-row"><strong>Date:</strong> {filteredCards[current].date}</div>
             ) : null}
             {filteredCards.length > 0 && !filteredCards[current].sold && (
               <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginBottom: '2rem', marginTop: '1.5rem' }}>
