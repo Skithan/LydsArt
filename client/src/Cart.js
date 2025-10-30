@@ -34,17 +34,15 @@ const Cart = () => {
     }
     
     // Prepare payment data
-    const price = card && card.price ? 
-      parseInt(card.price.replace(/[^\d]/g, '')) : 200;
+    const price = card && parseInt(card.price.replace(/[^\d]/g, '')); 
     
     const line_items = [{
       price_data: {
-        currency: 'usd',
+        currency: 'cad',
         product_data: {
-          name: card ? card.title : 'Artwork',
-          description: card ? `${card.medium}${card.size ? `, ${card.size}` : ''}` : 'Art piece',
+          name: card.title,
+          description: card.medium
         },
-        unit_amount: price * 100,
       },
       quantity: 1,
     }];
@@ -126,14 +124,14 @@ const Cart = () => {
         <div style={{ background: '#f8f8f8', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', padding: '1.2rem', marginBottom: '2rem', width: '100%', maxWidth: '400px' }}>
           <h3 style={{ color: '#333333', fontWeight: 600, fontSize: '1.3rem', marginBottom: '0.7rem' }}>{card.title}</h3>
           {Object.entries(card).map(([key, value]) => (
-            key !== 'imgs' ? (
+            key !== 'imgs' && key !== 'sold' ? (
               <div key={key} style={{ color: '#4a4a4a', fontSize: '1.1rem', marginBottom: '0.3rem' }}>
                 <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {String(value)}
               </div>
             ) : null
           ))}
           {card.imgs && card.imgs.length > 0 && (
-            <img src={card.imgs[0]} alt={card.title} style={{ width: '100%', maxWidth: '320px', borderRadius: '1rem', marginTop: '0.7rem', boxShadow: '0 2px 8px #0002' }} />
+            <img src={card.imgs[0]} alt={card.title} style={{position: 'center', width: '100%', maxWidth: '320px', borderRadius: '1rem', marginTop: '0.7rem', boxShadow: '0 2px 8px #0002' }} />
           )}
         </div>
       )}

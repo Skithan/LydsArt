@@ -220,7 +220,6 @@ const Artwork = () => {
         price: card.price,
         medium: card.medium,
         imgs: card.imgs || (card.img ? [card.img] : []),
-        text: card.text,
         date: card.date,
         sold: card.sold
       }
