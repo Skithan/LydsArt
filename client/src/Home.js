@@ -23,17 +23,6 @@ const Home = () => {
       return;
     }
     touchEndY.current = e.changedTouches[0].screenY;
-    
-    // Allow natural scrolling for most swipes, but detect strong upward swipes to navigate
-    if (touchStartY.current !== null && touchEndY.current !== null) {
-      const diffY = touchEndY.current - touchStartY.current;
-      // Only navigate on very strong upward swipe (more than 150px)
-      if (diffY < -150) {
-        navigate('/artwork');
-      }
-    }
-    touchStartY.current = null;
-    touchEndY.current = null;
   };
 
   return (
