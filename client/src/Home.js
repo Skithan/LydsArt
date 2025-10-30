@@ -57,7 +57,7 @@ const Home = () => {
         alt="Lydia Paterson Headshot" 
         style={{ width: '220px', height: '220px', objectFit: 'cover', borderRadius: '50%', boxShadow: '0 4px 24px #0004', marginBottom: '2rem' }}
       />
-      <div className="biography-text" style={{ maxWidth: '600px', textAlign: 'center', fontSize: '1.25rem', color: '#333333', background: '#f7f7f0dd', padding: '2rem', borderRadius: '1rem', boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)', marginBottom: '3rem' }}>
+      <div className="biography-text" style={{ maxWidth: '600px', textAlign: 'center', fontSize: '1.25rem', color: '#333333', background: '#ffffffdd', padding: '2rem', borderRadius: '1rem', boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)', marginBottom: '3rem' }}>
         <p style={{ marginBottom: '1.5rem', lineHeight: '1.6' }}>
           My practice, rooted primarily in oil and acrylic painting, explores themes of childhood, nostalgia, and the
           contradictions of change. I draw inspiration from the everyday--people, places, and connections that shape

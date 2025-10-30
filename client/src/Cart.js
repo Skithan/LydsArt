@@ -41,7 +41,7 @@ const Cart = () => {
           name: card.title,
           description: card.medium,
         },
-        unit_amount: parseInt(card.price.replace(/[^\d]/g, ''))
+        unit_amount: parseInt(card.price.replace(/[^\d]/g, '')) * 100
       },
       quantity: 1,
     }];
@@ -104,7 +104,7 @@ const Cart = () => {
         alignItems: 'center', 
         minHeight: '150vh',
         justifyContent: 'flex-start', 
-        background: '#f7f7f0dd', 
+        background: '#ffffffdd', 
         boxShadow: '0 4px 24px rgba(0, 0, 0, 0.15)', 
         borderRadius: '1.2rem', 
         margin: '2rem auto 4rem auto', 
@@ -120,7 +120,7 @@ const Cart = () => {
       
    
       {card && (
-        <div style={{ background: '#f8f8f8', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', padding: '1.2rem', marginBottom: '2rem', width: '100%', maxWidth: '400px' }}>
+        <div style={{ background: '#ffffffdd', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', padding: '1.2rem', marginBottom: '2rem', width: '100%', maxWidth: '400px' }}>
           <h3 style={{ color: '#333333', fontWeight: 600, fontSize: '1.3rem', marginBottom: '0.7rem' }}>{card.title}</h3>
           {Object.entries(card).map(([key, value]) => (
             key !== 'imgs' && key !== 'sold' ? (
