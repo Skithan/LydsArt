@@ -4,17 +4,17 @@ import './App.css';
 
 //artwork data 
 const cards = [
-  { img: process.env.PUBLIC_URL + '/AnUptownPerspective2.jpeg',title: 'An Uptown Perspective', medium:'Acrylic on Canvas',size: '18"x24"',price: 'N/A' , date: '2025', sold: true},
-  { img: process.env.PUBLIC_URL + '/ComfortInChange.jpeg', title: 'Comfort In Change',  medium: 'Oil on Stetched Canvas', size: '24"x30"', price: 'N/A', date: '2024', sold: true},
-  { img: process.env.PUBLIC_URL + '/EndOfSummerFlowers.jpeg', title: 'End Of Summer Flowers',  medium: 'Acrylic on Wood Panel', size: '18"x24"', price: '$400', date: '2025', sold: false},
-  { img: process.env.PUBLIC_URL + '/FalseLight.jpeg', title: 'False Light', medium: 'Acrylic on Canvas', size: '18"x24"', price: 'N/A', date: '2025', sold: true},
-  { img: process.env.PUBLIC_URL + '/FamiliarFaces.jpeg', title: 'Familiar Faces', medium: 'Acrylic on Canvas', size: '18"x24"', price: 'N/A', date: '2025', sold: true},
-  { img: process.env.PUBLIC_URL + '/KingSquareAtNight.jpeg', title: 'King Square At Night', medium: 'Oil on Canvas', size: '18"x24"', price: 'N/A',date: '2022', sold: true},
-  { img: process.env.PUBLIC_URL + '/NoDogsOnTheCouch.jpeg', title: 'No Dogs On The Couch',  medium: 'Oil on Canvas', size: '18"x24"', price: 'N/A',date: '2022', sold: true},
-  { img: process.env.PUBLIC_URL + '/SharingATemporaryHome.jpeg', title: 'Sharing A Temporary Home',  medium: 'Acrylic on Canvas', size: '48"x60"', price: '$5000',date: '2023', sold: false},
-  { img: process.env.PUBLIC_URL + '/SimonAndGarfunkelKids.jpeg', title: 'Simon And Garfunkel Kids',  medium: 'Acrylic on Canvas', size: 'N/A', price: 'N/A',date: '2024', sold: true},
-  { img: process.env.PUBLIC_URL + '/YellowFrog.jpeg', title: 'Yellow Frog',  medium: 'Oil on Canvas', size: '24"x30"', price: 'N/A',date: '2024', sold: true},
-  { img: process.env.PUBLIC_URL + '/BlueFrog.jpeg', title: 'Blue Frog',  medium: 'Oil on Canvas', size: '24"x30"', price: 'N/A',date: '2024', sold: true},
+  { img: process.env.PUBLIC_URL + '/AnUptownPerspective2.jpeg',title: 'An Uptown Perspective', medium:'Acrylic on Canvas',size: '18"x24"', date: '2025', price: 'N/A', sold: true},
+  { img: process.env.PUBLIC_URL + '/ComfortInChange.jpeg', title: 'Comfort In Change',  medium: 'Oil on Canvas', size: '24"x30"', date: '2024', price: '$450', sold: false},
+  { img: process.env.PUBLIC_URL + '/EndOfSummerFlowers.jpeg', title: 'End Of Summer Flowers',  medium: 'Acrylic on Panel', size: '18"x24"', date: '2025', price: '$400', sold: false},
+  { img: process.env.PUBLIC_URL + '/FalseLight.jpeg', title: 'False Light', medium: 'Acrylic on Canvas', size: '18"x24"', date: '2025', price: 'N/A', sold: true},
+  { img: process.env.PUBLIC_URL + '/FamiliarFaces.jpeg', title: 'Familiar Faces', medium: 'Acrylic on Canvas', size: '18"x24"', date: '2025', price: 'N/A', sold: true},
+  { img: process.env.PUBLIC_URL + '/KingSquareAtNight.jpeg', title: 'King Square At Night', medium: 'Oil on Canvas', size: '18"x24"', date: '2022', price: 'N/A', sold: true},
+  { img: process.env.PUBLIC_URL + '/NoDogsOnTheCouch.jpeg', title: 'No Dogs On The Couch',  medium: 'Oil on Canvas', size: '18"x24"', date: '2022', price: 'N/A', sold: true},
+  { img: process.env.PUBLIC_URL + '/SharingATemporaryHome.jpeg', title: 'Sharing A Temporary Home',  medium: 'Acrylic on Canvas', size: '48"x60"', date: '2023', price: '$5000', sold: false},
+  { img: process.env.PUBLIC_URL + '/SimonAndGarfunkelKids.jpeg', title: 'Simon And Garfunkel Kids',  medium: 'Acrylic on Canvas', size: 'N/A', date: '2024', price: 'N/A', sold: true},
+  { img: process.env.PUBLIC_URL + '/YellowFrog.jpeg', title: 'Yellow Frog',  medium: 'Oil on Canvas', size: '24"x30"', date: '2024', price: 'N/A', sold: true},
+  { img: process.env.PUBLIC_URL + '/BlueFrog.jpeg', title: 'Blue Frog',  medium: 'Oil on Canvas', size: '24"x30"', date: '2024', price: 'N/A', sold: true},
 ];
 
 //fiter button image svg
@@ -610,10 +610,8 @@ const Artwork = () => {
            
             {filteredCards.length > 0 && filteredCards[current].size !== 'N/A' ? <div className="card-detail-row"><strong>Size:</strong> {filteredCards[current].size}</div> : null}
             {filteredCards.length > 0 && filteredCards[current].medium !== 'N/A' ? <div className="card-detail-row"><strong>Medium:</strong> {filteredCards[current].medium}</div> : null}
+            {filteredCards.length > 0 && filteredCards[current].date && filteredCards[current].date !== 'N/A' ? (<div className="card-detail-row"><strong>Date:</strong> {filteredCards[current].date}</div>) : null}
             {filteredCards.length > 0 && filteredCards[current].price !== 'N/A' && !filteredCards[current].sold ? <div className="card-detail-row"><strong>Price:</strong> {filteredCards[current].price}</div> : null}
-            {filteredCards.length > 0 && filteredCards[current].date && filteredCards[current].date !== 'N/A' ? (
-              <div className="card-detail-row"><strong>Date:</strong> {filteredCards[current].date}</div>
-            ) : null}
             {filteredCards.length > 0 && !filteredCards[current].sold && (
               <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginBottom: '2rem', marginTop: '1.5rem' }}>
                 <button className="arrow-btn" style={{ minWidth: '12rem', padding: '0.5rem 1.5rem', fontSize: '1.3rem', whiteSpace: 'nowrap', width: '100%' }} onClick={handleReserve}>
