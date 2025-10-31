@@ -18,7 +18,10 @@ app.post('/create-checkout-session', async (req, res) => {
   console.log(req.headers.origin);
   try {
     const { line_items, customer_email, customer_name } = req.body;
-    
+    console.log(req);
+    console.log(req.headers);
+    console.log(req.body);
+    console.log(res);
     // Create Checkout Session
     const session = await stripe.checkout.sessions.create({
       ui_mode: 'embedded', 
@@ -26,7 +29,7 @@ app.post('/create-checkout-session', async (req, res) => {
       line_items: line_items,
       customer_email: customer_email,
       mode: 'payment',
-      return_url: `${req.headers.origin}`,
+      return_url: `${req.headers.origin}/cart?session_id={CHECKOUT_SESSION_ID}`,
     });
     
     console.log('Checkout session created with ID:', session.id);
