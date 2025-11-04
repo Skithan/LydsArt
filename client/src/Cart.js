@@ -77,7 +77,7 @@ const Cart = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          line_items, 
+          line_items: line_items, 
           customer_email: email,
           customer_name: name
         }),
