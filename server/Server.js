@@ -23,7 +23,7 @@ app.post('/create-checkout-session', async (req, res) => {
       line_items: req.body.line_items,
       mode: 'payment',
       ui_mode: 'embedded',
-      return_url: `${req.headers.origin}/cart?session_id={CHECKOUT_SESSION_ID}`
+      return_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`
     });
       
     console.log('Checkout session created with ID:', session.id);

@@ -256,27 +256,6 @@ const Cart = () => {
           </EmbeddedCheckoutProvider>
         </div>
       )}
-      
-      {paymentCompleted && (
-        <div style={{ 
-          textAlign: 'center',
-          padding: '2rem',
-          background: '#f0f8f0',
-          borderRadius: '1rem',
-          maxWidth: '400px',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
-        }}>
-          <h3 style={{ color: '#2e7d32', marginBottom: '1rem' }}>
-            Payment Successful!
-          </h3>
-          <p style={{ fontSize: '1.1rem', marginBottom: '1rem', color: '#333333' }}>
-            Thank you for your purchase! Your artwork reservation is complete.
-          </p>
-          <p style={{ color: '#4a4a4a' }}>
-            You will receive a confirmation email shortly.
-          </p>
-        </div>
-      )}
     </section>
     </div>
   );
