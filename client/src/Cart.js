@@ -7,8 +7,8 @@ import {
 } from '@stripe/react-stripe-js';
 import './App.css';
 
-
-const stripePromise = loadStripe("pk_test_51SD4ntAIRFwBRpKYibrGELI4OvWSI0wN54CmUcJZ8Q5MfYOw2G06PByDev26MsemQSlEmzLicN3z3UQoeAhnWWww00UMJtCrGO");
+const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY;
+const stripePromise = loadStripe(stripePublicKey);
 
 const Cart = () => {
   const location = useLocation();
@@ -18,26 +18,6 @@ const Cart = () => {
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [error, setError] = useState(null);
 
-  //from server
-  // const [customerEmail, setCustomerEmail] = useState('');
-  // const [status, setStatus] = useState('');
-
-  // useEffect(() => {
-  //   const params = new URLSearchParams(window.location.search);
-  //   const sessionId = params.get('session_id');
-  //   console.log('Session ID from URL:', sessionId);
-  //   if (sessionId) {
-  //     fetch(`https://lydsart.onrender.com/session-status?session_id=${sessionId}`)
-  //       .then(res => res.json())
-  //       .then(data => {
-  //         setCustomerEmail(data.customer_email);
-  //         setStatus(data.status);
-  //         console.log('Customer Email:', data.customer_email);
-  //         console.log('Session status data:', data.status);
-  //         console.log('data:', data);
-  //       });
-  //   }
-  // }, []);
 
   // Process the payment when "Pay & Reserve" is clicked
   const handlePayment = async (e) => {

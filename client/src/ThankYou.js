@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { sendConfirmationEmail, sendArtistNotification } from './emailService';
+
 
 const ThankYou = () => {
   const [customerEmail, setCustomerEmail] = useState('');
@@ -17,8 +19,38 @@ const ThankYou = () => {
           console.log('Customer Email:', data.customer_email);
           console.log('Session status data:', data.status);
           console.log('data:', data);
+           if(data.customer_email){
+            
+              // Send confirmation email using the email service
+              sendConfirmationEmail(data.customer_email, {
+                session_id: sessionId,
+                purchase_status: data.status,
+                purchase_date: new Date().toLocaleDateString()
+              }).then((result) => {
+                if (result.success) {
+                  console.log('Confirmation email sent successfully');
+                } else {
+                  console.error('Failed to send confirmation email:', result.error);
+                }
+              });
+
+              // Optionally send notification to artist
+              sendArtistNotification(data.customer_email, {
+                session_id: sessionId,
+                purchase_status: data.status,
+                purchase_date: new Date().toLocaleDateString()
+              }).then((result) => {
+                if (result.success) {
+                  console.log('Artist notification sent successfully');
+                } else {
+                  console.error('Failed to send artist notification:', result.error);
+                }
+              });
+           }
         });
     }
+
+   
   }, []);
 
   return (
