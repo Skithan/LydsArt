@@ -16,19 +16,11 @@ app.use(cors({
 app.post('/create-checkout-session', async (req, res) => {
   console.log('Received request: /create-checkout-session');
   console.log(req.headers.origin);
+   console.log('req.boyd is :: ', req.body);
   try {
     // Create Checkout Session
     const session = await stripe.checkout.sessions.create({
-      line_items: [{
-        price_data: {
-          currency: 'cad',
-          product_data: {
-            name: 'T-shirt',
-          },
-          unit_amount: 2000,
-        },
-        quantity: 1,
-      }],
+      line_items: req.body.line_items,
       mode: 'payment',
       ui_mode: 'embedded',
       return_url: `${req.headers.origin}/cart?session_id={CHECKOUT_SESSION_ID}`
