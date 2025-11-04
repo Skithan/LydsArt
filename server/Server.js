@@ -27,6 +27,7 @@ app.post('/create-checkout-session', async (req, res) => {
     });
       
     console.log('Checkout session created with ID:', session.id);
+    console.log('returnurl: ', `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`);
     
     res.json({ clientSecret: session.client_secret });
     
