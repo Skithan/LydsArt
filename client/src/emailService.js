@@ -3,7 +3,7 @@ import emailjs from '@emailjs/browser';
 // EmailJS configuration - replace these with your actual EmailJS credentials
 const SERVICE_ID = ''; // Replace with your EmailJS service ID
 const TEMPLATE_ID = ''; // Replace with your EmailJS template ID  
-const PUBLIC_KEY_EMAILJS = ''; // Replace with your EmailJS public key
+const PUBLIC_KEY = ''; // Replace with your EmailJS public key
 
 /**
  * Sends a confirmation email to the customer after successful purchase
@@ -14,7 +14,7 @@ const PUBLIC_KEY_EMAILJS = ''; // Replace with your EmailJS public key
 export const sendConfirmationEmail = async (customerEmail, orderDetails = {}) => {
   try {
     console.log('Sending confirmation email to:', customerEmail);
-    
+    console.log('Using EmailJS public key:', PUBLIC_KEY);
     // Prepare email template parameters
     const templateParams = {
       to_email: customerEmail,
@@ -30,7 +30,7 @@ export const sendConfirmationEmail = async (customerEmail, orderDetails = {}) =>
       SERVICE_ID,
       TEMPLATE_ID,
       templateParams,
-      PUBLIC_KEY_EMAILJS
+      PUBLIC_KEY
     );
 
     console.log('Confirmation email sent successfully:', response);
@@ -70,7 +70,7 @@ export const sendArtistNotification = async (customerEmail, orderDetails = {}) =
       SERVICE_ID,
       TEMPLATE_ID, // You might want a different template for artist notifications
       templateParams,
-      PUBLIC_KEY_EMAILJS
+      PUBLIC_KEY
     );
 
     console.log('Artist notification sent successfully:', response);
