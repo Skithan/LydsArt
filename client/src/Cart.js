@@ -39,12 +39,12 @@ const Cart = () => {
         currency: 'cad',
         product_data: {
           name: card.title,
-          description: card.medium,
         },
         unit_amount: parseInt(card.price.replace(/[^\d]/g, '')) * 100
       },
       quantity: 1,
     }];
+
     
     setIsProcessing(true);
     setError(null);
@@ -63,6 +63,7 @@ const Cart = () => {
       });
       
       const data = await response.json();
+      console.log('Response from server:', data);
       
       if (data.error) {
         setError(`Payment Error: ${data.error}`);
