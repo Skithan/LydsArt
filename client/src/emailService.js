@@ -1,9 +1,10 @@
 import emailjs from '@emailjs/browser';
 
-// EmailJS configuration - replace these with your actual EmailJS credentials
-const SERVICE_ID = ''; // Replace with your EmailJS service ID
-const TEMPLATE_ID = ''; // Replace with your EmailJS template ID  
-const PUBLIC_KEY = ''; // Replace with your EmailJS public key
+// EmailJS configuration using Netlify environment variables
+// Set these in your Netlify dashboard under Site settings > Environment variables
+const SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
+const TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
+const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
 
 /**
  * Sends a confirmation email to the customer after successful purchase
@@ -14,6 +15,8 @@ const PUBLIC_KEY = ''; // Replace with your EmailJS public key
 export const sendConfirmationEmail = async (customerEmail, orderDetails = {}) => {
   try {
     console.log('Sending confirmation email to:', customerEmail);
+    console.log('Using EmailJS service ID:', SERVICE_ID);
+    console.log('Using EmailJS template ID:', TEMPLATE_ID);
     console.log('Using EmailJS public key:', PUBLIC_KEY);
     // Prepare email template parameters
     const templateParams = {
