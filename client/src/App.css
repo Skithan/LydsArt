@@ -194,7 +194,6 @@
   position: relative;
   z-index: 10;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
-  border-bottom: 2px solid #333333;
 }
 .header-title {
   font-weight: 700;
@@ -204,6 +203,55 @@
   color: #333333;
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.1), 0 1px 0 #000000;
   font-family: 'Playfair Display', 'Inter', serif;
+}
+
+/* Wave animation for header title letters */
+.wave-letter {
+  display: inline-block;
+  transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.wave-letter.animate {
+  animation: wave 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes wave {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.1);
+  }
+}
+
+/* Wave line animation for header bottom */
+.header-wave-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #333333;
+  overflow: hidden;
+}
+
+.header-wave-line.animate {
+  animation: wave-line 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes wave-line {
+  0% {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  50% {
+    transform: scaleX(1) scaleY(1.5);
+    transform-origin: center;
+  }
+  100% {
+    transform: scaleX(1) scaleY(1);
+    transform-origin: right;
+  }
 }
 .header-nav {
   width: 100%;
@@ -393,7 +441,6 @@
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
-  z-index: 100;
   position: absolute;
   top: 110%;
   left: 0;
