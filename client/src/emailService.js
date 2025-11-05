@@ -12,7 +12,7 @@ const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
  * @param {Object} orderDetails - Optional order details to include in email
  * @returns {Promise} - Promise that resolves when email is sent
  */
-export const sendConfirmationEmail = async (customerEmail, orderDetails = {}) => {
+export const sendConfirmationEmail = async (customerEmail, orderDetails) => {
   try {
     console.log('Sending confirmation email to:', customerEmail);
     console.log('Using EmailJS service ID:', SERVICE_ID);
@@ -70,7 +70,7 @@ export const sendConfirmationEmail = async (customerEmail, orderDetails = {}) =>
  * @param {Object} orderDetails - Order details to include in notification
  * @returns {Promise} - Promise that resolves when email is sent
  */
-export const sendArtistNotification = async (customerEmail, orderDetails = {}) => {
+export const sendArtistNotification = async (customerEmail, orderDetails) => {
   try {
     console.log('Sending artist notification for order from:', customerEmail);
     
