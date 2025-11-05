@@ -21,8 +21,11 @@ app.post('/create-checkout-session', async (req, res) => {
     // Create Checkout Session
     const session = await stripe.checkout.sessions.create({
       line_items: req.body.line_items,
-      customer_email: req.body.customer_email,
-      customer_name: req.body.customer_name,
+      customer_creation: 'if_required',
+      customer_details: {
+        name: req.body.customer_name,
+        email: req.body.customer_email
+      },
       mode: 'payment',
       ui_mode: 'embedded',
       return_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`
@@ -43,12 +46,7 @@ app.post('/create-checkout-session', async (req, res) => {
 app.get('/session-status', async (req, res) => {
   console.log('Received request: /session-status');
   try {
-    const session = await stripe.checkout.sessions.retrieve(
-      req.query.session_id,
-      {
-        expand: ['line_items']
-      }
-    );
+    const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
     
     console.log('Session retrieved:', session);
     console.log('Line items:', session.line_items);
@@ -57,10 +55,7 @@ app.get('/session-status', async (req, res) => {
       status: session.status,
       customer_email: session.customer_details?.email,
       customer_name: session.customer_details?.name,
-      line_items: session.line_items?.data || [],
-      amount_total: session.amount_total,
-      currency: session.currency,
-      payment_status: session.payment_status
+      line_items: session.line_items
     });
   } catch (error) {
     console.error('Session status error:', error);

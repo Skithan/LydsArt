@@ -17,12 +17,12 @@ const ThankYou = () => {
         .then(res => res.json())
         .then(data => {
           setCustomerEmail(data.customer_email);
-          setCustomerName(data.customer_name);
+          setCustomerName(data.customer_details?.name);
           setStatus(data.status);
           setOrderDetails(data);
           
           console.log('Customer Email:', data.customer_email);
-          console.log('Customer Name:', data.customer_name);
+          console.log('Customer Name:', data.customer_details?.name);
           console.log('Session status data:', data.status);
           console.log('Line items:', data.line_items);
           console.log('Full session data:', data);
@@ -34,16 +34,8 @@ const ThankYou = () => {
                 session_id: sessionId,
                 purchase_status: data.status,
                 purchase_date: new Date().toLocaleDateString(),
-                amount_total: data.amount_total,
-                currency: data.currency,
                 line_items: data.line_items,
-                customer_name: data.customer_name,
-                // Format line items for email display
-                artwork_details: data.line_items?.map(item => ({
-                  name: item.description,
-                  quantity: item.quantity,
-                  amount: item.amount_total
-                })) || []
+                customer_name: data.customer_details?.name
               };
                console.log('order details: ', emailOrderDetails);
 

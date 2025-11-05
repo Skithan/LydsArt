@@ -30,13 +30,12 @@ export const sendConfirmationEmail = async (customerEmail, orderDetails) => {
     
     // Prepare email template parameters
     const templateParams = {
-      to_name: customerEmail.split('@')[0], // Extract name from email
+      to_name: orderDetails?.customer_name,
       to_email: customerEmail,
       from_name: 'Lydia Paterson Art',
-      message: 'Thank you for your artwork purchase! Your order has been confirmed.',
-      reply_to: customerEmail,
-      // Add any additional order details
-      ...orderDetails
+      message: 'Thank you for your artwork purchase!',
+    //   reply_to: customerEmail,
+      piece_name: orderDetails?.line_items?.[0]?.price_data?.product_data?.name,
     };
     
     console.log('Template parameters:', templateParams);
