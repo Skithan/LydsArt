@@ -22,7 +22,7 @@ const ThankYou = () => {
           setOrderDetails(data);
           
           console.log('Customer Email:', data.customer_email);
-          console.log('Customer Name:', data.customer_details?.name);
+          console.log('Customer Name:', data.metadata?.customer_name);
           console.log('Session status data:', data.status);
           console.log('Line items:', data.line_items);
           console.log('Full session data:', data);
@@ -35,7 +35,7 @@ const ThankYou = () => {
                 purchase_status: data.status,
                 purchase_date: new Date().toLocaleDateString(),
                 line_items: data.line_items,
-                customer_name: data.customer_details?.name
+                customer_name: data.metadata?.customer_name
               };
                console.log('order details: ', emailOrderDetails);
 

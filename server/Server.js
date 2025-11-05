@@ -21,14 +21,13 @@ app.post('/create-checkout-session', async (req, res) => {
     // Create Checkout Session
     const session = await stripe.checkout.sessions.create({
       line_items: req.body.line_items,
-      customer_creation: 'if_required',
-      customer_details: {
-        name: req.body.customer_name,
-        email: req.body.customer_email
-      },
+      customer_email: req.body.customer_email,
       mode: 'payment',
       ui_mode: 'embedded',
-      return_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`
+      return_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+      metadata: {
+        customer_name: req.body.customer_name
+      }
     });
       
     console.log('Checkout session created with ID:', session.id);
@@ -54,8 +53,9 @@ app.get('/session-status', async (req, res) => {
     res.json({
       status: session.status,
       customer_email: session.customer_details?.email,
-      customer_name: session.customer_details?.name,
-      line_items: session.line_items
+      customer_name: session.metadata?.customer_name,
+      line_items: session.line_items?.data || []
+
     });
   } catch (error) {
     console.error('Session status error:', error);
