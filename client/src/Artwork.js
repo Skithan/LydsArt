@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
 
@@ -41,6 +41,8 @@ const Artwork = () => {
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedSoldStatus, setSelectedSoldStatus] = useState('');
   const [gridView, setGridView] = useState(true);
+  const [filtersVisible, setFiltersVisible] = useState(false);
+  const [contentVisible, setContentVisible] = useState(false);
   const cardCount = cards.length;
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
@@ -48,6 +50,8 @@ const Artwork = () => {
   const touchEndY = useRef(null);
   const isZooming = useRef(false);
   const filterRef = useRef(null);
+  const filtersContainerRef = useRef(null);
+  const contentContainerRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -92,6 +96,39 @@ const Artwork = () => {
                      card.sold === false;
     return mediumMatch && sizeMatch && soldMatch;
   });
+
+  // Intersection Observer for animations
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1, // Trigger when 10% of element is visible
+      rootMargin: '0px 0px -50px 0px' // Trigger slightly before element fully enters view
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (entry.target === filtersContainerRef.current) {
+            setFiltersVisible(true);
+          } else if (entry.target === contentContainerRef.current) {
+            setContentVisible(true);
+          }
+        }
+      });
+    }, observerOptions);
+
+    // Capture current ref values for cleanup
+    const currentFiltersRef = filtersContainerRef.current;
+    const currentContentRef = contentContainerRef.current;
+
+    // Start observing elements
+    if (currentFiltersRef) observer.observe(currentFiltersRef);
+    if (currentContentRef) observer.observe(currentContentRef);
+
+    return () => {
+      if (currentFiltersRef) observer.unobserve(currentFiltersRef);
+      if (currentContentRef) observer.unobserve(currentContentRef);
+    };
+  }, []);
 
   React.useEffect(() => {
     setCurrent(0);
@@ -231,7 +268,20 @@ const Artwork = () => {
 
   return (
     <section id="artwork" style={{ marginTop: '1rem' }}>
-      <div style={{ display: 'flex',  position: 'relative', flexDirection: 'column', alignItems: 'center', marginBottom: '1rem' ,gap: '1rem',  }}>
+      <div 
+        ref={filtersContainerRef}
+        style={{ 
+          display: 'flex',  
+          position: 'relative', 
+          flexDirection: 'column', 
+          alignItems: 'center', 
+          marginBottom: '1rem',
+          gap: '1rem',
+          transform: filtersVisible ? 'translateX(0) scale(1)' : 'translateX(-200px) scale(0.3)',
+          opacity: filtersVisible ? 1 : 0.3,
+          transition: 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+        }}
+      >
         <div ref={filterRef} style={{ position: 'relative', marginBottom: '1.5rem', width: 'fit-content', display: 'flex', gap: '1rem' }}>
 
           <button
@@ -323,6 +373,7 @@ const Artwork = () => {
       {gridView ? (
         // Grid View
         <div 
+          ref={contentContainerRef}
           className="artwork-grid-container" 
           style={{
             height: '75vh',
@@ -333,7 +384,10 @@ const Artwork = () => {
             scrollBehavior: 'smooth',
             padding: '0 2rem 4rem 2rem',
             maxWidth: '1200px',
-            margin: '0 auto'
+            margin: '0 auto',
+            transform: contentVisible ? 'translateX(0) scale(1)' : 'translateX(-200px) scale(0.3)',
+            opacity: contentVisible ? 1 : 0.3,
+            transition: 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
           }}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
@@ -426,6 +480,7 @@ const Artwork = () => {
       ) : (
         // Single Card View
         <div 
+          ref={contentContainerRef}
           className="single-card-scroll-container"
           style={{
             height: '75vh',
@@ -434,7 +489,10 @@ const Artwork = () => {
             overflowX: 'hidden',
             WebkitOverflowScrolling: 'touch',
             scrollBehavior: 'smooth',
-            paddingBottom: '4rem'
+            paddingBottom: '4rem',
+            transform: contentVisible ? 'translateX(0) scale(1)' : 'translateX(-200px) scale(0.3)',
+            opacity: contentVisible ? 1 : 0.3,
+            transition: 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
           }}
         >
           <div className="arrow-scroll-wrapper">
