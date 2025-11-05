@@ -22,8 +22,8 @@ const ThankYou = () => {
 
           console.log('Customer Email:', data.customer_email);
           console.log('Customer Name:', data.customer_name);
+          console.log('Piece Name:', data.piece_name);
           console.log('Session status data:', data.status);
-          console.log('Line items:', data.line_items);
           console.log('Full session data:', data);
 
           // Send emails immediately with fresh data (don't wait for state updates)
@@ -31,9 +31,7 @@ const ThankYou = () => {
               // Prepare order details for email
               const emailOrderDetails = {
                 session_id: sessionId,
-                purchase_status: data.status,
-                purchase_date: new Date().toLocaleDateString(),
-                line_items: data.line_items,
+                piece_name: data.piece_name,
                 customer_name: data.customer_name
               };
                console.log('order details: ', emailOrderDetails);

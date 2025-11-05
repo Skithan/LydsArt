@@ -32,7 +32,7 @@ export const sendConfirmationEmail = async (customerEmail, orderDetails) => {
       to_email: customerEmail,
       from_name: 'Lydia Paterson Art',
       message: 'Thank you for your artwork purchase!',
-      piece_name: orderDetails?.line_items?.[0]?.price_data?.product_data?.name,
+      piece_name: orderDetails?.piece_name,
     };
     
     console.log('Template parameters:', templateParams);
@@ -84,7 +84,7 @@ export const sendArtistNotification = async (customerEmail, orderDetails) => {
       to_email: 'lydiapatersonart@gmail.com',
       from_name: 'Past Ethan:)',
       customer_email: customerEmail,
-      piece_name: orderDetails?.line_items?.[0]?.price_data?.product_data?.name,
+      piece_name: orderDetails?.piece_name
     };
 
     const response = await emailjs.send(

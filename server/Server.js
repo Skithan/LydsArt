@@ -24,7 +24,7 @@ app.post('/create-checkout-session', async (req, res) => {
       customer_email: req.body.customer_email,
       metadata:{
         customer_name: req.body.customer_name,
-        line_items: req.body.line_items
+        piece_name: req.body.line_items[0].price_data.product_data.name
       },
       mode: 'payment',
       ui_mode: 'embedded',
@@ -52,7 +52,6 @@ app.get('/session-status', async (req, res) => {
     const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
     
     console.log('Session retrieved:', session);
-    console.log('Line items:', session.line_items);
     console.log('Customer email:', session.customer_email);
     console.log('Customer name from metadata:', session.metadata?.customer_name);
     
@@ -60,7 +59,7 @@ app.get('/session-status', async (req, res) => {
       status: session.status,
       customer_email: session.customer_email,
       customer_name: session.metadata?.customer_name,
-      line_items: session.metadata?.line_items
+      piece_name: session.metadata?.piece_name
     });
   } catch (error) {
     console.error('Session status error:', error);
