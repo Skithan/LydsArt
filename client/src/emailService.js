@@ -14,10 +14,10 @@ const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
  */
 export const sendConfirmationEmail = async (customerEmail, orderDetails) => {
   try {
-    console.log('Sending confirmation email to:', customerEmail);
-    console.log('Using EmailJS service ID:', SERVICE_ID);
-    console.log('Using EmailJS template ID:', TEMPLATE_ID);
-    console.log('Using EmailJS public key:', PUBLIC_KEY);
+    // console.log('Sending confirmation email to:', customerEmail);
+    // console.log('Using EmailJS service ID:', SERVICE_ID);
+    // console.log('Using EmailJS template ID:', TEMPLATE_ID);
+    // console.log('Using EmailJS public key:', PUBLIC_KEY);
     
     // Validate inputs
     if (!customerEmail || !customerEmail.includes('@')) {
@@ -34,7 +34,6 @@ export const sendConfirmationEmail = async (customerEmail, orderDetails) => {
       to_email: customerEmail,
       from_name: 'Lydia Paterson Art',
       message: 'Thank you for your artwork purchase!',
-    //   reply_to: customerEmail,
       piece_name: orderDetails?.line_items?.[0]?.price_data?.product_data?.name,
     };
     
@@ -76,16 +75,16 @@ export const sendArtistNotification = async (customerEmail, orderDetails) => {
     const templateParams = {
       to_name: 'Lydia',
       to_email: 'lydiapatersonart@gmail.com',
-      from_name: customerEmail,
+      from_name: orderDetails?.customer_name,
       customer_email: customerEmail,
       message: `New artwork purchase from ${customerEmail}`,
       reply_to: customerEmail,
-      ...orderDetails
+      piece_name: orderDetails?.line_items?.[0]?.price_data?.product_data?.name,
     };
 
     const response = await emailjs.send(
       SERVICE_ID,
-      TEMPLATE_ID, // You might want a different template for artist notifications
+      TEMPLATE_ID, 
       templateParams,
       PUBLIC_KEY
     );

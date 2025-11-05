@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
 
@@ -7,6 +7,14 @@ const Home = () => {
   const touchStartY = useRef(null);
   const touchEndY = useRef(null);
   const isZooming = useRef(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [biographyVisible, setBiographyVisible] = useState(false);
+  const [buttonVisible, setButtonVisible] = useState(false);
+  
+  const imageRef = useRef(null);
+  const biographyRef = useRef(null);
+  const buttonRef = useRef(null);
+
 
   const handleTouchStart = (e) => {
     if (e.touches && e.touches.length > 1) {
@@ -25,6 +33,43 @@ const Home = () => {
     touchEndY.current = e.changedTouches[0].screenY;
   };
 
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1, // Trigger when 10% of element is visible
+      rootMargin: '0px 0px -50px 0px' // Trigger slightly before element fully enters view
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (entry.target === imageRef.current) {
+            setImageLoaded(true);
+          } else if (entry.target === biographyRef.current) {
+            setBiographyVisible(true);
+          } else if (entry.target === buttonRef.current) {
+            setButtonVisible(true);
+          }
+        }
+      });
+    }, observerOptions);
+
+    // Capture current ref values for cleanup
+    const currentImageRef = imageRef.current;
+    const currentBiographyRef = biographyRef.current;
+    const currentButtonRef = buttonRef.current;
+
+    // Start observing elements
+    if (currentImageRef) observer.observe(currentImageRef);
+    if (currentBiographyRef) observer.observe(currentBiographyRef);
+    if (currentButtonRef) observer.observe(currentButtonRef);
+
+    return () => {
+      if (currentImageRef) observer.unobserve(currentImageRef);
+      if (currentBiographyRef) observer.unobserve(currentBiographyRef);
+      if (currentButtonRef) observer.unobserve(currentButtonRef);
+    };
+  }, []);
+
   return (
     <div 
       className="home-scroll-container"
@@ -42,11 +87,39 @@ const Home = () => {
     >
       <section id="home" className="home-section" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '2rem', minHeight: 'calc(100vh - 4rem)' }}>
       <img 
+        ref={imageRef}
         src={process.env.PUBLIC_URL + '/Headshot.jpeg'} 
         alt="Lydia Paterson Headshot" 
-        style={{ width: '220px', height: '220px', objectFit: 'cover', borderRadius: '50%', boxShadow: '0 4px 24px #0004', marginBottom: '2rem' }}
+        style={{ 
+          width: '220px', 
+          height: '220px', 
+          objectFit: 'cover', 
+          borderRadius: '50%', 
+          boxShadow: '0 4px 24px #0004', 
+          marginBottom: '2rem',
+          transform: imageLoaded ? 'translateX(0) scale(1)' : 'translateX(-200px) scale(0.3)',
+          opacity: imageLoaded ? 1 : 0.3,
+          transition: 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+        }}
       />
-      <div className="biography-text" style={{ maxWidth: '600px', textAlign: 'center', fontSize: '1.25rem', color: '#333333', background: '#ffffffdd', padding: '2rem', borderRadius: '1rem', boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)', marginBottom: '3rem' }}>
+      <div 
+        ref={biographyRef}
+        className="biography-text" 
+        style={{ 
+          maxWidth: '600px', 
+          textAlign: 'center', 
+          fontSize: '1.25rem', 
+          color: '#333333', 
+          background: '#ffffffdd', 
+          padding: '2rem', 
+          borderRadius: '1rem', 
+          boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)', 
+          marginBottom: '3rem',
+          transform: biographyVisible ? 'translateX(0) scale(1)' : 'translateX(-200px) scale(0.3)',
+          opacity: biographyVisible ? 1 : 0.3,
+          transition: 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+        }}
+      >
         <p style={{ marginBottom: '1.5rem', lineHeight: '1.6' }}>
           My practice, rooted primarily in oil and acrylic painting, explores themes of childhood, nostalgia, and the
           contradictions of change. I draw inspiration from the everyday--people, places, and connections that shape
@@ -62,7 +135,15 @@ const Home = () => {
         </p>
       </div>
       
-      <div style={{ marginBottom: '4rem' }}>
+      <div 
+        ref={buttonRef}
+        style={{ 
+          marginBottom: '4rem',
+          transform: buttonVisible ? 'translateX(0) scale(1)' : 'translateX(-200px) scale(0.3)',
+          opacity: buttonVisible ? 1 : 0.3,
+          transition: 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+        }}
+      >
         <button 
           onClick={() => navigate('/artwork')}
           style={{
@@ -81,12 +162,12 @@ const Home = () => {
           }}
           onMouseOver={e => {
             e.target.style.background = '#333333';
-            e.target.style.transform = 'translateY(-2px)';
+            e.target.style.transform = buttonVisible ? 'translateY(-2px)' : 'translateX(-200px) scale(0.3)';
             e.target.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.2)';
           }}
           onMouseOut={e => {
             e.target.style.background = '#666666';
-            e.target.style.transform = 'translateY(0)';
+            e.target.style.transform = buttonVisible ? 'translateY(0)' : 'translateX(-200px) scale(0.3)';
             e.target.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.15)';
           }}
         >

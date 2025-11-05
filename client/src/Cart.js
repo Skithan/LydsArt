@@ -8,7 +8,14 @@ import {
 import './App.css';
 
 const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY;
-const stripePromise = loadStripe(stripePublicKey);
+console.log('Stripe Public Key:', stripePublicKey);
+console.log('Environment variables:', process.env);
+
+if (!stripePublicKey) {
+  console.error('REACT_APP_STRIPE_PUBLIC_KEY is not set in environment variables');
+}
+
+const stripePromise = stripePublicKey ? loadStripe(stripePublicKey) : null;
 
 const Cart = () => {
   const location = useLocation();
@@ -224,7 +231,7 @@ const Cart = () => {
         </>
       )}
 
-      {clientSecret && !paymentCompleted && (
+      {clientSecret && !paymentCompleted && stripePromise && (
         <div style={{ width: '100%', maxWidth: '450px' }}>
           <EmbeddedCheckoutProvider
             stripe={stripePromise}
@@ -234,6 +241,19 @@ const Cart = () => {
               onComplete={handleCheckoutComplete}
             />
           </EmbeddedCheckoutProvider>
+        </div>
+      )}
+
+      {clientSecret && !stripePromise && (
+        <div style={{ 
+          color: '#c62828', 
+          background: '#ffebee', 
+          padding: '1rem', 
+          borderRadius: '0.5rem', 
+          textAlign: 'center',
+          maxWidth: '400px'
+        }}>
+          Stripe configuration error. Please check environment variables.
         </div>
       )}
     </section>

@@ -16,31 +16,30 @@ const ThankYou = () => {
       fetch(`https://lydsart.onrender.com/session-status?session_id=${sessionId}`)
         .then(res => res.json())
         .then(data => {
-          setCustomerEmail(data.customer_email);
-          setCustomerName(data.customer_details?.name);
+          setCustomerEmail(data.customer_details?.email);
+          setCustomerName(data.customer_details?.individual_name);
           setStatus(data.status);
           setOrderDetails(data);
           
-          console.log('Customer Email:', data.customer_email);
-          console.log('Customer Name:', data.metadata?.customer_name);
+          console.log('Customer Email:', data.customer_details?.email);
+          console.log('Customer Name:', data.customer_details?.individual_name);
           console.log('Session status data:', data.status);
           console.log('Line items:', data.line_items);
           console.log('Full session data:', data);
-          
-           if(data.customer_email){
-            
+
+           if(data.customer_details?.email){
               // Prepare order details for email
               const emailOrderDetails = {
                 session_id: sessionId,
                 purchase_status: data.status,
                 purchase_date: new Date().toLocaleDateString(),
                 line_items: data.line_items,
-                customer_name: data.metadata?.customer_name
+                customer_name: data.customer_details?.individual_name
               };
                console.log('order details: ', emailOrderDetails);
 
               // Send confirmation email using the email service
-              sendConfirmationEmail(data.customer_email, emailOrderDetails).then((result) => {
+              sendConfirmationEmail(data.customer_details?.email, emailOrderDetails).then((result) => {
                 if (result.success) {
                   console.log('Confirmation email sent successfully');
                 } else {
@@ -49,7 +48,7 @@ const ThankYou = () => {
               });
 
               // Send notification to artist
-              sendArtistNotification(data.customer_email, emailOrderDetails).then((result) => {
+              sendArtistNotification(data.customer_details?.email, emailOrderDetails).then((result) => {
                 if (result.success) {
                   console.log('Artist notification sent successfully');
                 } else {
