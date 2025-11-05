@@ -6,8 +6,6 @@ const ThankYou = () => {
   const [customerEmail, setCustomerEmail] = useState('');
   const [customerName, setCustomerName] = useState('');
   const [status, setStatus] = useState('');
-  const [orderDetails, setOrderDetails] = useState(null);
-
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get('session_id');
@@ -16,18 +14,20 @@ const ThankYou = () => {
       fetch(`https://lydsart.onrender.com/session-status?session_id=${sessionId}`)
         .then(res => res.json())
         .then(data => {
-          setCustomerEmail(data.customerEmail);
+          // Set state for UI rendering
+          setCustomerEmail(data.customer_email);
           setCustomerName(data.customer_name);
           setStatus(data.status);
-          setOrderDetails(data);
+    
 
-          console.log('Customer Email:', customerEmail);
-          console.log('Customer Name:', customerName);
-          console.log('Session status data:', status);
+          console.log('Customer Email:', data.customer_email);
+          console.log('Customer Name:', data.customer_name);
+          console.log('Session status data:', data.status);
           console.log('Line items:', data.line_items);
           console.log('Full session data:', data);
 
-           if(data.customer_email){
+          // Send emails immediately with fresh data (don't wait for state updates)
+          if(data.customer_email && data.status === 'complete'){
               // Prepare order details for email
               const emailOrderDetails = {
                 session_id: sessionId,
@@ -39,7 +39,7 @@ const ThankYou = () => {
                console.log('order details: ', emailOrderDetails);
 
               // Send confirmation email using the email service
-              sendConfirmationEmail(data.customer_details?.email, emailOrderDetails).then((result) => {
+              sendConfirmationEmail(data.customer_email, emailOrderDetails).then((result) => {
                 if (result.success) {
                   console.log('Confirmation email sent successfully');
                 } else {
@@ -48,7 +48,7 @@ const ThankYou = () => {
               });
 
               // Send notification to artist
-              sendArtistNotification(data.customer_details?.email, emailOrderDetails).then((result) => {
+              sendArtistNotification(data.customer_email, emailOrderDetails).then((result) => {
                 if (result.success) {
                   console.log('Artist notification sent successfully');
                 } else {
@@ -74,22 +74,7 @@ const ThankYou = () => {
           {customerName && (
             <p>Customer: <strong>{customerName}</strong></p>
           )}
-          {orderDetails?.line_items && orderDetails.line_items.length > 0 && (
-            <div style={{ marginTop: '1rem', padding: '1rem', background: '#f9f9f9', borderRadius: '0.5rem' }}>
-              <h3>Order Details:</h3>
-              {orderDetails.line_items.map((item, index) => (
-                <div key={index} style={{ marginBottom: '0.5rem' }}>
-                  <strong>{item.description}</strong> - Quantity: {item.quantity} - 
-                  ${(item.amount_total / 100).toFixed(2)} {orderDetails.currency?.toUpperCase()}
-                </div>
-              ))}
-              {orderDetails.amount_total && (
-                <div style={{ marginTop: '0.5rem', fontWeight: 'bold' }}>
-                  Total: ${(orderDetails.amount_total / 100).toFixed(2)} {orderDetails.currency?.toUpperCase()}
-                </div>
-              )}
-            </div>
-          )}
+          
         </div>
       ) : (
         <p>Processing your payment...</p>

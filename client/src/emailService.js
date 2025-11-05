@@ -22,7 +22,7 @@ export const sendConfirmationEmail = async (customerEmail, orderDetails) => {
       throw new Error('Invalid customer email address');
     }
     
-    if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
+    if (!SERVICE_ID || !TEMPLATE_ID_BUYER || !PUBLIC_KEY) {
       throw new Error('EmailJS configuration is missing. Check environment variables.');
     }
     
@@ -69,6 +69,15 @@ export const sendConfirmationEmail = async (customerEmail, orderDetails) => {
 export const sendArtistNotification = async (customerEmail, orderDetails) => {
   try {
     console.log('Sending artist notification for order from:', customerEmail);
+
+        // Validate inputs
+    if (!customerEmail || !customerEmail.includes('@')) {
+      throw new Error('Invalid customer email address');
+    }
+    
+    if (!SERVICE_ID || !TEMPLATE_ID_SELLER || !PUBLIC_KEY) {
+      throw new Error('EmailJS configuration is missing. Check environment variables.');
+    }
     
     const templateParams = {
       to_name: orderDetails?.customer_name,
