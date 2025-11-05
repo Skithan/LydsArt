@@ -23,7 +23,8 @@ app.post('/create-checkout-session', async (req, res) => {
       line_items: req.body.line_items,
       customer_email: req.body.customer_email,
       metadata:{
-        customer_name: req.body.customer_name
+        customer_name: req.body.customer_name,
+        line_items: req.body.line_items
       },
       mode: 'payment',
       ui_mode: 'embedded',
@@ -52,12 +53,14 @@ app.get('/session-status', async (req, res) => {
     
     console.log('Session retrieved:', session);
     console.log('Line items:', session.line_items);
+    console.log('Customer email:', session.customer_email);
+    console.log('Customer name from metadata:', session.metadata?.customer_name);
     
     res.json({
       status: session.status,
-      customer_email: session.customer_email?.email,
+      customer_email: session.customer_email,
       customer_name: session.metadata?.customer_name,
-      line_items: session.line_items
+      line_items: session.metadata?.line_items
     });
   } catch (error) {
     console.error('Session status error:', error);
