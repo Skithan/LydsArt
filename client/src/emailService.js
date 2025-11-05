@@ -18,15 +18,28 @@ export const sendConfirmationEmail = async (customerEmail, orderDetails = {}) =>
     console.log('Using EmailJS service ID:', SERVICE_ID);
     console.log('Using EmailJS template ID:', TEMPLATE_ID);
     console.log('Using EmailJS public key:', PUBLIC_KEY);
+    
+    // Validate inputs
+    if (!customerEmail || !customerEmail.includes('@')) {
+      throw new Error('Invalid customer email address');
+    }
+    
+    if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
+      throw new Error('EmailJS configuration is missing. Check environment variables.');
+    }
+    
     // Prepare email template parameters
     const templateParams = {
+      to_name: customerEmail.split('@')[0], // Extract name from email
       to_email: customerEmail,
-      customer_email: customerEmail,
-      message: 'Thank you for your artwork purchase!',
-      subject: 'LydsArt - Purchase Confirmation',
+      from_name: 'Lydia Paterson Art',
+      message: 'Thank you for your artwork purchase! Your order has been confirmed.',
+      reply_to: customerEmail,
       // Add any additional order details
       ...orderDetails
     };
+    
+    console.log('Template parameters:', templateParams);
 
     // Send email using EmailJS
     const response = await emailjs.send(
@@ -62,10 +75,12 @@ export const sendArtistNotification = async (customerEmail, orderDetails = {}) =
     console.log('Sending artist notification for order from:', customerEmail);
     
     const templateParams = {
-      to_email: 'lydiapatersonart@gmail.com', // Replace with artist's email
+      to_name: 'Lydia',
+      to_email: 'lydiapatersonart@gmail.com',
+      from_name: customerEmail,
       customer_email: customerEmail,
       message: `New artwork purchase from ${customerEmail}`,
-      subject: 'LydsArt - New Order Notification',
+      reply_to: customerEmail,
       ...orderDetails
     };
 
