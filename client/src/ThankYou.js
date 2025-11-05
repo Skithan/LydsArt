@@ -64,91 +64,104 @@ const ThankYou = () => {
 
   return (
     <div style={{ 
-      height: '100vh', 
+      minHeight: '100vh', 
       overflowY: 'auto', 
       WebkitOverflowScrolling: 'touch',
       scrollBehavior: 'smooth',
-      padding: '2rem 1rem',
+      padding: '1rem 0.5rem',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'flex-start',
+      paddingTop: 'max(2rem, 10vh)',
+      paddingBottom: '2rem'
     }}>
       <div style={{
         background: '#ffffffdd', 
         borderRadius: '1.2rem', 
         boxShadow: '0 4px 24px rgba(0, 0, 0, 0.15)', 
-        padding: '2.5rem',
+        padding: 'clamp(1.5rem, 4vw, 2.5rem)',
         maxWidth: '600px',
-        width: '100%',
+        width: 'calc(100% - 1rem)',
+        minWidth: '280px',
         textAlign: 'center',
         fontFamily: 'Playfair Display, Inter, Segoe UI, Arial, serif',
         color: '#333333',
-        margin: '0 auto'
+        margin: '0 auto',
+        boxSizing: 'border-box',
+        flex: '0 0 auto'
       }}>
+        {customerName && (
         <h2 style={{ 
           fontWeight: 700, 
-          fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', 
-          marginBottom: '2rem', 
+          fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', 
+          marginBottom: 'clamp(1rem, 3vw, 2rem)', 
           color: '#333333', 
-          textShadow: '0 2px 12px rgba(0, 0, 0, 0.1), 0 1px 0 #ffffff' 
+          textShadow: '0 2px 12px rgba(0, 0, 0, 0.1), 0 1px 0 #ffffff',
+          lineHeight: '1.2'
         }}>
-          Thank You!
+          Thank You {customerName}!
         </h2>
+        )}
         
         {status === 'complete' ? (
           <div style={{ 
             display: 'flex', 
             flexDirection: 'column', 
-            gap: '1.5rem',
-            fontSize: 'clamp(1rem, 2.5vw, 1.2rem)',
-            lineHeight: '1.6'
+            gap: 'clamp(1rem, 2.5vw, 1.5rem)',
+            fontSize: 'clamp(0.9rem, 2.8vw, 1.2rem)',
+            lineHeight: '1.5'
           }}>
             <div style={{
               background: '#f0f8ff',
-              borderRadius: '1rem',
-              padding: '1.5rem',
-              border: '2px solid #e6f3ff'
+              borderRadius: 'clamp(0.5rem, 2vw, 1rem)',
+              padding: 'clamp(1rem, 3vw, 1.5rem)',
+              border: '2px solid #e6f3ff',
+              wordWrap: 'break-word',
+              overflowWrap: 'break-word'
             }}>
               <p style={{ margin: '0 0 1rem 0', fontWeight: '600', color: '#2c5530' }}>
                 🎉 Your purchase was successful!
               </p>
               {pieceName && (
-                <p style={{ margin: '0 0 1rem 0', fontSize: 'clamp(1.1rem, 2.8vw, 1.3rem)', fontWeight: '600' }}>
+                <p style={{ 
+                  margin: '0 0 1rem 0', 
+                  fontSize: 'clamp(1rem, 3.2vw, 1.3rem)', 
+                  fontWeight: '600',
+                  wordWrap: 'break-word',
+                  overflowWrap: 'break-word',
+                  hyphens: 'auto'
+                }}>
                   Artwork: <strong style={{ color: '#1a472a' }}>"{pieceName}"</strong>
                 </p>
               )}
-              <p style={{ margin: '0', wordBreak: 'break-word' }}>
+              <p style={{ 
+                margin: '0', 
+                wordBreak: 'break-all',
+                overflowWrap: 'break-word',
+                fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)'
+              }}>
                 Confirmation sent to:<br />
                 <strong style={{ color: '#1a472a' }}>{customerEmail}</strong>
               </p>
             </div>
             
-            {customerName && (
-              <div style={{
-                background: '#f9f9f9',
-                borderRadius: '1rem',
-                padding: '1rem',
-                border: '1px solid #e0e0e0'
-              }}>
-                <p style={{ margin: '0', fontSize: 'clamp(1rem, 2.5vw, 1.1rem)' }}>
-                  Customer: <strong>{customerName}</strong>
-                </p>
-              </div>
-            )}
             
             <div style={{
               background: '#fff8e1',
-              borderRadius: '1rem',
-              padding: '1.5rem',
+              borderRadius: 'clamp(0.5rem, 2vw, 1rem)',
+              padding: 'clamp(1rem, 3vw, 1.5rem)',
               border: '1px solid #ffecb3',
-              marginTop: '1rem'
+              marginTop: 'clamp(0.5rem, 2vw, 1rem)',
+              wordWrap: 'break-word',
+              overflowWrap: 'break-word'
             }}>
               <p style={{ 
                 margin: '0', 
-                fontSize: 'clamp(0.9rem, 2.2vw, 1rem)',
+                fontSize: 'clamp(0.8rem, 2.5vw, 1rem)',
                 color: '#5d4037',
-                fontStyle: 'italic'
+                fontStyle: 'italic',
+                lineHeight: '1.4'
               }}>
                 📧 Please check your email for order confirmation and next steps.<br />
                 🎨 Thank you for supporting independent art!
