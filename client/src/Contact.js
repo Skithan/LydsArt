@@ -41,52 +41,66 @@ const Contact = () => {
   }, []);
 
   return (
-    <section id="contact" className="contact-section" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '3rem', gap: '2rem' }}>
+    <div 
+      className="contact-scroll-container"
+      style={{
+        height: '100vh',
+        maxHeight: '100vh',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        WebkitOverflowScrolling: 'touch',
+        scrollBehavior: 'smooth',
+        paddingBottom: '2rem'
+      }}
+    >
+      <section id="contact" className="contact-section" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '3rem', gap: '2rem', minHeight: 'calc(100vh - 4rem)' }}>
 
-      <h2 
-        ref={titleRef}
-        style={{ 
-          fontWeight: 700, 
-          fontSize: '1.2rem', 
-          color: '#333333',
-          transform: titleVisible ? 'translateX(0) scale(1)' : 'translateX(-200px) scale(0.3)',
-          opacity: titleVisible ? 1 : 0.3,
-          transition: 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
-        }}
-      >
-        Checkout my Instagram
-      </h2>
+        <h2 
+          ref={titleRef}
+          style={{ 
+            fontWeight: 700, 
+            fontSize: '1.2rem', 
+            color: '#333333',
+            transform: titleVisible ? 'translateX(0) scale(1)' : 'translateX(-200px) scale(0.3)',
+            opacity: titleVisible ? 1 : 0.3,
+            transition: 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+          }}
+        >
+          Checkout my Instagram
+        </h2>
 
-      <div 
-        ref={instagramRef}
-        style={{ 
-          width: '100%', 
-          maxWidth: '400px', 
-          minHeight: '480px', 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          background: '#f7f7f0dd', 
-          borderRadius: '1rem', 
-          boxShadow: '0 2px 12px #0002', 
-          padding: '1rem',
-          transform: instagramVisible ? 'translateX(0) scale(1)' : 'translateX(-200px) scale(0.3)',
-          opacity: instagramVisible ? 1 : 0.3,
-          transition: 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
-        }}
-      >
-        <iframe
-          src="https://www.instagram.com/lydiapatersonart/embed"
-          title="Instagram Feed"
-          width="100%"
-          height="480"
-          frameBorder="0"
-          scrolling="no"
-          allowtransparency="true"
-          style={{ border: 'none', borderRadius: '1rem', width: '100%', minHeight: '480px' }}
-        ></iframe>
-      </div>
-    </section>
+        <div 
+          ref={instagramRef}
+          style={{ 
+            width: '100%', 
+            maxWidth: '400px', 
+            minHeight: '480px', 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            background: '#f7f7f0dd', 
+            borderRadius: '1rem', 
+            boxShadow: '0 2px 12px #0002', 
+            padding: '1rem',
+            transform: instagramVisible ? 'translateX(0) scale(1)' : 'translateX(-200px) scale(0.3)',
+            opacity: instagramVisible ? 1 : 0.3,
+            transition: 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+            marginBottom: '2rem'
+          }}
+        >
+          <iframe
+            src="https://www.instagram.com/lydiapatersonart/embed"
+            title="Instagram Feed"
+            width="100%"
+            height="480"
+            frameBorder="0"
+            scrolling="no"
+            allowtransparency="true"
+            style={{ border: 'none', borderRadius: '1rem', width: '100%', minHeight: '480px' }}
+          ></iframe>
+        </div>
+      </section>
+    </div>
   );
 };
 

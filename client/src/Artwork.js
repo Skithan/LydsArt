@@ -280,7 +280,7 @@ const Artwork = () => {
           transform: filtersVisible ? 'translateX(0) scale(1)' : 'translateX(-200px) scale(0.3)',
           opacity: filtersVisible ? 1 : 0.3,
           transition: 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-          zIndex: 100
+          zIndex: 1
         }}
       >
         <div ref={filterRef} style={{ position: 'relative', marginBottom: '1.5rem', width: 'fit-content', display: 'flex', gap: '1rem' }}>

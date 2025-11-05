@@ -7,12 +7,10 @@ const Home = () => {
   const touchStartY = useRef(null);
   const touchEndY = useRef(null);
   const isZooming = useRef(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [biographyVisible, setBiographyVisible] = useState(false);
+  const [contentVisible, setContentVisible] = useState(false);
   const [buttonVisible, setButtonVisible] = useState(false);
   
-  const imageRef = useRef(null);
-  const biographyRef = useRef(null);
+  const contentRef = useRef(null);
   const buttonRef = useRef(null);
 
 
@@ -42,10 +40,8 @@ const Home = () => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          if (entry.target === imageRef.current) {
-            setImageLoaded(true);
-          } else if (entry.target === biographyRef.current) {
-            setBiographyVisible(true);
+          if (entry.target === contentRef.current) {
+            setContentVisible(true);
           } else if (entry.target === buttonRef.current) {
             setButtonVisible(true);
           }
@@ -54,18 +50,15 @@ const Home = () => {
     }, observerOptions);
 
     // Capture current ref values for cleanup
-    const currentImageRef = imageRef.current;
-    const currentBiographyRef = biographyRef.current;
+    const currentContentRef = contentRef.current;
     const currentButtonRef = buttonRef.current;
 
     // Start observing elements
-    if (currentImageRef) observer.observe(currentImageRef);
-    if (currentBiographyRef) observer.observe(currentBiographyRef);
+    if (currentContentRef) observer.observe(currentContentRef);
     if (currentButtonRef) observer.observe(currentButtonRef);
 
     return () => {
-      if (currentImageRef) observer.unobserve(currentImageRef);
-      if (currentBiographyRef) observer.unobserve(currentBiographyRef);
+      if (currentContentRef) observer.unobserve(currentContentRef);
       if (currentButtonRef) observer.unobserve(currentButtonRef);
     };
   }, []);
@@ -86,40 +79,43 @@ const Home = () => {
       onTouchEnd={handleTouchEnd}
     >
       <section id="home" className="home-section" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '2rem', minHeight: 'calc(100vh - 4rem)' }}>
-      <img 
-        ref={imageRef}
-        src={process.env.PUBLIC_URL + '/Headshot.jpeg'} 
-        alt="Lydia Paterson Headshot" 
-        style={{ 
-          width: '220px', 
-          height: '220px', 
-          objectFit: 'cover', 
-          borderRadius: '50%', 
-          boxShadow: '0 4px 24px #0004', 
-          marginBottom: '2rem',
-          transform: imageLoaded ? 'translateX(0) scale(1)' : 'translateX(-200px) scale(0.3)',
-          opacity: imageLoaded ? 1 : 0.3,
-          transition: 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
-        }}
-      />
       <div 
-        ref={biographyRef}
-        className="biography-text" 
-        style={{ 
-          maxWidth: '600px', 
-          textAlign: 'center', 
-          fontSize: '1.25rem', 
-          color: '#333333', 
-          background: '#ffffffdd', 
-          padding: '2rem', 
-          borderRadius: '1rem', 
-          boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)', 
-          marginBottom: '3rem',
-          transform: biographyVisible ? 'translateX(0) scale(1)' : 'translateX(-200px) scale(0.3)',
-          opacity: biographyVisible ? 1 : 0.3,
+        ref={contentRef}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          transform: contentVisible ? 'translateX(0) scale(1)' : 'translateX(-200px) scale(0.3)',
+          opacity: contentVisible ? 1 : 0.3,
           transition: 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
         }}
       >
+        <img 
+          src={process.env.PUBLIC_URL + '/Headshot.jpeg'} 
+          alt="Lydia Paterson Headshot" 
+          style={{ 
+            width: '220px', 
+            height: '220px', 
+            objectFit: 'cover', 
+            borderRadius: '50%', 
+            boxShadow: '0 4px 24px #0004', 
+            marginBottom: '2rem'
+          }}
+        />
+        <div 
+          className="biography-text" 
+          style={{ 
+            maxWidth: '600px', 
+            textAlign: 'center', 
+            fontSize: '1.25rem', 
+            color: '#333333', 
+            background: '#ffffffdd', 
+            padding: '2rem', 
+            borderRadius: '1rem', 
+            boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)', 
+            marginBottom: '3rem'
+          }}
+        >
         <p style={{ marginBottom: '1.5rem', lineHeight: '1.6' }}>
           My practice, rooted primarily in oil and acrylic painting, explores themes of childhood, nostalgia, and the
           contradictions of change. I draw inspiration from the everyday--people, places, and connections that shape
@@ -133,6 +129,7 @@ const Home = () => {
           elements of childhood I revisit as I move into adulthood. Much like my surroundings and experiences,
           both past and present, my work mirrors this change, prompting shifts in style, theme, and subject.
         </p>
+        </div>
       </div>
       
       <div 
