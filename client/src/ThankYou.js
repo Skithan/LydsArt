@@ -6,6 +6,7 @@ const ThankYou = () => {
   const [customerEmail, setCustomerEmail] = useState('');
   const [customerName, setCustomerName] = useState('');
   const [status, setStatus] = useState('');
+  const [pieceName, setPieceName] = useState('');
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get('session_id');
@@ -18,6 +19,7 @@ const ThankYou = () => {
           setCustomerEmail(data.customer_email);
           setCustomerName(data.customer_name);
           setStatus(data.status);
+          setPieceName(data.piece_name);
     
 
           console.log('Customer Email:', data.customer_email);
@@ -61,22 +63,132 @@ const ThankYou = () => {
   }, []);
 
   return (
-      <div className="ThankYou">
-        <h2 className="thankyou-title">Thank You!</h2>
-      {status === 'complete' ? (
-        <div>
-          <p>
-            Your purchase was successful.<br />
-            Confirmation sent to: <strong>{customerEmail}</strong>
-          </p>
-          {customerName && (
-            <p>Customer: <strong>{customerName}</strong></p>
-          )}
-          
-        </div>
-      ) : (
-        <p>Processing your payment...</p>
-      )}
+    <div style={{ 
+      height: '100vh', 
+      overflowY: 'auto', 
+      WebkitOverflowScrolling: 'touch',
+      scrollBehavior: 'smooth',
+      padding: '2rem 1rem',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}>
+      <div style={{
+        background: '#ffffffdd', 
+        borderRadius: '1.2rem', 
+        boxShadow: '0 4px 24px rgba(0, 0, 0, 0.15)', 
+        padding: '2.5rem',
+        maxWidth: '600px',
+        width: '100%',
+        textAlign: 'center',
+        fontFamily: 'Playfair Display, Inter, Segoe UI, Arial, serif',
+        color: '#333333',
+        margin: '0 auto'
+      }}>
+        <h2 style={{ 
+          fontWeight: 700, 
+          fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', 
+          marginBottom: '2rem', 
+          color: '#333333', 
+          textShadow: '0 2px 12px rgba(0, 0, 0, 0.1), 0 1px 0 #ffffff' 
+        }}>
+          Thank You!
+        </h2>
+        
+        {status === 'complete' ? (
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            gap: '1.5rem',
+            fontSize: 'clamp(1rem, 2.5vw, 1.2rem)',
+            lineHeight: '1.6'
+          }}>
+            <div style={{
+              background: '#f0f8ff',
+              borderRadius: '1rem',
+              padding: '1.5rem',
+              border: '2px solid #e6f3ff'
+            }}>
+              <p style={{ margin: '0 0 1rem 0', fontWeight: '600', color: '#2c5530' }}>
+                🎉 Your purchase was successful!
+              </p>
+              {pieceName && (
+                <p style={{ margin: '0 0 1rem 0', fontSize: 'clamp(1.1rem, 2.8vw, 1.3rem)', fontWeight: '600' }}>
+                  Artwork: <strong style={{ color: '#1a472a' }}>"{pieceName}"</strong>
+                </p>
+              )}
+              <p style={{ margin: '0', wordBreak: 'break-word' }}>
+                Confirmation sent to:<br />
+                <strong style={{ color: '#1a472a' }}>{customerEmail}</strong>
+              </p>
+            </div>
+            
+            {customerName && (
+              <div style={{
+                background: '#f9f9f9',
+                borderRadius: '1rem',
+                padding: '1rem',
+                border: '1px solid #e0e0e0'
+              }}>
+                <p style={{ margin: '0', fontSize: 'clamp(1rem, 2.5vw, 1.1rem)' }}>
+                  Customer: <strong>{customerName}</strong>
+                </p>
+              </div>
+            )}
+            
+            <div style={{
+              background: '#fff8e1',
+              borderRadius: '1rem',
+              padding: '1.5rem',
+              border: '1px solid #ffecb3',
+              marginTop: '1rem'
+            }}>
+              <p style={{ 
+                margin: '0', 
+                fontSize: 'clamp(0.9rem, 2.2vw, 1rem)',
+                color: '#5d4037',
+                fontStyle: 'italic'
+              }}>
+                📧 Please check your email for order confirmation and next steps.<br />
+                🎨 Thank you for supporting independent art!
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '1.5rem'
+          }}>
+            <div style={{
+              width: '50px',
+              height: '50px',
+              border: '3px solid #f3f3f3',
+              borderTop: '3px solid #666666',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite'
+            }}></div>
+            <p style={{ 
+              margin: '0',
+              fontSize: 'clamp(1rem, 2.5vw, 1.2rem)',
+              color: '#666666'
+            }}>
+              Processing your payment...
+            </p>
+          </div>
+        )}
+      </div>
+      
+      <style>
+        {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+      </style>
     </div>
   );
 };
