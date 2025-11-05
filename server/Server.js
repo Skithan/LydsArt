@@ -21,9 +21,9 @@ app.post('/create-checkout-session', async (req, res) => {
     // Create Checkout Session
     const session = await stripe.checkout.sessions.create({
       line_items: req.body.line_items,
-      customer_details: {
-        individual_name: req.body.customer_name,
-        email: req.body.customer_email
+      customer_email: req.body.customer_email,
+      metadata:{
+        customer_name: req.body.customer_name
       },
       mode: 'payment',
       ui_mode: 'embedded',
@@ -55,8 +55,8 @@ app.get('/session-status', async (req, res) => {
     
     res.json({
       status: session.status,
-      customer_email: session.customer_details?.email,
-      customer_name: session.customer_details?.name,
+      customer_email: session.customer_email?.email,
+      customer_name: session.metadata?.customer_name,
       line_items: session.line_items
     });
   } catch (error) {

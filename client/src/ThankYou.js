@@ -16,25 +16,25 @@ const ThankYou = () => {
       fetch(`https://lydsart.onrender.com/session-status?session_id=${sessionId}`)
         .then(res => res.json())
         .then(data => {
-          setCustomerEmail(data.customer_details?.email);
-          setCustomerName(data.customer_details?.individual_name);
+          setCustomerEmail(data.customerEmail);
+          setCustomerName(data.customer_name);
           setStatus(data.status);
           setOrderDetails(data);
-          
-          console.log('Customer Email:', data.customer_details?.email);
-          console.log('Customer Name:', data.customer_details?.individual_name);
-          console.log('Session status data:', data.status);
+
+          console.log('Customer Email:', customerEmail);
+          console.log('Customer Name:', customerName);
+          console.log('Session status data:', status);
           console.log('Line items:', data.line_items);
           console.log('Full session data:', data);
 
-           if(data.customer_details?.email){
+           if(data.customer_email){
               // Prepare order details for email
               const emailOrderDetails = {
                 session_id: sessionId,
                 purchase_status: data.status,
                 purchase_date: new Date().toLocaleDateString(),
                 line_items: data.line_items,
-                customer_name: data.customer_details?.individual_name
+                customer_name: data.customer_name
               };
                console.log('order details: ', emailOrderDetails);
 

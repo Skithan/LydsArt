@@ -3,7 +3,8 @@ import emailjs from '@emailjs/browser';
 // EmailJS configuration using Netlify environment variables
 // Set these in your Netlify dashboard under Site settings > Environment variables
 const SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
-const TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
+const TEMPLATE_ID_BUYER = process.env.REACT_APP_EMAILJS_TEMPLATE_ID_BUYER;
+const TEMPLATE_ID_SELLER = process.env.REACT_APP_EMAILJS_TEMPLATE_ID_SELLER;
 const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
 
 /**
@@ -14,10 +15,7 @@ const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
  */
 export const sendConfirmationEmail = async (customerEmail, orderDetails) => {
   try {
-    // console.log('Sending confirmation email to:', customerEmail);
-    // console.log('Using EmailJS service ID:', SERVICE_ID);
-    // console.log('Using EmailJS template ID:', TEMPLATE_ID);
-    // console.log('Using EmailJS public key:', PUBLIC_KEY);
+    
     
     // Validate inputs
     if (!customerEmail || !customerEmail.includes('@')) {
@@ -42,7 +40,7 @@ export const sendConfirmationEmail = async (customerEmail, orderDetails) => {
     // Send email using EmailJS
     const response = await emailjs.send(
       SERVICE_ID,
-      TEMPLATE_ID,
+      TEMPLATE_ID_BUYER,
       templateParams,
       PUBLIC_KEY
     );
@@ -73,18 +71,16 @@ export const sendArtistNotification = async (customerEmail, orderDetails) => {
     console.log('Sending artist notification for order from:', customerEmail);
     
     const templateParams = {
-      to_name: 'Lydia',
+      to_name: orderDetails?.customer_name,
       to_email: 'lydiapatersonart@gmail.com',
-      from_name: orderDetails?.customer_name,
+      from_name: 'Past Ethan:)',
       customer_email: customerEmail,
-      message: `New artwork purchase from ${customerEmail}`,
-      reply_to: customerEmail,
       piece_name: orderDetails?.line_items?.[0]?.price_data?.product_data?.name,
     };
 
     const response = await emailjs.send(
       SERVICE_ID,
-      TEMPLATE_ID, 
+      TEMPLATE_ID_SELLER, 
       templateParams,
       PUBLIC_KEY
     );
