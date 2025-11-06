@@ -8,9 +8,11 @@ const Home = () => {
   const touchEndY = useRef(null);
   const isZooming = useRef(false);
   const [contentVisible, setContentVisible] = useState(false);
+  const [practiceVisible, setPracticeVisible] = useState(false);
   const [buttonVisible, setButtonVisible] = useState(false);
   
   const contentRef = useRef(null);
+  const practiceRef = useRef(null);
   const buttonRef = useRef(null);
 
 
@@ -42,6 +44,8 @@ const Home = () => {
         if (entry.isIntersecting) {
           if (entry.target === contentRef.current) {
             setContentVisible(true);
+          } else if (entry.target === practiceRef.current) {
+            setPracticeVisible(true);
           } else if (entry.target === buttonRef.current) {
             setButtonVisible(true);
           }
@@ -51,14 +55,17 @@ const Home = () => {
 
     // Capture current ref values for cleanup
     const currentContentRef = contentRef.current;
+    const currentPracticeRef = practiceRef.current;
     const currentButtonRef = buttonRef.current;
 
     // Start observing elements
     if (currentContentRef) observer.observe(currentContentRef);
+    if (currentPracticeRef) observer.observe(currentPracticeRef);
     if (currentButtonRef) observer.observe(currentButtonRef);
 
     return () => {
       if (currentContentRef) observer.unobserve(currentContentRef);
+      if (currentPracticeRef) observer.unobserve(currentPracticeRef);
       if (currentButtonRef) observer.unobserve(currentButtonRef);
     };
   }, []);
@@ -102,6 +109,43 @@ const Home = () => {
             marginBottom: '2rem'
           }}
         />
+      </div>
+      
+      <div 
+        ref={practiceRef}
+        style={{
+          transform: practiceVisible ? 'translateX(0) scale(1)' : 'translateX(-200px) scale(0.3)',
+          opacity: practiceVisible ? 1 : 0.3,
+          transition: 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+          marginBottom: '2rem'
+        }}
+      >
+        <h2 
+          style={{
+            fontSize: '2.2rem',
+            fontWeight: '600',
+            fontFamily: 'Playfair Display, Inter, serif',
+            color: '#333333',
+            textAlign: 'center',
+            letterSpacing: '2px',
+            textShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+            marginBottom: '1rem'
+          }}
+        >
+          My Practice
+        </h2>
+      </div>
+      
+      <div 
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          transform: practiceVisible ? 'translateX(0) scale(1)' : 'translateX(-200px) scale(0.3)',
+          opacity: practiceVisible ? 1 : 0.3,
+          transition: 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+        }}
+      >
         <div 
           className="biography-text" 
           style={{ 

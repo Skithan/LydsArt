@@ -50,7 +50,7 @@ const Contact = () => {
         overflowX: 'hidden',
         WebkitOverflowScrolling: 'touch',
         scrollBehavior: 'smooth',
-        paddingBottom: '2rem'
+        paddingBottom: '8rem'
       }}
     >
       <section id="contact" className="contact-section" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '3rem', gap: '2rem', minHeight: 'calc(100vh - 4rem)' }}>
@@ -85,7 +85,7 @@ const Contact = () => {
             transform: instagramVisible ? 'translateX(0) scale(1)' : 'translateX(-200px) scale(0.3)',
             opacity: instagramVisible ? 1 : 0.3,
             transition: 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-            marginBottom: '2rem'
+            marginBottom: '15rem'
           }}
         >
           <iframe

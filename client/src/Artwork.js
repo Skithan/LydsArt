@@ -642,15 +642,17 @@ const Artwork = () => {
           >
             {expanded ? 'click to expand' : 'click for details'}
           </button>
-          <div className="arrow-btn-row">
+          <div className={`arrow-btn-row${!expanded ? ' expanded-mode' : ''}`}>
             <button className="arrow-btn left" onClick={() => setCurrent(prev => prev === 0 ? filteredCards.length - 1 : prev - 1)} aria-label="Previous card" disabled={current === 0} style={current === 0 ? { opacity: 0.4, cursor: 'not-allowed' } : {}}>&#8592;</button>
-            <div
-              className={`scroll-text${expanded ? ' expanded' : ''}`}
-              onClick={handleExpand}
-              style={{ cursor: 'pointer', transition: 'all 0.7s cubic-bezier(.77,0,.18,1)' }}
-            >
-              <div className="card-text">{filteredCards.length > 0 ? filteredCards[current].title : ''}</div>
-            </div>
+            {expanded && (
+              <div
+                className={`scroll-text${expanded ? ' expanded' : ''}`}
+                onClick={handleExpand}
+                style={{ cursor: 'pointer', transition: 'all 0.7s cubic-bezier(.77,0,.18,1)' }}
+              >
+                <div className="card-text">{filteredCards.length > 0 ? filteredCards[current].title : ''}</div>
+              </div>
+            )}
             <button className="arrow-btn right" onClick={() => setCurrent(prev => prev === filteredCards.length - 1 ? 0 : prev + 1)} aria-label="Next card">&#8594;</button>
           </div>
           <div

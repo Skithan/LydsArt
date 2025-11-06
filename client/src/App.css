@@ -62,6 +62,20 @@
   margin-top: 2rem;
 }
 
+.arrow-btn-row.expanded-mode {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  z-index: 1500;
+  gap: 0;
+  margin-top: 0;
+  justify-content: space-between;
+  width: 100vw;
+  pointer-events: none;
+}
+
 
 .arrow-scroll-wrapper {
   display: flex;
@@ -87,13 +101,43 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s, transform 0.2s, color 0.2s;
+  transition: background 0.2s, transform 0.2s, color 0.2s, font-size 0.3s, width 0.3s, height 0.3s;
   z-index: 2;
+}
+
+.arrow-btn-row.expanded-mode .arrow-btn {
+  background: rgba(255, 255, 255, 0.9);
+  color: #333333;
+  border: 2px solid #333333;
+  font-size: 1.8rem;
+  width: 3rem;
+  height: 3rem;
+  margin: 0 1rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  pointer-events: all;
+  backdrop-filter: blur(4px);
 }
 .arrow-btn:hover {
   background: #444444;
   color: #ffffff;
   transform: scale(1.08);
+}
+
+.arrow-btn-row.expanded-mode .arrow-btn:hover {
+  background: rgba(240, 240, 240, 0.95);
+  color: #333333;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* Mobile responsive positioning for expanded arrows */
+@media (max-width: 768px) {
+  .arrow-btn-row.expanded-mode .arrow-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.5rem;
+    margin: 0 0.5rem;
+  }
 }
 
 .scroll-card.single {
@@ -560,6 +604,20 @@
   outline: none;
 }
 
+/* Define z-index scale as CSS custom properties */
+:root {
+  --z-base: 1;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal: 1000;
+  --z-navigation: 2000;
+}
+
+.filter-container { z-index: var(--z-base); }
+.filter-dropdown-menu { z-index: var(--z-dropdown); }
+.header-nav { z-index: var(--z-navigation); }
+.nav-list { z-index: calc(var(--z-navigation) + 1); }
+
 /* Artwork Grid Scrolling Styles */
 .artwork-grid-container {
   scroll-snap-type: none;
@@ -583,12 +641,12 @@
 }
 
 .artwork-grid-container::-webkit-scrollbar-thumb {
-  background: #cccccc;
+  background: #333333;
   border-radius: 4px;
 }
 
 .artwork-grid-container::-webkit-scrollbar-thumb:hover {
-  background: #999999;
+  background: #222222;
 }
 
 .grid-card {
@@ -630,12 +688,12 @@
 }
 
 .cart-section::-webkit-scrollbar-thumb {
-  background: rgba(102, 102, 102, 0.6);
+  background: #333333;
   border-radius: 4px;
 }
 
 .cart-section::-webkit-scrollbar-thumb:hover {
-  background: rgba(102, 102, 102, 0.8);
+  background: #222222;
 }
 
 /* Add extra content at bottom for extensive scrolling */
@@ -668,19 +726,19 @@
 }
 
 .single-card-scroll-container::-webkit-scrollbar-thumb {
-  background: rgba(102, 102, 102, 0.6);
+  background: #333333;
   border-radius: 4px;
 }
 
 .single-card-scroll-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(102, 102, 102, 0.8);
+  background: #222222;
 }
 
 /* Expanded Card Details Scrolling Styles */
 .card-details.show {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
-  scrollbar-color: rgba(102, 102, 102, 0.6) rgba(247, 247, 240, 0.5);
+  scrollbar-color: #333333 rgba(247, 247, 240, 0.5);
 }
 
 .card-details.show::-webkit-scrollbar {
@@ -693,12 +751,50 @@
 }
 
 .card-details.show::-webkit-scrollbar-thumb {
-  background: rgba(102, 102, 102, 0.5);
+  background: #333333;
   border-radius: 3px;
 }
 
 .card-details.show::-webkit-scrollbar-thumb:hover {
-  background: rgba(102, 102, 102, 0.7);
+  background: #222222;
+}
+
+/* Contact page scrollbar styling */
+.contact-scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.contact-scroll-container::-webkit-scrollbar-track {
+  background: rgba(247, 247, 240, 0.5);
+  border-radius: 4px;
+}
+
+.contact-scroll-container::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 4px;
+}
+
+.contact-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #222222;
+}
+
+/* Home page scrollbar styling */
+.home-scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.home-scroll-container::-webkit-scrollbar-track {
+  background: rgba(247, 247, 240, 0.5);
+  border-radius: 4px;
+}
+
+.home-scroll-container::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 4px;
+}
+
+.home-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #222222;
 }
 
 /* Home Page Scrolling Styles */
@@ -713,20 +809,3 @@
   width: 100%;
 }
 
-.home-scroll-container::-webkit-scrollbar {
-  width: 8px;
-}
-
-.home-scroll-container::-webkit-scrollbar-track {
-  background: rgba(247, 247, 240, 0.5);
-  border-radius: 4px;
-}
-
-.home-scroll-container::-webkit-scrollbar-thumb {
-  background: rgba(102, 102, 102, 0.6);
-  border-radius: 4px;
-}
-
-.home-scroll-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(102, 102, 102, 0.8);
-}
