@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { loadStripe } from '@stripe/stripe-js';
 import {
   EmbeddedCheckoutProvider,
@@ -19,6 +19,7 @@ const stripePromise = stripePublicKey ? loadStripe(stripePublicKey) : null;
 
 const Cart = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const card = location.state;
   const [isProcessing, setIsProcessing] = useState(false);
   const [clientSecret, setClientSecret] = useState(null);
@@ -136,8 +137,23 @@ const Cart = () => {
       {card && (
         <div style={{ background: '#ffffffdd', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', padding: '1.2rem', marginBottom: '2rem', width: '100%', maxWidth: '400px' }}>
           <h3 style={{ color: '#333333', fontWeight: 600, fontSize: '1.3rem', marginBottom: '0.7rem' }}>{card.title}</h3>
+          {card.sold && (
+            <div style={{
+              background: '#ffebee',
+              border: '2px solid #c62828',
+              borderRadius: '0.5rem',
+              padding: '1rem',
+              marginBottom: '1rem',
+              textAlign: 'center',
+              color: '#c62828',
+              fontWeight: 600,
+              fontSize: '1.1rem'
+            }}>
+              ⚠️ This artwork has been sold and is no longer available for purchase.
+            </div>
+          )}
           {Object.entries(card).map(([key, value]) => (
-            key !== 'imgs' && key !== 'sold' ? (
+            key !== 'imgs' && key !== 'sold' && key !== 'id' ? (
               <div key={key} style={{ color: '#4a4a4a', fontSize: '1.1rem', marginBottom: '0.3rem' }}>
                 <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {String(value)}
               </div>
@@ -150,7 +166,37 @@ const Cart = () => {
       )}
 
 
-      {!clientSecret && !paymentCompleted && (
+      {card && card.sold ? (
+        <div style={{
+          background: '#f5f5f5',
+          borderRadius: '1rem',
+          padding: '2rem',
+          textAlign: 'center',
+          maxWidth: '400px',
+          width: '100%'
+        }}>
+          <h3 style={{ color: '#666666', marginBottom: '1rem' }}>Artwork Not Available</h3>
+          <p style={{ color: '#888888', fontSize: '1.1rem', lineHeight: '1.5' }}>
+            This artwork has already been sold. Please browse our other available pieces in the artwork gallery.
+          </p>
+          <button 
+            onClick={() => navigate('/artwork')}
+            style={{
+              marginTop: '1.5rem',
+              padding: '0.7rem 1.5rem',
+              background: '#666666',
+              color: 'white',
+              border: 'none',
+              borderRadius: '1rem',
+              fontSize: '1.1rem',
+              cursor: 'pointer',
+              fontWeight: 600
+            }}
+          >
+            Browse Available Artwork
+          </button>
+        </div>
+      ) : !clientSecret && !paymentCompleted ? (
         <>
           <p style={{ fontSize: '1.2rem', marginBottom: '2rem', textAlign: 'center' }}>
             Please enter your payment details below.
@@ -234,7 +280,7 @@ const Cart = () => {
             </button>
           </form>
         </>
-      )}
+      ) : null}
 
       {clientSecret && !paymentCompleted && stripePromise && (
         <div style={{ width: '100%', maxWidth: '450px' }}>

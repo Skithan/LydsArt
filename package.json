@@ -1,0 +1,24 @@
+{
+  "name": "lydsart",
+  "version": "1.0.0",
+  "description": "Site for Lydia Paterson to display her art",
+  "main": "uploadData.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Skithan/LydsArt.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Skithan/LydsArt/issues"
+  },
+  "homepage": "https://github.com/Skithan/LydsArt#readme",
+  "dependencies": {
+    "firebase-admin": "^13.6.0"
+  }
+}

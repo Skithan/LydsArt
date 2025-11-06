@@ -1,21 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { db } from './firebase';
 import './App.css';
-
-//artwork data 
-const cards = [
-  { img: process.env.PUBLIC_URL + '/AnUptownPerspective2.jpeg',title: 'An Uptown Perspective', medium:'Acrylic on Canvas',size: '18"x24"', date: '2025', price: 'N/A', sold: true},
-  { img: process.env.PUBLIC_URL + '/ComfortInChange.jpeg', title: 'Comfort In Change',  medium: 'Oil on Canvas', size: '24"x30"', date: '2024', price: '$450', sold: false},
-  { img: process.env.PUBLIC_URL + '/EndOfSummerFlowers.jpeg', title: 'End Of Summer Flowers',  medium: 'Acrylic on Panel', size: '18"x24"', date: '2025', price: '$400', sold: false},
-  { img: process.env.PUBLIC_URL + '/FalseLight.jpeg', title: 'False Light', medium: 'Acrylic on Canvas', size: '18"x24"', date: '2025', price: 'N/A', sold: true},
-  { img: process.env.PUBLIC_URL + '/FamiliarFaces.jpeg', title: 'Familiar Faces', medium: 'Acrylic on Canvas', size: '18"x24"', date: '2025', price: 'N/A', sold: true},
-  { img: process.env.PUBLIC_URL + '/KingSquareAtNight.jpeg', title: 'King Square At Night', medium: 'Oil on Canvas', size: '18"x24"', date: '2022', price: 'N/A', sold: true},
-  { img: process.env.PUBLIC_URL + '/NoDogsOnTheCouch.jpeg', title: 'No Dogs On The Couch',  medium: 'Oil on Canvas', size: '18"x24"', date: '2022', price: 'N/A', sold: true},
-  { img: process.env.PUBLIC_URL + '/SharingATemporaryHome.jpeg', title: 'Sharing A Temporary Home',  medium: 'Acrylic on Canvas', size: '48"x60"', date: '2023', price: '$5000', sold: false},
-  { img: process.env.PUBLIC_URL + '/SimonAndGarfunkelKids.jpeg', title: 'Simon And Garfunkel Kids',  medium: 'Acrylic on Canvas', size: 'N/A', date: '2024', price: 'N/A', sold: true},
-  { img: process.env.PUBLIC_URL + '/YellowFrog.jpeg', title: 'Yellow Frog',  medium: 'Oil on Canvas', size: '24"x30"', date: '2024', price: 'N/A', sold: true},
-  { img: process.env.PUBLIC_URL + '/BlueFrog.jpeg', title: 'Blue Frog',  medium: 'Oil on Canvas', size: '24"x30"', date: '2024', price: 'N/A', sold: true},
-];
 
 //fiter button image svg
 const filterIcon = (
@@ -33,6 +20,9 @@ const filterIcon = (
 );
 
 const Artwork = () => {
+  const [cards, setCards] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [current, setCurrent] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const [imgIdx, setImgIdx] = useState(0); 
@@ -54,6 +44,66 @@ const Artwork = () => {
   const contentContainerRef = useRef(null);
 
   const navigate = useNavigate();
+
+  // Fetch artwork from Firestore
+  useEffect(() => {
+    const fetchArtwork = async () => {
+      try {
+        setLoading(true);
+        console.log('🔥 Starting Firestore fetch...');
+        
+        const artworkCollection = collection(db, 'artwork');
+        const artworkQuery = query(artworkCollection, orderBy('createdAt', 'desc'));
+        const querySnapshot = await getDocs(artworkQuery);
+        
+        console.log('📊 Query snapshot size:', querySnapshot.size);
+        console.log('📊 Query snapshot empty:', querySnapshot.empty);
+        
+        if (querySnapshot.empty) {
+          console.log('⚠️ No documents found in artwork collection');
+          setError('No artwork found in database. Please upload artwork data first.');
+          setCards([]);
+        } else {
+          const artworkData = querySnapshot.docs.map(doc => {
+            const data = doc.data();
+            console.log('📄 Processing doc:', doc.id, data);
+            return {
+              id: doc.id,
+              ...data,
+              // Convert Firestore format to display format
+              img: data.imageUrl,
+              imgs: data.imageUrl ? [data.imageUrl] : null,
+              price: data.priceDisplay || (data.price ? `$${data.price}` : null),
+              size: data.size || null,
+              medium: data.medium || null,
+              date: data.date || null
+            };
+          });
+          
+          console.log('✅ Processed artwork data:', artworkData);
+          setCards(artworkData);
+          setError(null);
+        }
+      } catch (err) {
+        console.error('❌ Error fetching artwork:', err);
+        console.error('❌ Error code:', err.code);
+        console.error('❌ Error message:', err.message);
+        
+        if (err.code === 'permission-denied') {
+          setError('Database access denied. Please enable Firestore and set proper permissions.');
+        } else if (err.code === 'not-found') {
+          setError('Database not found. Please enable Firestore in Firebase Console.');
+        } else {
+          setError(`Failed to load artwork: ${err.message}`);
+        }
+        setCards([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArtwork();
+  }, []);
 
   // Get base filtered cards for determining available filter options
   const getBaseFilteredCards = () => {
@@ -252,6 +302,7 @@ const Artwork = () => {
     const card = filteredCards[current];
     navigate('/cart', {
       state: {
+        id: card.id, // Firestore document ID
         title: card.title,
         size: card.size,
         price: card.price,
@@ -265,6 +316,68 @@ const Artwork = () => {
 
 //switches card view to reveal info 
   const handleExpand = () => setExpanded((prev) => !prev);
+
+  if (loading) {
+    return (
+      <section id="artwork" style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+        <div style={{ textAlign: 'center', color: '#333333' }}>
+          <div style={{
+            width: '50px',
+            height: '50px',
+            border: '3px solid #f3f3f3',
+            borderTop: '3px solid #666666',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 1rem'
+          }}></div>
+          <p>Loading artwork...</p>
+          <style>
+            {`
+              @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+              }
+            `}
+          </style>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section id="artwork" style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+        <div style={{ textAlign: 'center', color: '#c62828', background: '#ffebee', padding: '2rem', borderRadius: '1rem', maxWidth: '600px' }}>
+          <h3 style={{ color: '#c62828', marginBottom: '1rem' }}>Database Connection Issue</h3>
+          <p style={{ marginBottom: '1rem' }}>{error}</p>
+          
+          <div style={{ background: '#fff3e0', border: '1px solid #ffb74d', borderRadius: '0.5rem', padding: '1rem', marginBottom: '1rem', fontSize: '0.9rem', textAlign: 'left' }}>
+            <strong style={{ color: '#e65100' }}>Next Steps:</strong>
+            <ol style={{ margin: '0.5rem 0', paddingLeft: '1.2rem', color: '#bf360c' }}>
+              <li>Go to <a href="https://console.firebase.google.com/project/lydsart-f6966/firestore" target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2' }}>Firebase Console</a></li>
+              <li>Enable Firestore Database (choose "test mode")</li>
+              <li>Visit the <a href="https://us-central1-lydsart-f6966.cloudfunctions.net/uploadArtworkData" target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2' }}>upload function</a> to populate data</li>
+            </ol>
+          </div>
+          
+          <button 
+            onClick={() => window.location.reload()} 
+            style={{
+              marginTop: '1rem',
+              padding: '0.5rem 1rem',
+              background: '#666666',
+              color: 'white',
+              border: 'none',
+              borderRadius: '0.5rem',
+              cursor: 'pointer'
+            }}
+          >
+            Try Again
+          </button>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="artwork" style={{ marginTop: '1rem' }}>

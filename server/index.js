@@ -6,6 +6,13 @@ const cors = require("cors")({
   credentials: true,
 });
 
+// Import Firebase Admin SDK for Firestore operations
+const admin = require("firebase-admin");
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
+const db = admin.firestore();
+
 // Define the secret for Stripe
 const stripeSecretKey = defineSecret("STRIPE_SECRET_KEY");
 
@@ -16,6 +23,56 @@ const initStripe = (secretValue) => {
   }
   return require("stripe")(secretValue);
 };
+
+/**
+ * Helper function to find artwork by title in Firestore
+ * @param {string} title - The title of the artwork to find
+ * @return {Object|null} The artwork document or null if not found
+ */
+async function findArtworkByTitle(title) {
+  try {
+    const artworkQuery = await db.collection("artwork")
+        .where("title", "==", title)
+        .limit(1)
+        .get();
+
+    if (artworkQuery.empty) {
+      return null;
+    }
+
+    const doc = artworkQuery.docs[0];
+    return {
+      id: doc.id,
+      ...doc.data(),
+    };
+  } catch (error) {
+    logger.error("Error finding artwork:", error);
+    return null;
+  }
+}
+
+/**
+ * Helper function to mark artwork as sold
+ * @param {string} artworkId - The Firestore document ID of the artwork
+ * @param {Object} customerInfo - Customer information object
+ * @return {boolean} Success status
+ */
+async function markArtworkAsSold(artworkId, customerInfo) {
+  try {
+    await db.collection("artwork").doc(artworkId).update({
+      sold: true,
+      soldAt: admin.firestore.FieldValue.serverTimestamp(),
+      soldTo: customerInfo.customer_name,
+      soldToEmail: customerInfo.customer_email,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+    logger.info(`Artwork ${artworkId} marked as sold`);
+    return true;
+  } catch (error) {
+    logger.error("Error marking artwork as sold:", error);
+    return false;
+  }
+}
 
 // Create checkout session endpoint
 exports.createCheckoutSession = onRequest({secrets: [stripeSecretKey]}, (req, res) => {
@@ -30,6 +87,20 @@ exports.createCheckoutSession = onRequest({secrets: [stripeSecretKey]}, (req, re
     }
 
     try {
+      const artworkTitle = req.body.line_items[0].price_data.product_data.name;
+
+      // Check if artwork is still available
+      const artwork = await findArtworkByTitle(artworkTitle);
+      if (!artwork) {
+        res.status(404).json({error: "Artwork not found"});
+        return;
+      }
+
+      if (artwork.sold) {
+        res.status(400).json({error: "This artwork has already been sold"});
+        return;
+      }
+
       const stripe = initStripe(stripeSecretKey.value());
 
       // Create Checkout Session
@@ -38,7 +109,8 @@ exports.createCheckoutSession = onRequest({secrets: [stripeSecretKey]}, (req, re
         customer_email: req.body.customer_email,
         metadata: {
           customer_name: req.body.customer_name,
-          piece_name: req.body.line_items[0].price_data.product_data.name,
+          piece_name: artworkTitle,
+          artwork_id: artwork.id, // Store Firestore document ID
         },
         mode: "payment",
         ui_mode: "embedded",
@@ -56,6 +128,10 @@ exports.createCheckoutSession = onRequest({secrets: [stripeSecretKey]}, (req, re
     }
   });
 });
+
+// Import and export the upload function
+const {uploadArtworkData} = require("./uploadFunction");
+exports.uploadArtworkData = uploadArtworkData;
 
 // Get session status endpoint
 exports.sessionStatus = onRequest({secrets: [stripeSecretKey]}, (req, res) => {
@@ -81,6 +157,23 @@ exports.sessionStatus = onRequest({secrets: [stripeSecretKey]}, (req, res) => {
       logger.info("Session retrieved:", session);
       logger.info("Customer email:", session.customer_email);
       logger.info("Customer name from metadata:", session.metadata?.customer_name);
+
+      // If payment is complete and artwork_id exists, mark artwork as sold
+      if (session.status === "complete" && session.metadata?.artwork_id) {
+        const customerInfo = {
+          customer_name: session.metadata.customer_name,
+          customer_email: session.customer_email,
+        };
+
+        const soldSuccessfully = await markArtworkAsSold(
+            session.metadata.artwork_id,
+            customerInfo,
+        );
+
+        if (!soldSuccessfully) {
+          logger.error("Failed to mark artwork as sold in Firestore");
+        }
+      }
 
       res.json({
         status: session.status,
