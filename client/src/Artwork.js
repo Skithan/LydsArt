@@ -45,12 +45,40 @@ const Artwork = () => {
 
   const navigate = useNavigate();
 
-  // Fetch artwork from Firestore
+  // Utility function to clear artwork cache
+  const clearArtworkCache = () => {
+    localStorage.removeItem('lydsart_artwork_cache');
+    localStorage.removeItem('lydsart_artwork_cache_timestamp');
+    console.log('🗑️ Artwork cache cleared');
+  };
+
+  // Fetch artwork from cache or Firestore (only once per session)
   useEffect(() => {
     const fetchArtwork = async () => {
       try {
         setLoading(true);
-        console.log('🔥 Starting Firestore fetch...');
+        
+        // Check if we have cached data first
+        const cachedData = localStorage.getItem('lydsart_artwork_cache');
+        const cacheTimestamp = localStorage.getItem('lydsart_artwork_cache_timestamp');
+        const cacheExpiry = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+        
+        if (cachedData && cacheTimestamp) {
+          const isExpired = (Date.now() - parseInt(cacheTimestamp)) > cacheExpiry;
+          
+          if (!isExpired) {
+            console.log('� Using cached artwork data');
+            const parsedData = JSON.parse(cachedData);
+            setCards(parsedData);
+            setError(null);
+            setLoading(false);
+            return; // Exit early with cached data
+          } else {
+            console.log('⏰ Cache expired, fetching fresh data');
+          }
+        }
+        
+        console.log('🔥 Fetching fresh data from Firestore...');
         
         const artworkCollection = collection(db, 'artwork');
         const artworkQuery = query(artworkCollection, orderBy('createdAt', 'desc'));
@@ -66,7 +94,6 @@ const Artwork = () => {
         } else {
           const artworkData = querySnapshot.docs.map(doc => {
             const data = doc.data();
-            console.log('📄 Processing doc:', doc.id, data);
             return {
               id: doc.id,
               ...data,
@@ -81,6 +108,12 @@ const Artwork = () => {
           });
           
           console.log('✅ Processed artwork data:', artworkData);
+          
+          // Cache the data for future use
+          localStorage.setItem('lydsart_artwork_cache', JSON.stringify(artworkData));
+          localStorage.setItem('lydsart_artwork_cache_timestamp', Date.now().toString());
+          console.log('💾 Artwork data cached successfully');
+          
           setCards(artworkData);
           setError(null);
         }
