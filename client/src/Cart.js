@@ -58,9 +58,9 @@ const Cart = () => {
     setError(null);
     
     try {
-      // Call your server to create a checkout session
-      console.log('sending request to server : /create-checkout-session');
-      const response = await fetch('https://lydsart.onrender.com/create-checkout-session', {
+      // Call your Firebase Function to create a checkout session
+      console.log('sending request to Firebase Function : createCheckoutSession');
+      const response = await fetch(process.env.REACT_APP_CREATE_CHECKOUT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

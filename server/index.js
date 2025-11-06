@@ -1,21 +1,24 @@
 const {onRequest} = require("firebase-functions/v2/https");
 const logger = require("firebase-functions/logger");
+const {defineSecret} = require("firebase-functions/params");
 const cors = require("cors")({
   origin: true, // Allow all origins for now, you can restrict this later
   credentials: true,
 });
 
-// Initialize Stripe only if the secret key is available
-let stripe;
-if (process.env.STRIPE_SECRET_KEY) {
-  stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-} else {
-  // During deployment analysis, Stripe may not be available
-  logger.warn("STRIPE_SECRET_KEY not found - Stripe functions may not work properly");
-}
+// Define the secret for Stripe
+const stripeSecretKey = defineSecret("STRIPE_SECRET_KEY");
+
+// Initialize Stripe - this will be done within each function
+const initStripe = (secretValue) => {
+  if (!secretValue) {
+    throw new Error("Stripe secret key not configured");
+  }
+  return require("stripe")(secretValue);
+};
 
 // Create checkout session endpoint
-exports.createCheckoutSession = onRequest((req, res) => {
+exports.createCheckoutSession = onRequest({secrets: [stripeSecretKey]}, (req, res) => {
   cors(req, res, async () => {
     logger.info("Received request: /create-checkout-session");
     logger.info("Origin:", req.headers.origin);
@@ -27,10 +30,7 @@ exports.createCheckoutSession = onRequest((req, res) => {
     }
 
     try {
-      if (!stripe) {
-        res.status(500).json({error: "Stripe not configured properly"});
-        return;
-      }
+      const stripe = initStripe(stripeSecretKey.value());
 
       // Create Checkout Session
       const session = await stripe.checkout.sessions.create({
@@ -58,7 +58,7 @@ exports.createCheckoutSession = onRequest((req, res) => {
 });
 
 // Get session status endpoint
-exports.sessionStatus = onRequest((req, res) => {
+exports.sessionStatus = onRequest({secrets: [stripeSecretKey]}, (req, res) => {
   cors(req, res, async () => {
     logger.info("Received request: /session-status");
 
@@ -68,10 +68,7 @@ exports.sessionStatus = onRequest((req, res) => {
     }
 
     try {
-      if (!stripe) {
-        res.status(500).json({error: "Stripe not configured properly"});
-        return;
-      }
+      const stripe = initStripe(stripeSecretKey.value());
 
       const sessionId = req.query.session_id;
       if (!sessionId) {
