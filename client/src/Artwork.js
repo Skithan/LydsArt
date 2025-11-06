@@ -147,8 +147,11 @@ const Artwork = () => {
     return mediumMatch && sizeMatch && soldMatch;
   });
 
-  // Intersection Observer for animations
+  // Intersection Observer for animations - run after loading is complete
   useEffect(() => {
+    // Don't set up observer until loading is complete
+    if (loading) return;
+
     const observerOptions = {
       threshold: 0.1, // Trigger when 10% of element is visible
       rootMargin: '0px 0px -50px 0px' // Trigger slightly before element fully enters view
@@ -166,19 +169,46 @@ const Artwork = () => {
       });
     }, observerOptions);
 
-    // Capture current ref values for cleanup
-    const currentFiltersRef = filtersContainerRef.current;
-    const currentContentRef = contentContainerRef.current;
+    // Small delay to ensure DOM is ready
+    const setupObserver = () => {
+      const currentFiltersRef = filtersContainerRef.current;
+      const currentContentRef = contentContainerRef.current;
 
-    // Start observing elements
-    if (currentFiltersRef) observer.observe(currentFiltersRef);
-    if (currentContentRef) observer.observe(currentContentRef);
+      if (currentFiltersRef) observer.observe(currentFiltersRef);
+      if (currentContentRef) observer.observe(currentContentRef);
+    };
+
+    // Setup observer after a brief delay
+    const timeoutId = setTimeout(() => {
+      setupObserver();
+      
+      // Fallback: if elements are already in view, trigger animations immediately
+      const checkIfInView = () => {
+        if (filtersContainerRef.current) {
+          const rect = filtersContainerRef.current.getBoundingClientRect();
+          if (rect.top < window.innerHeight && rect.bottom > 0) {
+            setFiltersVisible(true);
+          }
+        }
+        if (contentContainerRef.current) {
+          const rect = contentContainerRef.current.getBoundingClientRect();
+          if (rect.top < window.innerHeight && rect.bottom > 0) {
+            setContentVisible(true);
+          }
+        }
+      };
+      
+      // Check immediately and after a short delay
+      checkIfInView();
+      setTimeout(checkIfInView, 300);
+    }, 100);
 
     return () => {
-      if (currentFiltersRef) observer.unobserve(currentFiltersRef);
-      if (currentContentRef) observer.unobserve(currentContentRef);
+      clearTimeout(timeoutId);
+      if (filtersContainerRef.current) observer.unobserve(filtersContainerRef.current);
+      if (contentContainerRef.current) observer.unobserve(contentContainerRef.current);
     };
-  }, []);
+  }, [loading]); // Run when loading state changes
 
   React.useEffect(() => {
     setCurrent(0);
