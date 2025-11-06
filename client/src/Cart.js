@@ -59,8 +59,12 @@ const Cart = () => {
     
     try {
       // Call your Firebase Function to create a checkout session
+      const checkoutUrl = process.env.REACT_APP_CREATE_CHECKOUT_URL || 'https://createcheckoutsession-pdcnged4ca-uc.a.run.app';
       console.log('sending request to Firebase Function : createCheckoutSession');
-      const response = await fetch(process.env.REACT_APP_CREATE_CHECKOUT_URL, {
+      console.log('Using URL:', checkoutUrl);
+      console.log('Environment URL:', process.env.REACT_APP_CREATE_CHECKOUT_URL);
+      console.log('All React env vars:', Object.keys(process.env).filter(key => key.startsWith('REACT_APP_')));
+      const response = await fetch(checkoutUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

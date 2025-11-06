@@ -12,7 +12,9 @@ const ThankYou = () => {
     const sessionId = params.get('session_id');
     console.log('Session ID from URL:', sessionId);
     if (sessionId) {
-      fetch(`${process.env.REACT_APP_SESSION_STATUS_URL}?session_id=${sessionId}`)
+      const statusUrl = process.env.REACT_APP_SESSION_STATUS_URL || 'https://sessionstatus-pdcnged4ca-uc.a.run.app';
+      console.log('Using session status URL:', statusUrl);
+      fetch(`${statusUrl}?session_id=${sessionId}`)
         .then(res => res.json())
         .then(data => {
           // Set state for UI rendering
