@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { CartProvider } from './CartContext';
 import Header from './Header';
 import Home from './Home';
 import Artwork from './Artwork';
@@ -11,17 +12,19 @@ import './App.css';
 
 const App = () => (
   <div className="animated-bg">
-    <Router>
-      <Header />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/artwork" element={<Artwork />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/success" element={<ThankYou />} />
-      </Routes>
-      <Footer />
-    </Router>
+    <CartProvider>
+      <Router>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/artwork" element={<Artwork />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/success" element={<ThankYou />} />
+        </Routes>
+        <Footer />
+      </Router>
+    </CartProvider>
   </div>
 );
 

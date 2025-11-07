@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import './App.css';
 import { useNavigate } from 'react-router-dom';
+import { useCart } from './CartContext';
 
 function Header() {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isWaving, setIsWaving] = useState(false);
   const navigate = useNavigate();
+  const { itemCount } = useCart();
 
   const triggerWave = () => {
     setIsWaving(true);
@@ -67,6 +69,31 @@ function Header() {
           <li><button className="nav-link-btn" type="button"
             onClick={() => handleClick('/contact', 'Contact')}
           >Contact</button></li>
+           <li><button className="nav-link-btn" type="button"
+            onClick={() => handleClick('/cart', 'Cart')}
+            style={{ position: 'relative' }}
+          >
+            Cart
+            {itemCount > 0 && (
+              <span style={{
+                position: 'absolute',
+                top: '-8px',
+                right: '-8px',
+                background: '#c62828',
+                color: 'white',
+                borderRadius: '50%',
+                width: '20px',
+                height: '20px',
+                fontSize: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 'bold'
+              }}>
+                {itemCount > 9 ? '9+' : itemCount}
+              </span>
+            )}
+          </button></li>
       </ul>
       </nav>
       

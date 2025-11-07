@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { db } from './firebase';
+import { useCart } from './CartContext';
 import './App.css';
 
 //fiter button image svg
@@ -25,7 +26,6 @@ const Artwork = () => {
   const [error, setError] = useState(null);
   const [current, setCurrent] = useState(0);
   const [expanded, setExpanded] = useState(false);
-  const [imgIdx, setImgIdx] = useState(0); 
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedMedium, setSelectedMedium] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
@@ -44,13 +44,9 @@ const Artwork = () => {
   const contentContainerRef = useRef(null);
 
   const navigate = useNavigate();
+  const { addItem } = useCart();
 
-  // Utility function to clear artwork cache
-  const clearArtworkCache = () => {
-    localStorage.removeItem('lydsart_artwork_cache');
-    localStorage.removeItem('lydsart_artwork_cache_timestamp');
-    console.log('🗑️ Artwork cache cleared');
-  };
+
 
   // Fetch artwork from cache or Firestore (only once per session)
   useEffect(() => {
@@ -185,6 +181,10 @@ const Artwork = () => {
     // Don't set up observer until loading is complete
     if (loading) return;
 
+    // Capture current ref values at the beginning of the effect
+    const currentFiltersRef = filtersContainerRef.current;
+    const currentContentRef = contentContainerRef.current;
+
     const observerOptions = {
       threshold: 0.1, // Trigger when 10% of element is visible
       rootMargin: '0px 0px -50px 0px' // Trigger slightly before element fully enters view
@@ -193,9 +193,9 @@ const Artwork = () => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          if (entry.target === filtersContainerRef.current) {
+          if (entry.target === currentFiltersRef) {
             setFiltersVisible(true);
-          } else if (entry.target === contentContainerRef.current) {
+          } else if (entry.target === currentContentRef) {
             setContentVisible(true);
           }
         }
@@ -204,9 +204,6 @@ const Artwork = () => {
 
     // Small delay to ensure DOM is ready
     const setupObserver = () => {
-      const currentFiltersRef = filtersContainerRef.current;
-      const currentContentRef = contentContainerRef.current;
-
       if (currentFiltersRef) observer.observe(currentFiltersRef);
       if (currentContentRef) observer.observe(currentContentRef);
     };
@@ -217,14 +214,14 @@ const Artwork = () => {
       
       // Fallback: if elements are already in view, trigger animations immediately
       const checkIfInView = () => {
-        if (filtersContainerRef.current) {
-          const rect = filtersContainerRef.current.getBoundingClientRect();
+        if (currentFiltersRef) {
+          const rect = currentFiltersRef.getBoundingClientRect();
           if (rect.top < window.innerHeight && rect.bottom > 0) {
             setFiltersVisible(true);
           }
         }
-        if (contentContainerRef.current) {
-          const rect = contentContainerRef.current.getBoundingClientRect();
+        if (currentContentRef) {
+          const rect = currentContentRef.getBoundingClientRect();
           if (rect.top < window.innerHeight && rect.bottom > 0) {
             setContentVisible(true);
           }
@@ -238,14 +235,14 @@ const Artwork = () => {
 
     return () => {
       clearTimeout(timeoutId);
-      if (filtersContainerRef.current) observer.unobserve(filtersContainerRef.current);
-      if (contentContainerRef.current) observer.unobserve(contentContainerRef.current);
+      // Use the captured ref values in cleanup
+      if (currentFiltersRef) observer.unobserve(currentFiltersRef);
+      if (currentContentRef) observer.unobserve(currentContentRef);
     };
   }, [loading]); // Run when loading state changes
 
   React.useEffect(() => {
     setCurrent(0);
-    setImgIdx(0);
   }, [selectedMedium, selectedSize, selectedSoldStatus]);
 
   // Auto-clear invalid filter selections when other filters change
@@ -350,31 +347,38 @@ const Artwork = () => {
   };
   //swapping visible cards
   const goLeft = () => {
-    setImgIdx(0);
     setCurrent((prev) => (prev === 0 ? cardCount - 1 : prev - 1));
   };
     //swapping visible cards
   const goRight = () => {
-    setImgIdx(0);
     setCurrent((prev) => (prev === cardCount - 1 ? 0 : prev + 1));
   };
 
 
-  //when Reserve piece button is clicked, send card data to Cart page
+  //when Reserve piece button is clicked, add card data to Cart
   const handleReserve = () => {
     const card = filteredCards[current];
-    navigate('/cart', {
-      state: {
-        id: card.id, // Firestore document ID
-        title: card.title,
-        size: card.size,
-        price: card.price,
-        medium: card.medium,
-        imgs: card.imgs || (card.img ? [card.img] : []),
-        date: card.date,
-        sold: card.sold
+    const itemToAdd = {
+      id: card.id, // Firestore document ID
+      title: card.title,
+      size: card.size,
+      price: card.price,
+      medium: card.medium,
+      imgs: card.imgs || (card.img ? [card.img] : []),
+      date: card.date,
+      sold: card.sold
+    };
+
+    const success = addItem(itemToAdd);
+    if (success) {
+      // Show confirmation and offer to view cart
+      const viewCart = window.confirm(
+        `"${card.title}" has been added to your cart!\n\nWould you like to view your cart now?`
+      );
+      if (viewCart) {
+        navigate('/cart');
       }
-    });
+    }
   };
 
 //switches card view to reveal info 
@@ -593,7 +597,6 @@ const Artwork = () => {
               onClick={() => {
                 setCurrent(index);
                 setGridView(false);
-                setImgIdx(0);
               }}
               onMouseOver={e => {
                 e.currentTarget.style.transform = 'translateY(-4px)';
@@ -697,84 +700,10 @@ const Artwork = () => {
             >
           {filteredCards.length === 0 ? (
             <div style={{ color: '#333333', fontSize: '1.3rem', textAlign: 'center', margin: '2rem' }}>No artwork found for this filter.</div>
-          ) : filteredCards[current].imgs ? (
-            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-              <button 
-                className="img-arrow left" 
-                onClick={() => setImgIdx(idx => idx > 0 ? idx - 1 : idx)} 
-                disabled={imgIdx === 0}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#333333',
-                  cursor: imgIdx === 0 ? 'not-allowed' : 'pointer',
-                  fontSize: '2.5rem',
-                  opacity: imgIdx === 0 ? 0.4 : 1,
-                  marginRight: '1.2rem',
-                }}
-                aria-label="Previous image"
-              >
-                &#8592;
-              </button>
-              <div style={{ position: 'relative' }}>
-                <img
-                  src={filteredCards[current].imgs[imgIdx]}
-                  alt={filteredCards[current].title + ' ' + (imgIdx + 1)}
-                  className={`scroll-img${expanded ? ' shrink' : ''}`}
-                  onClick={handleExpand}
-                  style={{
-                    cursor: 'pointer',
-                    transition: 'all 0.7s cubic-bezier(.77,0,.18,1)',
-                    maxHeight: expanded ? '320px' : '55vh',
-                    width: 'auto',
-                    maxWidth: expanded ? '95%' : '98vw',
-                    objectFit: 'contain',
-                    borderRadius: '1.2rem',
-                    boxShadow: '0 4px 32px #0008',
-                    background: '#ffffffdd',
-                    aspectRatio: '4/3',
-                    display: 'block',
-                  }}
-                />
-                {filteredCards[current].sold && (
-                  <div style={{
-                      position: 'absolute',
-                      top: '0.5rem',
-                      right: '0.5rem',
-                      background: 'rgba(0, 0, 0, 0.62)',
-                      borderRadius: '0.5rem',
-                      padding: '0.5rem 1rem',
-                      color: 'white',
-                      fontSize: '1rem',
-                      letterSpacing: '1px',
-                      fontFamily: 'Inter, Segoe UI, Arial, sans-serif',
-                  }}>
-                    SOLD
-                  </div>
-                )}
-              </div>
-              <button 
-                className="img-arrow right" 
-                onClick={() => setImgIdx(idx => idx < filteredCards[current].imgs.length - 1 ? idx + 1 : idx)} 
-                disabled={imgIdx === filteredCards[current].imgs.length - 1}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#333333',
-                  cursor: imgIdx === filteredCards[current].imgs.length - 1 ? 'not-allowed' : 'pointer',
-                  fontSize: '2.5rem',
-                  opacity: imgIdx === filteredCards[current].imgs.length - 1 ? 0.4 : 1,
-                  marginLeft: '1.2rem',
-                }}
-                aria-label="Next image"
-              >
-                &#8594;
-              </button>
-            </div>
           ) : (
             <div style={{ position: 'relative' }}>
               <img
-                src={filteredCards[current].img}
+                src={filteredCards[current].imgs ? filteredCards[current].imgs[0] : filteredCards[current].img}
                 alt={filteredCards[current].title}
                 className={`scroll-img${expanded ? ' shrink' : ''}`}
                 onClick={handleExpand}
