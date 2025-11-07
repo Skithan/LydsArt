@@ -152,14 +152,34 @@ exports.sessionStatus = onRequest({secrets: [stripeSecretKey]}, (req, res) => {
         return;
       }
 
-      const session = await stripe.checkout.sessions.retrieve(sessionId);
+      // Retrieve session with expanded payment intent for full payment details
+      const session = await stripe.checkout.sessions.retrieve(sessionId, {
+        expand: ["payment_intent"],
+      });
 
-      logger.info("Session retrieved:", session);
-      logger.info("Customer email:", session.customer_email);
-      logger.info("Customer name from metadata:", session.metadata?.customer_name);
+      logger.info("Session retrieved:", {
+        session_id: session.id,
+        session_status: session.status,
+        payment_status: session.payment_status,
+        payment_intent_status: session.payment_intent?.status,
+        amount_received: session.payment_intent?.amount_received,
+      });
 
-      // If payment is complete and artwork_id exists, mark artwork as sold
-      if (session.status === "complete" && session.metadata?.artwork_id) {
+      // Comprehensive payment verification
+      const isPaymentSuccessful =
+        session.status === "complete" &&
+        session.payment_status === "paid" &&
+        session.payment_intent?.status === "succeeded";
+
+      logger.info("Payment verification:", {
+        session_complete: session.status === "complete",
+        payment_paid: session.payment_status === "paid",
+        intent_succeeded: session.payment_intent?.status === "succeeded",
+        overall_success: isPaymentSuccessful,
+      });
+
+      // Only mark artwork as sold if payment actually succeeded
+      if (isPaymentSuccessful && session.metadata?.artwork_id) {
         const customerInfo = {
           customer_name: session.metadata.customer_name,
           customer_email: session.customer_email,
@@ -177,9 +197,15 @@ exports.sessionStatus = onRequest({secrets: [stripeSecretKey]}, (req, res) => {
 
       res.json({
         status: session.status,
+        payment_status: session.payment_status,
+        payment_intent_status: session.payment_intent?.status,
+        payment_verified: isPaymentSuccessful,
         customer_email: session.customer_email,
         customer_name: session.metadata?.customer_name,
         piece_name: session.metadata?.piece_name,
+        amount_received: session.payment_intent?.amount_received,
+        currency: session.payment_intent?.currency,
+        session_id: session.id,
       });
     } catch (error) {
       logger.error("Session status error:", error);

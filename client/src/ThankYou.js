@@ -7,6 +7,7 @@ const ThankYou = () => {
   const [customerName, setCustomerName] = useState('');
   const [status, setStatus] = useState('');
   const [pieceName, setPieceName] = useState('');
+  const [paymentVerified, setPaymentVerified] = useState(false);
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get('session_id');
@@ -22,16 +23,20 @@ const ThankYou = () => {
           setCustomerName(data.customer_name);
           setStatus(data.status);
           setPieceName(data.piece_name);
+          setPaymentVerified(data.payment_verified);
     
 
           console.log('Customer Email:', data.customer_email);
           console.log('Customer Name:', data.customer_name);
           console.log('Piece Name:', data.piece_name);
-          console.log('Session status data:', data.status);
+          console.log('Session status:', data.status);
+          console.log('Payment status:', data.payment_status);
+          console.log('Payment intent status:', data.payment_intent_status);
+          console.log('Payment verified:', data.payment_verified);
           console.log('Full session data:', data);
 
-          // Send emails immediately with fresh data (don't wait for state updates)
-          if(data.customer_email && data.status === 'complete'){
+          // Send emails only if payment is fully verified and successful
+          if(data.customer_email && data.payment_verified){
               // Prepare order details for email
               const emailOrderDetails = {
                 session_id: sessionId,
@@ -106,7 +111,7 @@ const ThankYou = () => {
         </h2>
         )}
         
-        {status === 'complete' ? (
+        {status === 'complete' && paymentVerified ? (
           <div style={{ 
             display: 'flex', 
             flexDirection: 'column', 
@@ -169,6 +174,43 @@ const ThankYou = () => {
                 🎨 Thank you for supporting independent art!
               </p>
             </div>
+          </div>
+        ) : status === 'complete' && !paymentVerified ? (
+          <div style={{
+            background: '#ffebee',
+            borderRadius: 'clamp(0.5rem, 2vw, 1rem)',
+            padding: 'clamp(1rem, 3vw, 1.5rem)',
+            border: '2px solid #f44336',
+            textAlign: 'center'
+          }}>
+            <h3 style={{ 
+              color: '#c62828', 
+              margin: '0 0 1rem 0',
+              fontSize: 'clamp(1.2rem, 4vw, 1.8rem)'
+            }}>
+              ⚠️ Payment Issue
+            </h3>
+            <p style={{ 
+              margin: '0 0 1rem 0',
+              color: '#d32f2f',
+              fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)'
+            }}>
+              There was an issue processing your payment. Please contact support or try again.
+            </p>
+            <button 
+              onClick={() => window.location.href = '/cart'}
+              style={{
+                background: '#c62828',
+                color: 'white',
+                border: 'none',
+                borderRadius: '0.5rem',
+                padding: '0.7rem 1.5rem',
+                fontSize: 'clamp(0.9rem, 2.5vw, 1rem)',
+                cursor: 'pointer'
+              }}
+            >
+              Return to Cart
+            </button>
           </div>
         ) : (
           <div style={{

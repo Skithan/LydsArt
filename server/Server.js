@@ -7,7 +7,7 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: "https://lydiapaterson.netlify.app", // Allow your React frontend
+  origin: "https://lydsart-f6966.web.app", // Allow your React frontend
   methods: ["GET", "POST"],
   credentials: true,
 }));
@@ -16,7 +16,7 @@ app.use(cors({
 app.post("/create-checkout-session", async (req, res) => {
   console.log("Received request: /create-checkout-session");
   console.log(req.headers.origin);
-  console.log("req.boyd is :: ", req.body);
+  console.log("req.body is :: ", req.body);
   try {
     // Create Checkout Session
     const session = await stripe.checkout.sessions.create({
