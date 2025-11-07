@@ -33,6 +33,8 @@ const Artwork = () => {
   const [gridView, setGridView] = useState(true);
   const [filtersVisible, setFiltersVisible] = useState(false);
   const [contentVisible, setContentVisible] = useState(false);
+  const [showCartPopup, setShowCartPopup] = useState(false);
+  const [addedItemTitle, setAddedItemTitle] = useState('');
   const cardCount = cards.length;
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
@@ -371,14 +373,20 @@ const Artwork = () => {
 
     const success = addItem(itemToAdd);
     if (success) {
-      // Show confirmation and offer to view cart
-      const viewCart = window.confirm(
-        `"${card.title}" has been added to your cart!\n\nWould you like to view your cart now?`
-      );
-      if (viewCart) {
-        navigate('/cart');
-      }
+      // Show custom styled popup
+      setAddedItemTitle(card.title);
+      setShowCartPopup(true);
     }
+  };
+
+  // Handle cart popup actions
+  const handleViewCart = () => {
+    setShowCartPopup(false);
+    navigate('/cart');
+  };
+
+  const handleContinueShopping = () => {
+    setShowCartPopup(false);
   };
 
 //switches card view to reveal info 
@@ -796,6 +804,135 @@ const Artwork = () => {
           </div>
         </div>
         </div>
+        </div>
+      )}
+
+      {/* Custom Cart Popup */}
+      {showCartPopup && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          backdropFilter: 'blur(4px)'
+        }}>
+          <div style={{
+            background: '#ffffffdd',
+            borderRadius: '1.2rem',
+            padding: '2.5rem 2rem',
+            maxWidth: '400px',
+            width: '90vw',
+            textAlign: 'center',
+            boxShadow: '0 4px 24px rgba(0, 0, 0, 0.15)',
+            fontFamily: 'Playfair Display, Inter, Segoe UI, Arial, serif',
+            color: '#333333',
+            letterSpacing: '2px',
+            transform: 'scale(1)',
+            animation: 'popupSlideIn 0.3s ease-out'
+          }}>
+            <style>
+              {`
+                @keyframes popupSlideIn {
+                  from {
+                    transform: scale(0.8);
+                    opacity: 0;
+                  }
+                  to {
+                    transform: scale(1);
+                    opacity: 1;
+                  }
+                }
+              `}
+            </style>
+            <h3 style={{
+              fontWeight: 700,
+              fontSize: '1.8rem',
+              marginBottom: '1rem',
+              color: '#333333',
+              textShadow: '0 2px 12px rgba(0, 0, 0, 0.1)'
+            }}>
+              Added to Cart!
+            </h3>
+            <p style={{
+              fontSize: '1.2rem',
+              marginBottom: '2rem',
+              color: '#4a4a4a',
+              lineHeight: '1.5'
+            }}>
+              "<strong>{addedItemTitle}</strong>" has been added to your cart.
+            </p>
+            <p style={{
+              fontSize: '1.1rem',
+              marginBottom: '2rem',
+              color: '#666666'
+            }}>
+              Would you like to view your cart now?
+            </p>
+            <div style={{
+              display: 'flex',
+              gap: '1rem',
+              justifyContent: 'center',
+              flexWrap: 'wrap'
+            }}>
+              <button
+                onClick={handleViewCart}
+                style={{
+                  background: '#333333',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '1rem',
+                  padding: '0.7rem 1.5rem',
+                  fontSize: '1.1rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                  transition: 'all 0.2s ease',
+                  minWidth: '120px'
+                }}
+                onMouseOver={e => {
+                  e.target.style.background = '#1a1a1a';
+                  e.target.style.transform = 'translateY(-1px)';
+                }}
+                onMouseOut={e => {
+                  e.target.style.background = '#333333';
+                  e.target.style.transform = 'translateY(0)';
+                }}
+              >
+                View Cart
+              </button>
+              <button
+                onClick={handleContinueShopping}
+                style={{
+                  background: 'transparent',
+                  color: '#333333',
+                  border: '2px solid #333333',
+                  borderRadius: '1rem',
+                  padding: '0.7rem 1.5rem',
+                  fontSize: '1.1rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  minWidth: '120px'
+                }}
+                onMouseOver={e => {
+                  e.target.style.background = '#333333';
+                  e.target.style.color = '#ffffff';
+                }}
+                onMouseOut={e => {
+                  e.target.style.background = 'transparent';
+                  e.target.style.color = '#333333';
+                }}
+              >
+                Continue Shopping
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </section>  );

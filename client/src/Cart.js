@@ -344,6 +344,9 @@ const Cart = () => {
                       </div>
                       
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <div style={{ fontSize: '0.9rem', color: '#666' }}>Qty: {item.quantity}</div>
+                        {/* Quantity selector temporarily commented out */}
+                        {/* 
                         <label style={{ fontSize: '0.9rem', color: '#666' }}>Qty:</label>
                         <select 
                           value={item.quantity}
@@ -359,6 +362,7 @@ const Cart = () => {
                             <option key={num} value={num}>{num}</option>
                           ))}
                         </select>
+                        */}
                         
                         <button 
                           onClick={() => removeItem(item.id)}
