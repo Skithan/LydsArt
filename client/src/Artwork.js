@@ -104,10 +104,19 @@ const Artwork = () => {
       try {
         setLoading(true);
         
+        console.log('🚀 Artwork.js: Starting fetch process...');
+        console.log('🕒 Current timestamp:', new Date().toLocaleTimeString());
+        
         // Check if we have cached data first
         const cachedData = localStorage.getItem('lydsart_artwork_cache');
         const cacheTimestamp = localStorage.getItem('lydsart_artwork_cache_timestamp');
         const cacheExpiry = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+        
+        console.log('📦 Cache status:', {
+          hasCachedData: !!cachedData,
+          cacheTimestamp: cacheTimestamp ? new Date(parseInt(cacheTimestamp)).toLocaleString() : null,
+          cacheAge: cacheTimestamp ? (Date.now() - parseInt(cacheTimestamp)) / 1000 / 60 : null // minutes
+        });
         
         if (cachedData && cacheTimestamp) {
           const isExpired = (Date.now() - parseInt(cacheTimestamp)) > cacheExpiry;
@@ -576,9 +585,14 @@ const Artwork = () => {
           
           <button
             className="filter-dropdown-btn"
-            onClick={refreshArtworkData}
+            onClick={() => {
+              console.log('🗑️ Clearing cache and refreshing...');
+              localStorage.removeItem('lydsart_artwork_cache');
+              localStorage.removeItem('lydsart_artwork_cache_timestamp');
+              refreshArtworkData();
+            }}
             disabled={loading}
-            title="Refresh artwork data from database"
+            title="Clear cache and refresh artwork data from database"
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#333333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle' }}>
               <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
@@ -586,7 +600,7 @@ const Artwork = () => {
               <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
               <path d="M3 21v-5h5"/>
             </svg>
-            <span>{loading ? 'Refreshing...' : 'Refresh'}</span>
+            <span>{loading ? 'Refreshing...' : 'Clear & Refresh'}</span>
           </button>
           {filterOpen && (
             <div
