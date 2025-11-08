@@ -67,7 +67,7 @@ function Header() {
           >Home</button></li>
           <li><button className="nav-link-btn" type="button"
             onClick={() => handleClick('/artwork', 'Artwork')}
-          >Artwork!</button></li>
+          >Artwork!11</button></li>
           <li><button className="nav-link-btn" type="button"
             onClick={() => handleClick('/contact', 'Contact')}
           >Contact</button></li>
