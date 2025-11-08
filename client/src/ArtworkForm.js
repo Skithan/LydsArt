@@ -186,22 +186,47 @@ const ArtworkForm = () => {
       const imageUrl = await uploadImage();
       console.log('Image upload completed, URL:', imageUrl);
       
-      // Prepare artwork data
-      const artworkData = {
-        ...formData,
-        price: parseFloat(formData.price), // Convert to number
-        imageUrl: imageUrl,
-        updatedAt: new Date(),
+      // Generate slug from title
+      const generateSlug = (title) => {
+        return title
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+          .replace(/\s+/g, '-') // Replace spaces with hyphens
+          .replace(/-+/g, '-') // Replace multiple hyphens with single
+          .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
       };
 
+      // Prepare artwork data in the specified format
+      const currentTimestamp = new Date();
+      const currentYear = currentTimestamp.getFullYear().toString();
+      
+      const artworkData = {
+        title: formData.title.trim(),
+        medium: formData.medium.trim(),
+        size: formData.dimensions.trim(), // Using 'size' instead of 'dimensions'
+        price: formData.price ? parseFloat(formData.price) : null, // null if no price
+        imageUrl: imageUrl || null,
+        date: currentYear, // Current year as string
+        slug: generateSlug(formData.title),
+        sold: !formData.available, // Convert 'available' to 'sold' (inverted)
+        updatedAt: currentTimestamp,
+      };
+
+      // Add description if provided
+      if (formData.description && formData.description.trim()) {
+        artworkData.description = formData.description.trim();
+      }
+
       if (isEditing) {
-        // Update existing artwork
+        // Update existing artwork (don't change createdAt)
         const docRef = doc(db, 'artwork', artworkId);
         await updateDoc(docRef, artworkData);
+        console.log('✅ Artwork updated with new format:', artworkData);
       } else {
         // Add new artwork
-        artworkData.createdAt = new Date();
+        artworkData.createdAt = currentTimestamp;
         await addDoc(collection(db, 'artwork'), artworkData);
+        console.log('✅ New artwork created with format:', artworkData);
       }
 
       // Navigate back to dashboard

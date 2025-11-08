@@ -68,18 +68,20 @@ const Artwork = () => {
           const data = doc.data();
           console.log('🎨 Processing artwork:', data.title, 'ID:', doc.id);
           console.log('📸 Image URL:', data.imageUrl);
+          console.log('📊 Raw data structure:', data);
           
           return {
             id: doc.id,
             title: data.title || 'Untitled',
             img: data.imageUrl,
             imgs: data.imageUrl ? [data.imageUrl] : null,
-            price: data.price ? `$${data.price}` : 'Price not available',
-            size: data.dimensions || 'Size not specified',
+            price: data.price !== null ? `$${data.price}` : null, // Handle null price
+            size: data.size || data.dimensions || 'Size not specified', // Support both new and old format
             medium: data.medium || 'Medium not specified',
-            date: data.createdAt ? new Date(data.createdAt.toDate()).getFullYear().toString() : null,
-            sold: !data.available,
+            date: data.date || (data.createdAt ? new Date(data.createdAt.toDate()).getFullYear().toString() : null), // Use 'date' field first
+            sold: data.sold !== undefined ? data.sold : !data.available, // Use 'sold' field directly or fallback
             description: data.description || null,
+            slug: data.slug || null,
             _originalData: data
           };
         });
@@ -155,15 +157,16 @@ const Artwork = () => {
             return {
               id: doc.id,
               title: data.title || 'Untitled',
-              // Convert Firestore format to display format
+              // Handle new database format
               img: data.imageUrl,
               imgs: data.imageUrl ? [data.imageUrl] : null,
-              price: data.price ? `$${data.price}` : 'Price not available',
-              size: data.dimensions || 'Size not specified',
+              price: data.price !== null ? `$${data.price}` : null, // Handle null price
+              size: data.size || data.dimensions || 'Size not specified', // Support both new and old format
               medium: data.medium || 'Medium not specified',
-              date: data.createdAt ? new Date(data.createdAt.toDate()).getFullYear().toString() : null,
-              sold: !data.available, // Convert 'available' to 'sold' for display
+              date: data.date || (data.createdAt ? new Date(data.createdAt.toDate()).getFullYear().toString() : null), // Use 'date' field first
+              sold: data.sold !== undefined ? data.sold : !data.available, // Use 'sold' field directly or fallback
               description: data.description || null,
+              slug: data.slug || null,
               // Keep original data for debugging
               _originalData: data
             };
