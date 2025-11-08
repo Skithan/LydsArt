@@ -8,8 +8,6 @@ function Header() {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isWaving, setIsWaving] = useState(false);
-  const [clickCount, setClickCount] = useState(0);
-  const [showAdminAccess, setShowAdminAccess] = useState(false);
   const navigate = useNavigate();
   const { itemCount } = useCart();
   const { isAdmin } = useAuth();
@@ -32,26 +30,6 @@ function Header() {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const handleTitleClick = () => {
-    setClickCount(prev => prev + 1);
-    triggerWave();
-    
-    // Reset click count after 3 seconds of inactivity
-    setTimeout(() => {
-      setClickCount(0);
-    }, 3000);
-    
-    // Show admin access after 5 clicks
-    if (clickCount === 4) {
-      setShowAdminAccess(true);
-      setClickCount(0);
-      // Hide admin access after 10 seconds
-      setTimeout(() => {
-        setShowAdminAccess(false);
-      }, 10000);
-    }
-  };
-
   // Split text into individual letters for wave animation
   const renderWaveText = (text) => {
     return text.split('').map((char, index) => (
@@ -70,7 +48,7 @@ function Header() {
 
   return (
     <header className="Header">
-      <div className="header-title" onClick={handleTitleClick} style={{ cursor: 'pointer' }}>
+      <div className="header-title">
         {renderWaveText('Lydia Paterson')}
       </div>
       
@@ -126,22 +104,8 @@ function Header() {
               Admin
             </button></li>
           )}
-          {!isAdmin && showAdminAccess && (
-            <li><button className="nav-link-btn admin-login-link" type="button"
-              onClick={() => handleClick('/admin/login', 'Admin Login')}
-              title="Admin Login"
-            >
-              🔐 Admin Login
-            </button></li>
-          )}
       </ul>
       </nav>
-      
-      {showAdminAccess && !isAdmin && (
-        <div className="admin-access-notification">
-          <span>Admin access enabled</span>
-        </div>
-      )}
       
       <div className={`header-wave-line ${isWaving ? 'animate' : ''}`}></div>
     </header>

@@ -1,15 +1,21 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 import './App.css';
 
 const Home = () => {
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
   const touchStartY = useRef(null);
   const touchEndY = useRef(null);
   const isZooming = useRef(false);
   const [contentVisible, setContentVisible] = useState(false);
   const [practiceVisible, setPracticeVisible] = useState(false);
   const [buttonVisible, setButtonVisible] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
+  const [showAdminAccess, setShowAdminAccess] = useState(false);
+  const [showClickFeedback, setShowClickFeedback] = useState(false);
+  const [headshotShake, setHeadshotShake] = useState(false);
   
   const contentRef = useRef(null);
   const practiceRef = useRef(null);
@@ -31,6 +37,58 @@ const Home = () => {
       return;
     }
     touchEndY.current = e.changedTouches[0].screenY;
+  };
+
+  const handleHeadshotClick = () => {
+    if (isAdmin) return; // Don't trigger if already admin
+    console.log(`Headshot clicked ${clickCount}`);
+
+    // Trigger shake animation
+    setHeadshotShake(true);
+    setTimeout(() => setHeadshotShake(false), 300);
+    
+    // Update click count
+    const newCount = clickCount + 1;
+    setClickCount(newCount);
+    
+    // Show click feedback with tally marks
+    setShowClickFeedback(true);
+    
+    // Reset click count and hide feedback after 3 seconds of inactivity
+    setTimeout(() => {
+      setClickCount(0);
+      setShowClickFeedback(false);
+    }, 3000);
+    
+    // Show admin access after 5 clicks
+    if (newCount === 5) {
+      setShowAdminAccess(true);
+      setClickCount(0);
+      setShowClickFeedback(false);
+      // Hide admin access after 15 seconds
+      setTimeout(() => {
+        setShowAdminAccess(false);
+      }, 15000);
+    }
+  };
+
+  // Generate tally marks based on click count
+  const getTallyMarks = (count) => {
+    const marks = [];
+    const groups = Math.floor(count / 5);
+    const remainder = count % 5;
+    
+    // Add complete groups of 5 (crossed tally marks)
+    for (let i = 0; i < groups; i++) {
+      marks.push('🏛️'); // Using a different symbol for groups of 5
+    }
+    
+    // Add individual marks for remainder
+    for (let i = 0; i < remainder; i++) {
+      marks.push('|');
+    }
+    
+    return marks.join(' ');
   };
 
   useEffect(() => {
@@ -97,18 +155,72 @@ const Home = () => {
           transition: 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
         }}
       >
-        <img 
-          src={process.env.PUBLIC_URL + '/Headshot.jpeg'} 
-          alt="Lydia Paterson Headshot" 
-          style={{ 
-            width: '220px', 
-            height: '220px', 
-            objectFit: 'cover', 
-            borderRadius: '50%', 
-            boxShadow: '0 4px 24px #0004', 
-            marginBottom: '2rem'
-          }}
-        />
+        <div style={{ position: 'relative', display: 'inline-block' }}>
+          <img 
+            src={process.env.PUBLIC_URL + '/Headshot.jpeg'} 
+            alt="Lydia Paterson Headshot" 
+            onClick={handleHeadshotClick}
+            style={{ 
+              width: '220px', 
+              height: '220px', 
+              objectFit: 'cover', 
+              borderRadius: '50%', 
+              boxShadow: '0 4px 24px #0004', 
+              marginBottom: '2rem',
+              cursor: isAdmin ? 'default' : 'pointer',
+              userSelect: 'none',
+              transition: 'all 0.3s ease',
+              transform: headshotShake ? 'scale(1.05) rotate(2deg)' : 'scale(1) rotate(0deg)',
+              filter: clickCount > 0 ? 'brightness(1.1) saturate(1.2)' : 'brightness(1) saturate(1)'
+            }}
+          />
+          
+          {/* Click Feedback with Tally Marks */}
+          {showClickFeedback && clickCount > 0 && (
+            <div 
+              style={{
+                position: 'absolute',
+                top: '-20px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                background: 'rgba(51, 51, 51, 0.9)',
+                color: 'white',
+                padding: '8px 16px',
+                borderRadius: '20px',
+                fontSize: '1.2rem',
+                fontWeight: 'bold',
+                whiteSpace: 'nowrap',
+                zIndex: 10,
+                animation: 'tallyPop 0.3s ease-out',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                fontFamily: 'monospace'
+              }}
+            >
+              <span style={{ marginRight: '8px' }}>{getTallyMarks(clickCount)}</span>
+              <span style={{ fontSize: '0.9rem', opacity: 0.8 }}>
+                {clickCount}/5
+              </span>
+            </div>
+          )}
+          
+          {/* Progress indicator */}
+          {showClickFeedback && clickCount > 0 && clickCount < 5 && (
+            <div
+              style={{
+                position: 'absolute',
+                bottom: '20px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: `${(clickCount / 5) * 100}%`,
+                height: '4px',
+                background: 'linear-gradient(90deg, #333333, #666666)',
+                borderRadius: '2px',
+                transition: 'width 0.3s ease',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
+              }}
+            />
+          )}
+        </div>
       </div>
       
       <div 
@@ -216,6 +328,57 @@ const Home = () => {
         </button>
         <br></br>
       </div>
+
+      {/* Admin Access - appears after 5 headshot clicks */}
+      {showAdminAccess && !isAdmin && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            background: 'linear-gradient(135deg, #333333, #555555)',
+            color: 'white',
+            padding: '2rem',
+            borderRadius: '12px',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+            zIndex: 1000,
+            textAlign: 'center',
+            animation: 'adminModalAppear 0.5s ease-out'
+          }}
+        >
+          <div style={{ marginBottom: '1rem' }}>
+            <span style={{ fontSize: '2rem', marginBottom: '0.5rem', display: 'block' }}>🔐</span>
+            <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.3rem' }}>Admin Access Enabled</h3>
+            <p style={{ margin: '0', fontSize: '0.9rem', opacity: 0.8 }}>Executive access unlocked</p>
+          </div>
+          <button 
+            onClick={() => navigate('/admin/login')}
+            style={{
+              background: 'white',
+              color: '#333333',
+              border: 'none',
+              padding: '0.75rem 2rem',
+              borderRadius: '8px',
+              fontSize: '1rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+            }}
+            onMouseOver={e => {
+              e.target.style.transform = 'translateY(-2px)';
+              e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+            }}
+            onMouseOut={e => {
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.2)';
+            }}
+          >
+            Enter Admin Portal
+          </button>
+        </div>
+      )}
     </section>
     </div>
   );
