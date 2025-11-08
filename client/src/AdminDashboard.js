@@ -79,12 +79,18 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteConfirm = (artworkId) => {
+    console.log('🚨 Delete confirmation requested for artwork:', artworkId);
+    alert('Confirmation modal opening for: ' + artworkId); // Temporary alert
     setShowDeleteConfirm(artworkId);
   };
 
   const handleDelete = async (artworkId) => {
     try {
-      console.log('Starting deletion process for artwork:', artworkId);
+      console.clear(); // Clear console for easier debugging
+      console.log('�🚨🚨 HANDLEDELETE CALLED AT:', new Date().toLocaleTimeString());
+      console.log('�🗑️ Starting deletion process for artwork:', artworkId);
+      console.log('🔍 handleDelete function called with ID type:', typeof artworkId);
+      alert('Delete function called! Check console for details.'); // Temporary alert
       
       // First, get the artwork data to find the image URL
       const artworkRef = doc(db, 'artwork', artworkId);
@@ -167,6 +173,7 @@ const AdminDashboard = () => {
   };
 
   const closeDeleteConfirm = () => {
+    console.log('❌ Delete confirmation cancelled');
     setShowDeleteConfirm(null);
   };
 
