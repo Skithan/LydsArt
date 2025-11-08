@@ -13,8 +13,9 @@ if (!admin.apps.length) {
 }
 const db = admin.firestore();
 
-// Define the secret for Stripe
+// Define secrets
 const stripeSecretKey = defineSecret("STRIPE_SECRET_KEY");
+const adminEmail = defineSecret("ADMIN_EMAIL");
 
 // Initialize Stripe - this will be done within each function
 const initStripe = (secretValue) => {
@@ -209,6 +210,164 @@ exports.sessionStatus = onRequest({secrets: [stripeSecretKey]}, (req, res) => {
       });
     } catch (error) {
       logger.error("Session status error:", error);
+      res.status(500).json({error: error.message});
+    }
+  });
+});
+
+/**
+ * Helper function to verify admin user
+ * @param {string} token - Firebase Auth ID token
+ * @param {string} adminEmailValue - Admin email from secret
+ * @return {boolean} Whether user is admin
+ */
+async function verifyAdminUser(token, adminEmailValue) {
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    return decodedToken.email === adminEmailValue;
+  } catch (error) {
+    logger.error("Error verifying admin token:", error);
+    return false;
+  }
+}
+
+// Admin: Get all artwork
+exports.adminGetArtwork = onRequest({secrets: [adminEmail]}, (req, res) => {
+  cors(req, res, async () => {
+    if (req.method !== "GET") {
+      res.status(405).send("Method not allowed");
+      return;
+    }
+
+    try {
+      // Verify admin user
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token || !(await verifyAdminUser(token, adminEmail.value()))) {
+        res.status(403).json({error: "Unauthorized: Admin access only"});
+        return;
+      }
+
+      const artworkSnapshot = await db.collection("artwork")
+          .orderBy("title")
+          .get();
+
+      const artwork = artworkSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      res.json({artwork});
+    } catch (error) {
+      logger.error("Error fetching artwork:", error);
+      res.status(500).json({error: error.message});
+    }
+  });
+});
+
+// Admin: Add new artwork
+exports.adminAddArtwork = onRequest({secrets: [adminEmail]}, (req, res) => {
+  cors(req, res, async () => {
+    if (req.method !== "POST") {
+      res.status(405).send("Method not allowed");
+      return;
+    }
+
+    try {
+      // Verify admin user
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token || !(await verifyAdminUser(token, adminEmail.value()))) {
+        res.status(403).json({error: "Unauthorized: Admin access only"});
+        return;
+      }
+
+      const artworkData = {
+        ...req.body,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        sold: false,
+      };
+
+      const docRef = await db.collection("artwork").add(artworkData);
+
+      res.json({
+        success: true,
+        id: docRef.id,
+        message: "Artwork added successfully",
+      });
+    } catch (error) {
+      logger.error("Error adding artwork:", error);
+      res.status(500).json({error: error.message});
+    }
+  });
+});
+
+// Admin: Update artwork
+exports.adminUpdateArtwork = onRequest({secrets: [adminEmail]}, (req, res) => {
+  cors(req, res, async () => {
+    if (req.method !== "PUT") {
+      res.status(405).send("Method not allowed");
+      return;
+    }
+
+    try {
+      // Verify admin user
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token || !(await verifyAdminUser(token, adminEmail.value()))) {
+        res.status(403).json({error: "Unauthorized: Admin access only"});
+        return;
+      }
+
+      const {artworkId, ...updateData} = req.body;
+      if (!artworkId) {
+        res.status(400).json({error: "Artwork ID is required"});
+        return;
+      }
+
+      updateData.updatedAt = admin.firestore.FieldValue.serverTimestamp();
+
+      await db.collection("artwork").doc(artworkId).update(updateData);
+
+      res.json({
+        success: true,
+        message: "Artwork updated successfully",
+      });
+    } catch (error) {
+      logger.error("Error updating artwork:", error);
+      res.status(500).json({error: error.message});
+    }
+  });
+});
+
+// Admin: Delete artwork
+exports.adminDeleteArtwork = onRequest({secrets: [adminEmail]}, (req, res) => {
+  cors(req, res, async () => {
+    if (req.method !== "DELETE") {
+      res.status(405).send("Method not allowed");
+      return;
+    }
+
+    try {
+      // Verify admin user
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token || !(await verifyAdminUser(token, adminEmail.value()))) {
+        res.status(403).json({error: "Unauthorized: Admin access only"});
+        return;
+      }
+
+      const artworkId = req.query.id;
+      if (!artworkId) {
+        res.status(400).json({error: "Artwork ID is required"});
+        return;
+      }
+
+      await db.collection("artwork").doc(artworkId).delete();
+
+      res.json({
+        success: true,
+        message: "Artwork deleted successfully",
+      });
+    } catch (error) {
+      logger.error("Error deleting artwork:", error);
       res.status(500).json({error: error.message});
     }
   });
