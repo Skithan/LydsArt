@@ -54,7 +54,23 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.log('Login error:', error.message);
+      console.log('Error code:', error.code);
+      console.log('Full error:', error);
       isLoggingInRef.current = false;
+      
+      // Handle specific Firebase errors
+      if (error.code === 'auth/terms-of-service-not-accepted') {
+        return { success: false, error: 'Firebase Terms of Service not accepted. Please check Firebase Console.' };
+      } else if (error.code === 'auth/user-not-found') {
+        return { success: false, error: 'User not found. Please check your email address.' };
+      } else if (error.code === 'auth/wrong-password') {
+        return { success: false, error: 'Incorrect password. Please try again.' };
+      } else if (error.code === 'auth/invalid-email') {
+        return { success: false, error: 'Invalid email address format.' };
+      } else if (error.code === 'auth/network-request-failed') {
+        return { success: false, error: 'Network error. Please check your internet connection.' };
+      }
+      
       return { success: false, error: error.message };
     }
   };
@@ -70,29 +86,37 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      console.log('Auth state changed:', user?.email, 'Admin email:', ADMIN_EMAIL, 'Is logging in:', isLoggingInRef.current);
-      
-      // Don't interfere if we're in the middle of login process
-      if (isLoggingInRef.current) {
-        console.log('Ignoring auth state change during login process');
-        return;
+    const unsubscribe = onAuthStateChanged(auth, 
+      (user) => {
+        console.log('Auth state changed:', user?.email, 'Admin email:', ADMIN_EMAIL, 'Is logging in:', isLoggingInRef.current);
+        
+        // Don't interfere if we're in the middle of login process
+        if (isLoggingInRef.current) {
+          console.log('Ignoring auth state change during login process');
+          return;
+        }
+        
+        // Handle auth state changes for logout, page refresh, etc.
+        setCurrentUser(user);
+        
+        if (user && user.email && ADMIN_EMAIL) {
+          const isUserAdmin = user.email === ADMIN_EMAIL;
+          console.log('Setting isAdmin to:', isUserAdmin);
+          setIsAdmin(isUserAdmin);
+        } else {
+          console.log('No user or missing email, setting isAdmin to false');
+          setIsAdmin(false);
+        }
+        
+        setLoading(false);
+      },
+      (error) => {
+        console.error('Auth state change error:', error);
+        console.error('Auth error code:', error.code);
+        console.error('Auth error message:', error.message);
+        setLoading(false);
       }
-      
-      // Handle auth state changes for logout, page refresh, etc.
-      setCurrentUser(user);
-      
-      if (user && user.email && ADMIN_EMAIL) {
-        const isUserAdmin = user.email === ADMIN_EMAIL;
-        console.log('Setting isAdmin to:', isUserAdmin);
-        setIsAdmin(isUserAdmin);
-      } else {
-        console.log('No user or missing email, setting isAdmin to false');
-        setIsAdmin(false);
-      }
-      
-      setLoading(false);
-    });
+    );
 
     return unsubscribe;
   }, [ADMIN_EMAIL]);
