@@ -70,12 +70,30 @@ const Artwork = () => {
           console.log(`📸 Refresh image URL from database: "${data.imageUrl}"`);
           console.log(`✅ Refresh has image URL: ${!!data.imageUrl}`);
           
+          // Handle both Firebase Storage URLs and public folder URLs
+          let refreshProcessedImageUrl = null;
+          if (data.imageUrl) {
+            if (data.imageUrl.startsWith('https://firebasestorage.googleapis.com')) {
+              // Firebase Storage URL - use as-is
+              refreshProcessedImageUrl = data.imageUrl;
+              console.log(`🔥 Refresh Firebase Storage URL: "${data.imageUrl}"`);
+            } else if (data.imageUrl.startsWith('/')) {
+              // Public folder URL - convert to full path
+              refreshProcessedImageUrl = `${window.location.origin}${data.imageUrl}`;
+              console.log(`📁 Refresh public folder URL converted: "${data.imageUrl}" → "${refreshProcessedImageUrl}"`);
+            } else {
+              // Unknown format - use as-is and log
+              refreshProcessedImageUrl = data.imageUrl;
+              console.log(`❓ Refresh unknown URL format: "${data.imageUrl}"`);
+            }
+          }
+          
           return {
             id: doc.id,
             title: data.title || 'Untitled',
-            // Only use Firebase Storage URLs - no public folder support
-            img: data.imageUrl,
-            imgs: data.imageUrl ? [data.imageUrl] : null,
+            // Support both Firebase Storage URLs and public folder URLs
+            img: refreshProcessedImageUrl,
+            imgs: refreshProcessedImageUrl ? [refreshProcessedImageUrl] : null,
             price: data.price !== null ? `$${data.price}` : null,
             size: data.size || data.dimensions || 'Size not specified',
             medium: data.medium || 'Medium not specified',
@@ -154,12 +172,30 @@ const Artwork = () => {
             console.log(`🔗 Image URL type: ${typeof data.imageUrl}`);
             console.log(`✅ Has image URL: ${!!data.imageUrl}`);
             
+            // Handle both Firebase Storage URLs and public folder URLs
+            let processedImageUrl = null;
+            if (data.imageUrl) {
+              if (data.imageUrl.startsWith('https://firebasestorage.googleapis.com')) {
+                // Firebase Storage URL - use as-is
+                processedImageUrl = data.imageUrl;
+                console.log(`🔥 Firebase Storage URL: "${data.imageUrl}"`);
+              } else if (data.imageUrl.startsWith('/')) {
+                // Public folder URL - convert to full path
+                processedImageUrl = `${window.location.origin}${data.imageUrl}`;
+                console.log(`📁 Public folder URL converted: "${data.imageUrl}" → "${processedImageUrl}"`);
+              } else {
+                // Unknown format - use as-is and log
+                processedImageUrl = data.imageUrl;
+                console.log(`❓ Unknown URL format: "${data.imageUrl}"`);
+              }
+            }
+            
             return {
               id: doc.id,
               title: data.title || 'Untitled',
-              // Only use Firebase Storage URLs - no public folder support
-              img: data.imageUrl,
-              imgs: data.imageUrl ? [data.imageUrl] : null,
+              // Support both Firebase Storage URLs and public folder URLs
+              img: processedImageUrl,
+              imgs: processedImageUrl ? [processedImageUrl] : null,
               price: data.price !== null ? `$${data.price}` : null, // Handle null price
               size: data.size || data.dimensions || 'Size not specified', // Support both new and old format
               medium: data.medium || 'Medium not specified',
