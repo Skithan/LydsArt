@@ -100,7 +100,7 @@ const Artwork = () => {
 
 
 
-  // Fetch artwork from cache or Firestore (only once per session)
+  // Fetch artwork from Firestore (always fresh data to avoid database connection issues)
   useEffect(() => {
     const fetchArtwork = async () => {
       try {
@@ -109,7 +109,12 @@ const Artwork = () => {
         console.log('🚀 Artwork.js: Starting fetch process...');
         console.log('🕒 Current timestamp:', new Date().toLocaleTimeString());
         
-        // Check if we have cached data first
+        // Clear cache to ensure fresh data (fixes database connection issues)
+        localStorage.removeItem('lydsart_artwork_cache');
+        localStorage.removeItem('lydsart_artwork_cache_timestamp');
+        console.log('🗑️ Cache cleared, forcing fresh data fetch');
+        
+        // Bypass cache check for now
         const cachedData = localStorage.getItem('lydsart_artwork_cache');
         const cacheTimestamp = localStorage.getItem('lydsart_artwork_cache_timestamp');
         const cacheExpiry = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
@@ -188,10 +193,8 @@ const Artwork = () => {
             return;
           }
           
-          // Cache the data for future use
-          localStorage.setItem('lydsart_artwork_cache', JSON.stringify(artworkData));
-          localStorage.setItem('lydsart_artwork_cache_timestamp', Date.now().toString());
-          console.log('💾 Artwork data cached successfully');
+          // Skip caching for now to ensure fresh data on each load
+          console.log('✅ Artwork data loaded successfully (cache disabled for debugging)');
           
           setCards(artworkData);
           setError(null);
