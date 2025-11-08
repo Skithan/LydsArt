@@ -50,7 +50,6 @@ const Artwork = () => {
 
   // Force refresh data from database
   const refreshArtworkData = async () => {
-    console.log('🔄 Force refreshing artwork data...');
     localStorage.removeItem('lydsart_artwork_cache');
     localStorage.removeItem('lydsart_artwork_cache_timestamp');
     setLoading(true);
@@ -66,20 +65,17 @@ const Artwork = () => {
       } else {
         const artworkData = querySnapshot.docs.map(doc => {
           const data = doc.data();
-          console.log('🎨 Processing artwork:', data.title, 'ID:', doc.id);
-          console.log('📸 Image URL:', data.imageUrl);
-          console.log('📊 Raw data structure:', data);
           
           return {
             id: doc.id,
             title: data.title || 'Untitled',
             img: data.imageUrl,
             imgs: data.imageUrl ? [data.imageUrl] : null,
-            price: data.price !== null ? `$${data.price}` : null, // Handle null price
-            size: data.size || data.dimensions || 'Size not specified', // Support both new and old format
+            price: data.price !== null ? `$${data.price}` : null,
+            size: data.size || data.dimensions || 'Size not specified',
             medium: data.medium || 'Medium not specified',
-            date: data.date || (data.createdAt ? new Date(data.createdAt.toDate()).getFullYear().toString() : null), // Use 'date' field first
-            sold: data.sold !== undefined ? data.sold : !data.available, // Use 'sold' field directly or fallback
+            date: data.date || (data.createdAt ? new Date(data.createdAt.toDate()).getFullYear().toString() : null),
+            sold: data.sold !== undefined ? data.sold : !data.available,
             description: data.description || null,
             slug: data.slug || null,
             _originalData: data
@@ -88,10 +84,9 @@ const Artwork = () => {
         
         setCards(artworkData);
         setError(null);
-        console.log('✅ Data refreshed successfully:', artworkData.length, 'pieces');
       }
     } catch (err) {
-      console.error('❌ Error refreshing data:', err);
+      console.error('Error refreshing data:', err);
       setError(`Failed to refresh data: ${err.message}`);
     } finally {
       setLoading(false);
@@ -106,25 +101,16 @@ const Artwork = () => {
       try {
         setLoading(true);
         
-        console.log('🚀 Artwork.js: Starting fetch process...');
-        console.log('🕒 Current timestamp:', new Date().toLocaleTimeString());
-        
-        // Clear cache to ensure fresh data (fixes database connection issues)
+        // Clear cache to ensure fresh data
         localStorage.removeItem('lydsart_artwork_cache');
         localStorage.removeItem('lydsart_artwork_cache_timestamp');
-        console.log('🗑️ Cache cleared, forcing fresh data fetch');
-        console.log('🔍 useEffect triggered - fetching artwork data');
         
         // Bypass cache check for now
         const cachedData = localStorage.getItem('lydsart_artwork_cache');
         const cacheTimestamp = localStorage.getItem('lydsart_artwork_cache_timestamp');
         const cacheExpiry = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
         
-        console.log('📦 Cache status:', {
-          hasCachedData: !!cachedData,
-          cacheTimestamp: cacheTimestamp ? new Date(parseInt(cacheTimestamp)).toLocaleString() : null,
-          cacheAge: cacheTimestamp ? (Date.now() - parseInt(cacheTimestamp)) / 1000 / 60 : null // minutes
-        });
+
         
         if (cachedData && cacheTimestamp) {
           const isExpired = (Date.now() - parseInt(cacheTimestamp)) > cacheExpiry;
@@ -141,24 +127,16 @@ const Artwork = () => {
           }
         }
         
-        console.log('🔥 Fetching fresh data from Firestore...');
-        
         const artworkCollection = collection(db, 'artwork');
         const artworkQuery = query(artworkCollection, orderBy('createdAt', 'desc'));
         const querySnapshot = await getDocs(artworkQuery);
         
-        console.log('📊 Query snapshot size:', querySnapshot.size);
-        console.log('📊 Query snapshot empty:', querySnapshot.empty);
-        
         if (querySnapshot.empty) {
-          console.log('⚠️ No documents found in artwork collection');
           setError('No artwork found in database. Please upload artwork data first.');
           setCards([]);
         } else {
           const artworkData = querySnapshot.docs.map(doc => {
             const data = doc.data();
-            console.log('🎨 Processing artwork:', data.title, 'ID:', doc.id);
-            console.log('📸 Image URL:', data.imageUrl);
             
             return {
               id: doc.id,
@@ -178,39 +156,11 @@ const Artwork = () => {
             };
           });
           
-          console.log('✅ Processed artwork data:', artworkData.length, 'pieces');
-          console.log('📊 Artwork summary:', artworkData.map(art => ({
-            title: art.title,
-            hasImage: !!art.imageUrl,
-            available: art.available
-          })));
-          
-          // Validate that we have at least some artwork with images
-          const artworkWithImages = artworkData.filter(art => art.img || art.imageUrl);
-          console.log('🖼️ Artwork with images found:', artworkWithImages.length, 'out of', artworkData.length);
-          if (artworkWithImages.length === 0) {
-            console.warn('⚠️ No artwork found with images');
-            setError('No artwork with images found. Please upload artwork with images.');
-            setCards([]);
-            return;
-          }
-          
-          // Skip caching for now to ensure fresh data on each load
-          console.log('✅ Artwork data loaded successfully (cache disabled for debugging)');
-          console.log('🎯 About to set cards and clear error...');
-          console.log('📝 Setting cards with:', artworkData.length, 'items');
-          console.log('🧹 Clearing error state...');
-          
           setCards(artworkData);
           setError(null);
-          
-          console.log('✅ State updated - cards and error cleared');
         }
       } catch (err) {
-        console.error('🚨 CATCH BLOCK TRIGGERED - Error fetching artwork:', err);
-        console.error('🚨 Error code:', err.code);
-        console.error('🚨 Error message:', err.message);
-        console.error('🚨 Full error stack:', err.stack);
+        console.error('Error fetching artwork:', err);
         
         if (err.code === 'permission-denied') {
           setError('Database access denied. Please enable Firestore and set proper permissions.');
@@ -600,7 +550,6 @@ const Artwork = () => {
           <button
             className="filter-dropdown-btn"
             onClick={() => {
-              console.log('🗑️ Clearing cache and refreshing...');
               localStorage.removeItem('lydsart_artwork_cache');
               localStorage.removeItem('lydsart_artwork_cache_timestamp');
               refreshArtworkData();
@@ -732,7 +681,6 @@ const Artwork = () => {
                     src={card.imgs ? card.imgs[0] : card.img}
                     alt={card.title}
                     onError={(e) => {
-                      console.error('🖼️ Image failed to load:', card.title, 'URL:', e.target.src);
                       e.target.style.display = 'none';
                       e.target.parentElement.innerHTML = `
                         <div style="
@@ -750,9 +698,6 @@ const Artwork = () => {
                           Image not available
                         </div>
                       `;
-                    }}
-                    onLoad={(e) => {
-                      console.log('✅ Image loaded successfully:', card.title);
                     }}
                     style={{
                       width: '100%',
@@ -851,7 +796,6 @@ const Artwork = () => {
                 className={`scroll-img${expanded ? ' shrink' : ''}`}
                 onClick={handleExpand}
                 onError={(e) => {
-                  console.error('🖼️ Single view image failed to load:', filteredCards[current].title, 'URL:', e.target.src);
                   e.target.style.background = 'linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%)';
                   e.target.style.display = 'flex';
                   e.target.style.alignItems = 'center';
@@ -859,9 +803,6 @@ const Artwork = () => {
                   e.target.style.color = '#666';
                   e.target.style.fontSize = '1.2rem';
                   e.target.alt = 'Image not available';
-                }}
-                onLoad={(e) => {
-                  console.log('✅ Single view image loaded:', filteredCards[current].title);
                 }}
                 style={{
                   cursor: 'pointer',
