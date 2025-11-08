@@ -64,10 +64,10 @@ function Header() {
         <ul className={`nav-list ${isMenuOpen ? 'open' : ''}`}>
           <li><button className="nav-link-btn" type="button"
             onClick={() => handleClick('/', 'Home')}
-          >Homie</button></li>
+          >Home</button></li>
           <li><button className="nav-link-btn" type="button"
             onClick={() => handleClick('/artwork', 'Artwork')}
-          >Artwork</button></li>
+          >Artwork!</button></li>
           <li><button className="nav-link-btn" type="button"
             onClick={() => handleClick('/contact', 'Contact')}
           >Contact</button></li>

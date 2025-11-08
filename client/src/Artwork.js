@@ -113,6 +113,7 @@ const Artwork = () => {
         localStorage.removeItem('lydsart_artwork_cache');
         localStorage.removeItem('lydsart_artwork_cache_timestamp');
         console.log('🗑️ Cache cleared, forcing fresh data fetch');
+        console.log('🔍 useEffect triggered - fetching artwork data');
         
         // Bypass cache check for now
         const cachedData = localStorage.getItem('lydsart_artwork_cache');
@@ -185,7 +186,8 @@ const Artwork = () => {
           })));
           
           // Validate that we have at least some artwork with images
-          const artworkWithImages = artworkData.filter(art => art.imageUrl);
+          const artworkWithImages = artworkData.filter(art => art.img || art.imageUrl);
+          console.log('🖼️ Artwork with images found:', artworkWithImages.length, 'out of', artworkData.length);
           if (artworkWithImages.length === 0) {
             console.warn('⚠️ No artwork found with images');
             setError('No artwork with images found. Please upload artwork with images.');
@@ -195,14 +197,20 @@ const Artwork = () => {
           
           // Skip caching for now to ensure fresh data on each load
           console.log('✅ Artwork data loaded successfully (cache disabled for debugging)');
+          console.log('🎯 About to set cards and clear error...');
+          console.log('📝 Setting cards with:', artworkData.length, 'items');
+          console.log('🧹 Clearing error state...');
           
           setCards(artworkData);
           setError(null);
+          
+          console.log('✅ State updated - cards and error cleared');
         }
       } catch (err) {
-        console.error('❌ Error fetching artwork:', err);
-        console.error('❌ Error code:', err.code);
-        console.error('❌ Error message:', err.message);
+        console.error('🚨 CATCH BLOCK TRIGGERED - Error fetching artwork:', err);
+        console.error('🚨 Error code:', err.code);
+        console.error('🚨 Error message:', err.message);
+        console.error('🚨 Full error stack:', err.stack);
         
         if (err.code === 'permission-denied') {
           setError('Database access denied. Please enable Firestore and set proper permissions.');
