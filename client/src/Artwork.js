@@ -48,6 +48,54 @@ const Artwork = () => {
   const navigate = useNavigate();
   const { addItem } = useCart();
 
+  // Force refresh data from database
+  const refreshArtworkData = async () => {
+    console.log('🔄 Force refreshing artwork data...');
+    localStorage.removeItem('lydsart_artwork_cache');
+    localStorage.removeItem('lydsart_artwork_cache_timestamp');
+    setLoading(true);
+    
+    try {
+      const artworkCollection = collection(db, 'artwork');
+      const artworkQuery = query(artworkCollection, orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(artworkQuery);
+      
+      if (querySnapshot.empty) {
+        setError('No artwork found in database.');
+        setCards([]);
+      } else {
+        const artworkData = querySnapshot.docs.map(doc => {
+          const data = doc.data();
+          console.log('🎨 Processing artwork:', data.title, 'ID:', doc.id);
+          console.log('📸 Image URL:', data.imageUrl);
+          
+          return {
+            id: doc.id,
+            title: data.title || 'Untitled',
+            img: data.imageUrl,
+            imgs: data.imageUrl ? [data.imageUrl] : null,
+            price: data.price ? `$${data.price}` : 'Price not available',
+            size: data.dimensions || 'Size not specified',
+            medium: data.medium || 'Medium not specified',
+            date: data.createdAt ? new Date(data.createdAt.toDate()).getFullYear().toString() : null,
+            sold: !data.available,
+            description: data.description || null,
+            _originalData: data
+          };
+        });
+        
+        setCards(artworkData);
+        setError(null);
+        console.log('✅ Data refreshed successfully:', artworkData.length, 'pieces');
+      }
+    } catch (err) {
+      console.error('❌ Error refreshing data:', err);
+      setError(`Failed to refresh data: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
 
   // Fetch artwork from cache or Firestore (only once per session)
@@ -92,20 +140,41 @@ const Artwork = () => {
         } else {
           const artworkData = querySnapshot.docs.map(doc => {
             const data = doc.data();
+            console.log('🎨 Processing artwork:', data.title, 'ID:', doc.id);
+            console.log('📸 Image URL:', data.imageUrl);
+            
             return {
               id: doc.id,
-              ...data,
+              title: data.title || 'Untitled',
               // Convert Firestore format to display format
               img: data.imageUrl,
               imgs: data.imageUrl ? [data.imageUrl] : null,
-              price: data.priceDisplay || (data.price ? `$${data.price}` : null),
-              size: data.size || null,
-              medium: data.medium || null,
-              date: data.date || null
+              price: data.price ? `$${data.price}` : 'Price not available',
+              size: data.dimensions || 'Size not specified',
+              medium: data.medium || 'Medium not specified',
+              date: data.createdAt ? new Date(data.createdAt.toDate()).getFullYear().toString() : null,
+              sold: !data.available, // Convert 'available' to 'sold' for display
+              description: data.description || null,
+              // Keep original data for debugging
+              _originalData: data
             };
           });
           
-          console.log('✅ Processed artwork data:', artworkData);
+          console.log('✅ Processed artwork data:', artworkData.length, 'pieces');
+          console.log('📊 Artwork summary:', artworkData.map(art => ({
+            title: art.title,
+            hasImage: !!art.imageUrl,
+            available: art.available
+          })));
+          
+          // Validate that we have at least some artwork with images
+          const artworkWithImages = artworkData.filter(art => art.imageUrl);
+          if (artworkWithImages.length === 0) {
+            console.warn('⚠️ No artwork found with images');
+            setError('No artwork with images found. Please upload artwork with images.');
+            setCards([]);
+            return;
+          }
           
           // Cache the data for future use
           localStorage.setItem('lydsart_artwork_cache', JSON.stringify(artworkData));
@@ -504,6 +573,21 @@ const Artwork = () => {
             )}
             <span>{gridView ? 'Single' : 'Grid'}</span>
           </button>
+          
+          <button
+            className="filter-dropdown-btn"
+            onClick={refreshArtworkData}
+            disabled={loading}
+            title="Refresh artwork data from database"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#333333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle' }}>
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+              <path d="M21 3v5h-5"/>
+              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+              <path d="M3 21v-5h5"/>
+            </svg>
+            <span>{loading ? 'Refreshing...' : 'Refresh'}</span>
+          </button>
           {filterOpen && (
             <div
               className="filter-dropdown-menu"
@@ -619,6 +703,29 @@ const Artwork = () => {
                   <img
                     src={card.imgs ? card.imgs[0] : card.img}
                     alt={card.title}
+                    onError={(e) => {
+                      console.error('🖼️ Image failed to load:', card.title, 'URL:', e.target.src);
+                      e.target.style.display = 'none';
+                      e.target.parentElement.innerHTML = `
+                        <div style="
+                          width: 100%;
+                          height: 200px;
+                          background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+                          border-radius: 0.5rem;
+                          margin-bottom: 1rem;
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                          color: #666;
+                          font-size: 0.9rem;
+                        ">
+                          Image not available
+                        </div>
+                      `;
+                    }}
+                    onLoad={(e) => {
+                      console.log('✅ Image loaded successfully:', card.title);
+                    }}
                     style={{
                       width: '100%',
                       height: '200px',
@@ -715,6 +822,19 @@ const Artwork = () => {
                 alt={filteredCards[current].title}
                 className={`scroll-img${expanded ? ' shrink' : ''}`}
                 onClick={handleExpand}
+                onError={(e) => {
+                  console.error('🖼️ Single view image failed to load:', filteredCards[current].title, 'URL:', e.target.src);
+                  e.target.style.background = 'linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%)';
+                  e.target.style.display = 'flex';
+                  e.target.style.alignItems = 'center';
+                  e.target.style.justifyContent = 'center';
+                  e.target.style.color = '#666';
+                  e.target.style.fontSize = '1.2rem';
+                  e.target.alt = 'Image not available';
+                }}
+                onLoad={(e) => {
+                  console.log('✅ Single view image loaded:', filteredCards[current].title);
+                }}
                 style={{
                   cursor: 'pointer',
                   transition: 'all 0.7s cubic-bezier(.77,0,.18,1)',
