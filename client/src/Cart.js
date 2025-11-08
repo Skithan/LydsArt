@@ -20,7 +20,7 @@ const stripePromise = stripePublicKey ? loadStripe(stripePublicKey) : null;
 
 const Cart = () => {
   const navigate = useNavigate();
-  const { items, totalPrice, itemCount, isEmpty, removeItem, updateQuantity, clearCart } = useCart();
+  const { items, totalPrice, itemCount, isEmpty, removeItem, clearCart } = useCart();
   const [isProcessing, setIsProcessing] = useState(false);
   const [clientSecret, setClientSecret] = useState(null);
   const [paymentCompleted, setPaymentCompleted] = useState(false);

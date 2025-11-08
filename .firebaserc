@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "lydsart-f6966"
-  }
+    "default": "lydsart-f6966",
+    "lydsart": "lydsart-f6966"
+  },
+  "targets": {},
+  "etags": {}
 }

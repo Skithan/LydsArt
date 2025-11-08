@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { collection, getDocs, doc, deleteDoc, orderBy, query } from 'firebase/firestore';
-import { db } from './firebase';
+import { collection, getDocs, doc, deleteDoc, orderBy, query, getDoc } from 'firebase/firestore';
+import { ref, deleteObject } from 'firebase/storage';
+import { db, storage } from './firebase';
 import './App.css';
 
 const AdminDashboard = () => {
@@ -83,9 +84,82 @@ const AdminDashboard = () => {
 
   const handleDelete = async (artworkId) => {
     try {
-      await deleteDoc(doc(db, 'artwork', artworkId));
+      console.log('Starting deletion process for artwork:', artworkId);
+      
+      // First, get the artwork data to find the image URL
+      const artworkRef = doc(db, 'artwork', artworkId);
+      const artworkSnap = await getDoc(artworkRef);
+      
+      if (artworkSnap.exists()) {
+        const artworkData = artworkSnap.data();
+        console.log('Artwork data retrieved:', artworkData);
+        
+        // Delete the image from Firebase Storage if it exists
+        if (artworkData.imageUrl) {
+          try {
+            const imageUrl = artworkData.imageUrl;
+            console.log('🖼️ Image URL found:', imageUrl);
+            
+            // Try multiple URL parsing methods for different Firebase Storage formats
+            let storagePath = null;
+            
+            // Method 1: Standard Firebase Storage URLs with /o/ pattern
+            const standardMatch = imageUrl.match(/\/o\/([^?]+)/);
+            if (standardMatch) {
+              storagePath = decodeURIComponent(standardMatch[1]);
+              console.log('📁 Extracted path (standard format):', storagePath);
+            }
+            
+            // Method 2: Alternative format with firebasestorage.app domain
+            if (!storagePath) {
+              const altMatch = imageUrl.match(/firebasestorage\.app\/v0\/b\/[^/]+\/o\/([^?]+)/);
+              if (altMatch) {
+                storagePath = decodeURIComponent(altMatch[1]);
+                console.log('📁 Extracted path (alt format):', storagePath);
+              }
+            }
+            
+            // Method 3: Direct path extraction from URL structure
+            if (!storagePath && imageUrl.includes('artwork/')) {
+              const pathStart = imageUrl.indexOf('artwork/');
+              const pathEnd = imageUrl.indexOf('?') > -1 ? imageUrl.indexOf('?') : imageUrl.length;
+              if (pathStart > -1) {
+                storagePath = imageUrl.substring(pathStart, pathEnd);
+                console.log('📁 Extracted path (direct method):', storagePath);
+              }
+            }
+            
+            if (storagePath) {
+              console.log('🗑️ Attempting to delete from storage path:', storagePath);
+              const imageRef = ref(storage, storagePath);
+              await deleteObject(imageRef);
+              console.log('✅ Image deleted from storage successfully');
+            } else {
+              console.warn('⚠️ Could not extract storage path from URL:', imageUrl);
+              console.warn('🔍 URL analysis - includes artwork/:', imageUrl.includes('artwork/'));
+              console.warn('🔍 URL parts:', imageUrl.split('/'));
+            }
+          } catch (storageError) {
+            console.error('❌ Error deleting image from storage:', storageError);
+            console.error('🔧 Storage error details:', {
+              code: storageError.code,
+              message: storageError.message
+            });
+            // Continue with database deletion even if storage deletion fails
+          }
+        } else {
+          console.log('📷 No image URL found in artwork data');
+        }
+      }
+      
+      // Delete the document from Firestore
+      await deleteDoc(artworkRef);
+      console.log('Artwork deleted from database successfully');
+      
+      // Update the local state
       setArtwork(prev => prev.filter(item => item.id !== artworkId));
       setShowDeleteConfirm(null);
+      
     } catch (err) {
       console.error('Error deleting artwork:', err);
       setError('Failed to delete artwork.');

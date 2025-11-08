@@ -25,7 +25,7 @@ const ArtworkForm = () => {
   const [error, setError] = useState('');
   const [isVisible, setIsVisible] = useState(false);
   
-  const { isAdmin } = useAuth();
+  const { isAdmin, currentUser } = useAuth();
   const navigate = useNavigate();
   const formRef = useRef(null);
 
@@ -116,19 +116,54 @@ const ArtworkForm = () => {
     if (!imageFile) return currentImageUrl;
     
     try {
-      // Create a reference to the image in Firebase Storage
-      const imageRef = ref(storage, `artwork/${Date.now()}_${imageFile.name}`);
+      console.log('Starting image upload...');
+      console.log('File details:', {
+        name: imageFile.name,
+        size: imageFile.size,
+        type: imageFile.type
+      });
+      
+      // Create filename from artwork title (sanitized for file system)
+      let sanitizedTitle = formData.title
+        ? formData.title
+            .replace(/[^a-z0-9]/gi, '_') // Replace non-alphanumeric with underscore
+            .replace(/_+/g, '_') // Replace multiple underscores with single
+            .replace(/^_|_$/g, '') // Remove leading/trailing underscores
+            .toLowerCase()
+        : `untitled_${Date.now()}`; // Fallback if no title
+      
+      // Ensure we have a valid filename
+      if (!sanitizedTitle || sanitizedTitle === '') {
+        sanitizedTitle = `artwork_${Date.now()}`;
+      }
+      
+      // Get file extension from original file
+      const fileExtension = imageFile.name.split('.').pop();
+      
+      // Create a reference to the image in Firebase Storage using title as filename
+      const imagePath = `artwork/${sanitizedTitle}.${fileExtension}`;
+      console.log('Upload path:', imagePath);
+      
+      const imageRef = ref(storage, imagePath);
+      console.log('Storage reference created');
       
       // Upload the file
+      console.log('Starting upload to Firebase Storage...');
       const uploadResult = await uploadBytes(imageRef, imageFile);
+      console.log('Upload successful:', uploadResult);
       
       // Get the download URL
+      console.log('Getting download URL...');
       const downloadURL = await getDownloadURL(uploadResult.ref);
+      console.log('Download URL obtained:', downloadURL);
       
       return downloadURL;
     } catch (err) {
       console.error('Error uploading image:', err);
-      throw new Error('Failed to upload image.');
+      console.error('Error code:', err.code);
+      console.error('Error message:', err.message);
+      console.error('Full error object:', err);
+      throw new Error(`Failed to upload image: ${err.message}`);
     }
   };
 
@@ -138,8 +173,18 @@ const ArtworkForm = () => {
     setError('');
 
     try {
+      console.log('Form submission started');
+      console.log('Is admin:', isAdmin);
+      console.log('Current user:', currentUser);
+      
+      // Validate required fields
+      if (!formData.title.trim()) {
+        throw new Error('Please enter a title for the artwork.');
+      }
+      
       // Upload image if there's a new one
       const imageUrl = await uploadImage();
+      console.log('Image upload completed, URL:', imageUrl);
       
       // Prepare artwork data
       const artworkData = {
@@ -172,6 +217,8 @@ const ArtworkForm = () => {
   const handleCancel = () => {
     navigate('/admin/dashboard');
   };
+
+
 
   return (
     <div className="artwork-form-container">
