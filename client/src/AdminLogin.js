@@ -10,6 +10,7 @@ const AdminLogin = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   
   const { login, isAdmin, loading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -45,6 +46,10 @@ const AdminLogin = () => {
       [name]: value,
     }));
     setError(''); // Clear error when user types
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleSubmit = async (e) => {
@@ -97,16 +102,28 @@ const AdminLogin = () => {
 
           <div className="form-group">
             <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              required
-              disabled={loading}
-              placeholder="Enter password"
-            />
+            <div className="password-input-container">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                required
+                disabled={loading}
+                placeholder="Enter password"
+                className="password-input"
+              />
+              <button
+                type="button"
+                className="password-toggle-btn"
+                onClick={togglePasswordVisibility}
+                disabled={loading}
+                title={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? "👁️‍🗨️" : "👁️"}
+              </button>
+            </div>
           </div>
 
           {error && (

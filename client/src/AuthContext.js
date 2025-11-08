@@ -19,22 +19,34 @@ export const AuthProvider = ({ children }) => {
 
   // Admin credentials from environment variables
   const ADMIN_EMAIL = process.env.REACT_APP_ADMIN_EMAIL;
+  
+  useEffect(() => {
+    console.log('AuthProvider initialized - Admin email:', ADMIN_EMAIL);
+    if (!ADMIN_EMAIL) {
+      console.error('REACT_APP_ADMIN_EMAIL environment variable is not set!');
+    }
+  }, [ADMIN_EMAIL]);
 
   const login = async (email, password) => {
     try {
+      console.log('Attempting login for:', email, 'Expected admin:', ADMIN_EMAIL);
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       
       // Check if user is admin
       if (user.email === ADMIN_EMAIL) {
+        console.log('Login successful - user is admin');
+        setCurrentUser(user);
         setIsAdmin(true);
         return { success: true, user };
       } else {
+        console.log('Login failed - user is not admin:', user.email);
         // If not admin, sign them out
         await signOut(auth);
         return { success: false, error: 'Unauthorized: Admin access only' };
       }
     } catch (error) {
+      console.log('Login error:', error.message);
       return { success: false, error: error.message };
     }
   };
@@ -51,8 +63,18 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      console.log('Auth state changed:', user?.email, 'Admin email:', ADMIN_EMAIL);
       setCurrentUser(user);
-      setIsAdmin(user?.email === ADMIN_EMAIL);
+      
+      if (user && user.email && ADMIN_EMAIL) {
+        const isUserAdmin = user.email === ADMIN_EMAIL;
+        console.log('Setting isAdmin to:', isUserAdmin);
+        setIsAdmin(isUserAdmin);
+      } else {
+        console.log('No user or missing email, setting isAdmin to false');
+        setIsAdmin(false);
+      }
+      
       setLoading(false);
     });
 

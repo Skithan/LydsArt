@@ -3,7 +3,9 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 
 const ProtectedRoute = ({ children }) => {
-  const { isAdmin, loading } = useAuth();
+  const { isAdmin, loading, currentUser } = useAuth();
+
+  console.log('ProtectedRoute - isAdmin:', isAdmin, 'loading:', loading, 'currentUser:', currentUser?.email);
 
   if (loading) {
     return (
@@ -19,7 +21,13 @@ const ProtectedRoute = ({ children }) => {
     );
   }
 
-  return isAdmin ? children : <Navigate to="/admin/login" replace />;
+  if (!isAdmin) {
+    console.log('ProtectedRoute - Not admin, redirecting to login');
+    return <Navigate to="/admin/login" replace />;
+  }
+
+  console.log('ProtectedRoute - Admin access granted');
+  return children;
 };
 
 export default ProtectedRoute;
