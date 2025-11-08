@@ -66,6 +66,10 @@ const Artwork = () => {
         const artworkData = querySnapshot.docs.map(doc => {
           const data = doc.data();
           
+          console.log(`🎨 Refresh processing artwork: "${data.title}"`);
+          console.log(`📸 Refresh image URL from database: "${data.imageUrl}"`);
+          console.log(`✅ Refresh has image URL: ${!!data.imageUrl}`);
+          
           return {
             id: doc.id,
             title: data.title || 'Untitled',
@@ -80,6 +84,12 @@ const Artwork = () => {
             slug: data.slug || null,
             _originalData: data
           };
+        });
+        
+        // Log final refresh processed artwork data
+        console.log('🔄 Final refresh processed artwork data:');
+        artworkData.forEach((artwork, index) => {
+          console.log(`${index + 1}. "${artwork.title}" - img: "${artwork.img}" - imgs: ${JSON.stringify(artwork.imgs)}`);
         });
         
         setCards(artworkData);
@@ -138,6 +148,11 @@ const Artwork = () => {
           const artworkData = querySnapshot.docs.map(doc => {
             const data = doc.data();
             
+            console.log(`🎨 Processing artwork: "${data.title}"`);
+            console.log(`📸 Image URL from database: "${data.imageUrl}"`);
+            console.log(`🔗 Image URL type: ${typeof data.imageUrl}`);
+            console.log(`✅ Has image URL: ${!!data.imageUrl}`);
+            
             return {
               id: doc.id,
               title: data.title || 'Untitled',
@@ -154,6 +169,12 @@ const Artwork = () => {
               // Keep original data for debugging
               _originalData: data
             };
+          });
+          
+          // Log final processed artwork data
+          console.log('📊 Final processed artwork data:');
+          artworkData.forEach((artwork, index) => {
+            console.log(`${index + 1}. "${artwork.title}" - img: "${artwork.img}" - imgs: ${JSON.stringify(artwork.imgs)}`);
           });
           
           setCards(artworkData);
