@@ -62,10 +62,10 @@ const ArtworkForm = () => {
             setFormData({
               title: data.title || '',
               medium: data.medium || '',
-              dimensions: data.dimensions || '',
+              dimensions: data.size || data.dimensions || '', // Handle both 'size' and 'dimensions'
               price: data.price || '',
               description: data.description || '',
-              available: data.available !== false, // Default to true if not set
+              available: data.sold !== undefined ? !data.sold : true, // Convert 'sold' to 'available' (inverted)
             });
             setCurrentImageUrl(data.imageUrl || '');
           } else {
