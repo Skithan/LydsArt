@@ -73,6 +73,7 @@ const Artwork = () => {
           return {
             id: doc.id,
             title: data.title || 'Untitled',
+            // Only use Firebase Storage URLs - no public folder support
             img: data.imageUrl,
             imgs: data.imageUrl ? [data.imageUrl] : null,
             price: data.price !== null ? `$${data.price}` : null,
@@ -156,7 +157,7 @@ const Artwork = () => {
             return {
               id: doc.id,
               title: data.title || 'Untitled',
-              // Handle new database format
+              // Only use Firebase Storage URLs - no public folder support
               img: data.imageUrl,
               imgs: data.imageUrl ? [data.imageUrl] : null,
               price: data.price !== null ? `$${data.price}` : null, // Handle null price
