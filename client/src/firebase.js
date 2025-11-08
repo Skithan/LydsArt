@@ -8,7 +8,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyCKo9lccSbOpIUopEaIipxAXKE70frynPo",
   authDomain: "lydsart-f6966.firebaseapp.com",
   projectId: "lydsart-f6966",
-  storageBucket: "lydsart-f6966.firebasestorage.app",
+  storageBucket: "lydsart-f6966.appspot.com",
   messagingSenderId: "899561262220",
   appId: "1:899561262220:web:2d3c87bb5edc6a356e7fa9",
   measurementId: "G-JLP938KMS4"

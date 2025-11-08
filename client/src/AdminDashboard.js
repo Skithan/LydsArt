@@ -3,7 +3,6 @@ import { useAuth } from './AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { collection, getDocs, doc, deleteDoc, orderBy, query } from 'firebase/firestore';
 import { db } from './firebase';
-import ImageMigration from './ImageMigration';
 import './App.css';
 
 const AdminDashboard = () => {
@@ -12,7 +11,6 @@ const AdminDashboard = () => {
   const [error, setError] = useState('');
   const [isVisible, setIsVisible] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
-  const [showMigration, setShowMigration] = useState(false);
   
   const { currentUser, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
@@ -141,15 +139,7 @@ const AdminDashboard = () => {
           <button className="admin-button primary" onClick={handleAddNew}>
             Add New Artwork
           </button>
-          <button 
-            className="admin-button secondary" 
-            onClick={() => setShowMigration(!showMigration)}
-          >
-            {showMigration ? 'Hide' : 'Show'} Image Migration Tool
-          </button>
         </div>
-
-        {showMigration && <ImageMigration />}
 
         <div className="artwork-grid">
           {artwork.length === 0 ? (
