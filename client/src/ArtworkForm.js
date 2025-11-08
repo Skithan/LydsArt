@@ -101,9 +101,9 @@ const ArtworkForm = () => {
         return;
       }
       
-      // Validate file size (5MB limit)
-      if (file.size > 5 * 1024 * 1024) {
-        setError('Image file must be less than 5MB.');
+      // Validate file size (20MB limit for high-quality artwork)
+      if (file.size > 20 * 1024 * 1024) {
+        setError('Image file must be less than 20MB.');
         return;
       }
       

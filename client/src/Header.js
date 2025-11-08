@@ -20,7 +20,7 @@ function Header() {
     }, 1000); // Duration should match total animation time
   };
 
-  const handleClick = (path, label) => {
+  const handleClick = (path) => {
     triggerWave(); // Start wave animation
     navigate(path);
     setIsMenuOpen(false); // Close mobile menu after navigation
@@ -98,7 +98,7 @@ function Header() {
           </button></li>
           {isAdmin && (
             <li><button className="nav-link-btn admin-nav-link" type="button"
-              onClick={() => handleClick('/admin/dashboard', 'Admin')}
+              onClick={() => handleClick('/admin/dashboard')}
               title="Admin Dashboard"
             >
               Admin

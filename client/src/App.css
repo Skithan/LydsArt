@@ -256,11 +256,7 @@
 }
 
 .animated-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  position: relative;
   min-width: 100vw;
   min-height: 100vh;
   z-index: 0;
@@ -1420,5 +1416,27 @@
 /* Headshot click effects */
 .headshot-glow {
   box-shadow: 0 0 20px rgba(51, 51, 51, 0.6), 0 4px 24px #0004 !important;
+}
+
+/* Ensure scrolling is enabled on admin pages */
+.admin-dashboard-container,
+.artwork-form-container {
+  overflow: visible;
+  height: auto;
+  min-height: auto;
+}
+
+/* Ensure the main app container allows scrolling */
+html, body {
+  overflow: auto;
+  height: auto;
+}
+
+/* Ensure admin pages can scroll */
+.admin-dashboard,
+.admin-login-container,
+.artwork-form {
+  overflow: visible;
+  max-height: none;
 }
 

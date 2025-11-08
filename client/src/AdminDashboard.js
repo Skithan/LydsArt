@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { collection, getDocs, doc, deleteDoc, orderBy, query } from 'firebase/firestore';
 import { db } from './firebase';
+import ImageMigration from './ImageMigration';
 import './App.css';
 
 const AdminDashboard = () => {
@@ -11,30 +12,33 @@ const AdminDashboard = () => {
   const [error, setError] = useState('');
   const [isVisible, setIsVisible] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
+  const [showMigration, setShowMigration] = useState(false);
   
   const { currentUser, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
-  const dashboardRef = useRef(null);
 
-  // Fly-in animation effect
+  console.log('AdminDashboard render - isAdmin:', isAdmin, 'loading:', loading, 'isVisible:', isVisible, 'currentUser:', currentUser?.email);
+
+  // Fly-in animation effect - trigger immediately on mount
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    if (dashboardRef.current) {
-      observer.observe(dashboardRef.current);
-    }
-
-    return () => observer.disconnect();
+    console.log('AdminDashboard mounted - setting isVisible to true');
+    setIsVisible(true);
   }, []);
+
+  // Track isVisible state changes
+  useEffect(() => {
+    console.log('AdminDashboard isVisible changed to:', isVisible);
+  }, [isVisible]);
+
+  // Track isAdmin state changes
+  useEffect(() => {
+    console.log('AdminDashboard isAdmin changed to:', isAdmin);
+  }, [isAdmin]);
+
+  // Track loading state changes
+  useEffect(() => {
+    console.log('AdminDashboard loading changed to:', loading);
+  }, [loading]);
 
   // Fetch artwork data
   useEffect(() => {
@@ -95,6 +99,7 @@ const AdminDashboard = () => {
   };
 
   if (loading) {
+    console.log('AdminDashboard showing loading state');
     return (
       <div className="loading-container">
         <div>Loading dashboard...</div>
@@ -102,15 +107,16 @@ const AdminDashboard = () => {
     );
   }
 
+  console.log('AdminDashboard rendering main content - isVisible:', isVisible, 'opacity:', isVisible ? 1 : 0);
+
   return (
     <div className="admin-dashboard-container">
       <div 
-        ref={dashboardRef}
         className={`admin-dashboard ${isVisible ? 'fly-in-visible' : ''}`}
         style={{
-          transform: isVisible ? 'translateY(0)' : 'translateY(50px)',
+          transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(30px) scale(0.95)',
           opacity: isVisible ? 1 : 0,
-          transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          transition: 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
         }}
       >
         <div className="admin-header">
@@ -135,7 +141,15 @@ const AdminDashboard = () => {
           <button className="admin-button primary" onClick={handleAddNew}>
             Add New Artwork
           </button>
+          <button 
+            className="admin-button secondary" 
+            onClick={() => setShowMigration(!showMigration)}
+          >
+            {showMigration ? 'Hide' : 'Show'} Image Migration Tool
+          </button>
         </div>
+
+        {showMigration && <ImageMigration />}
 
         <div className="artwork-grid">
           {artwork.length === 0 ? (
