@@ -81,7 +81,7 @@ function Header() {
                 position: 'absolute',
                 top: '-8px',
                 right: '-8px',
-                background: '#c62828',
+                background: '#333333',
                 color: 'white',
                 borderRadius: '50%',
                 width: '20px',

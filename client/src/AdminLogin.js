@@ -10,31 +10,12 @@ const AdminLogin = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
   
-  const { login, isAdmin } = useAuth();
+  const { login, isAdmin, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const formRef = useRef(null);
 
-  // Fly-in animation effect
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
 
-    if (formRef.current) {
-      observer.observe(formRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
 
   // Redirect if already admin
   useEffect(() => {
@@ -42,6 +23,20 @@ const AdminLogin = () => {
       navigate('/admin/dashboard');
     }
   }, [isAdmin, navigate]);
+
+  // Show loading state if auth is still loading
+  if (authLoading) {
+    return (
+      <div className="admin-login-container">
+        <div className="admin-login-form">
+          <div style={{ textAlign: 'center', padding: '2rem' }}>
+            <h2>Loading...</h2>
+            <p>Checking authentication status...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -72,16 +67,17 @@ const AdminLogin = () => {
     <div className="admin-login-container">
       <div 
         ref={formRef}
-        className={`admin-login-form ${isVisible ? 'fly-in-visible' : ''}`}
+        className="admin-login-form"
         style={{
-          transform: isVisible ? 'translateY(0)' : 'translateY(50px)',
-          opacity: isVisible ? 1 : 0,
+          transform: 'translateY(0)',
+          opacity: 1,
           transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
         }}
       >
         <div className="admin-login-header">
           <h1>Admin Portal</h1>
-          <p>Executive Access Only</p>
+          <p>Please enter your credentials to verify admin access</p>
+          <small style={{color: '#999', fontSize: '0.8rem'}}>Debug: AdminLogin component loaded</small>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -95,7 +91,7 @@ const AdminLogin = () => {
               onChange={handleInputChange}
               required
               disabled={loading}
-              placeholder="Enter admin email"
+              placeholder="Enter your email address"
             />
           </div>
 
@@ -129,7 +125,7 @@ const AdminLogin = () => {
         </form>
 
         <div className="admin-login-footer">
-          <p>Authorized personnel only</p>
+          <p>Enter your email and password to access admin features</p>
         </div>
       </div>
     </div>
