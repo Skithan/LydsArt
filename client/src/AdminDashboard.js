@@ -46,10 +46,44 @@ const AdminDashboard = () => {
         const artworkQuery = query(collection(db, 'artwork'), orderBy('title'));
         const querySnapshot = await getDocs(artworkQuery);
         
-        const artworkData = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        const artworkData = querySnapshot.docs.map(doc => {
+          const data = doc.data();
+          
+          // Convert database URLs to Firebase Storage URLs (same logic as Artwork.js)
+          let processedImageUrl = null;
+          if (data.imageUrl) {
+            if (data.imageUrl.startsWith('https://firebasestorage.googleapis.com')) {
+              // Already a Firebase Storage HTTP URL - use as-is
+              processedImageUrl = data.imageUrl;
+              console.log(`🔥 Admin Firebase Storage HTTP URL: "${data.imageUrl}"`);
+            } else if (data.imageUrl.startsWith('gs://')) {
+              // Google Cloud Storage URL - convert to HTTP Firebase Storage URL
+              const gsUrl = data.imageUrl.replace('gs://', '');
+              const [bucket, ...pathParts] = gsUrl.split('/');
+              const encodedPath = pathParts.join('/').replace(/\//g, '%2F');
+              processedImageUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodedPath}?alt=media`;
+              console.log(`🔥 Admin GS URL converted: "${data.imageUrl}" → "${processedImageUrl}"`);
+            } else if (data.imageUrl.startsWith('/') && data.imageUrl.includes('.jpeg')) {
+              // Database URL like "/AnUptownPerspective2.jpeg" - convert to Firebase Storage
+              const fileName = data.imageUrl.substring(1); // Remove leading slash
+              const gsUrl = `gs://lydsart-f6966.firebasestorage.app/artwork/${fileName}`;
+              // Convert to HTTP Firebase Storage URL
+              const encodedPath = `artwork%2F${fileName}`;
+              processedImageUrl = `https://firebasestorage.googleapis.com/v0/b/lydsart-f6966.firebasestorage.app/o/${encodedPath}?alt=media`;
+              console.log(`🔥 Admin Database URL converted: "${data.imageUrl}" → GS: "${gsUrl}" → HTTP: "${processedImageUrl}"`);
+            } else {
+              // Unknown format - use as-is and log
+              processedImageUrl = data.imageUrl;
+              console.log(`❓ Admin Unknown URL format: "${data.imageUrl}"`);
+            }
+          }
+
+          return {
+            id: doc.id,
+            ...data,
+            imageUrl: processedImageUrl // Use the processed URL
+          };
+        });
         
         setArtwork(artworkData);
       } catch (err) {
