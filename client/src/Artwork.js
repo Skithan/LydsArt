@@ -70,26 +70,28 @@ const Artwork = () => {
           console.log(`📸 Refresh image URL from database: "${data.imageUrl}"`);
           console.log(`✅ Refresh has image URL: ${!!data.imageUrl}`);
           
-          // Handle Firebase Storage URLs (both HTTP and gs:// formats) and public folder URLs
+          // Convert database URLs to Firebase Storage URLs
           let refreshProcessedImageUrl = null;
           if (data.imageUrl) {
             if (data.imageUrl.startsWith('https://firebasestorage.googleapis.com')) {
-              // Firebase Storage HTTP URL - use as-is
+              // Already a Firebase Storage HTTP URL - use as-is
               refreshProcessedImageUrl = data.imageUrl;
               console.log(`🔥 Refresh Firebase Storage HTTP URL: "${data.imageUrl}"`);
             } else if (data.imageUrl.startsWith('gs://')) {
               // Google Cloud Storage URL - convert to HTTP Firebase Storage URL
-              // Format: gs://bucket-name/path/to/file.jpg
-              // Convert to: https://firebasestorage.googleapis.com/v0/b/bucket-name/o/path%2Fto%2Ffile.jpg?alt=media
               const gsUrl = data.imageUrl.replace('gs://', '');
               const [bucket, ...pathParts] = gsUrl.split('/');
               const encodedPath = pathParts.join('/').replace(/\//g, '%2F');
               refreshProcessedImageUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodedPath}?alt=media`;
               console.log(`🔥 Refresh GS URL converted: "${data.imageUrl}" → "${refreshProcessedImageUrl}"`);
-            } else if (data.imageUrl.startsWith('/')) {
-              // Public folder URL - convert to full path
-              refreshProcessedImageUrl = `${window.location.origin}${data.imageUrl}`;
-              console.log(`📁 Refresh public folder URL converted: "${data.imageUrl}" → "${refreshProcessedImageUrl}"`);
+            } else if (data.imageUrl.startsWith('/') && data.imageUrl.includes('.jpeg')) {
+              // Database URL like "/AnUptownPerspective2.jpeg" - convert to Firebase Storage
+              const fileName = data.imageUrl.substring(1); // Remove leading slash
+              const gsUrl = `gs://lydsart-f6966.firebasestorage.app/artwork/${fileName}`;
+              // Convert to HTTP Firebase Storage URL
+              const encodedPath = `artwork%2F${fileName}`;
+              refreshProcessedImageUrl = `https://firebasestorage.googleapis.com/v0/b/lydsart-f6966.firebasestorage.app/o/${encodedPath}?alt=media`;
+              console.log(`🔥 Refresh Database URL converted: "${data.imageUrl}" → GS: "${gsUrl}" → HTTP: "${refreshProcessedImageUrl}"`);
             } else {
               // Unknown format - use as-is and log
               refreshProcessedImageUrl = data.imageUrl;
@@ -181,26 +183,28 @@ const Artwork = () => {
             console.log(`🔗 Image URL type: ${typeof data.imageUrl}`);
             console.log(`✅ Has image URL: ${!!data.imageUrl}`);
             
-            // Handle Firebase Storage URLs (both HTTP and gs:// formats) and public folder URLs
+            // Convert database URLs to Firebase Storage URLs
             let processedImageUrl = null;
             if (data.imageUrl) {
               if (data.imageUrl.startsWith('https://firebasestorage.googleapis.com')) {
-                // Firebase Storage HTTP URL - use as-is
+                // Already a Firebase Storage HTTP URL - use as-is
                 processedImageUrl = data.imageUrl;
                 console.log(`🔥 Firebase Storage HTTP URL: "${data.imageUrl}"`);
               } else if (data.imageUrl.startsWith('gs://')) {
                 // Google Cloud Storage URL - convert to HTTP Firebase Storage URL
-                // Format: gs://bucket-name/path/to/file.jpg
-                // Convert to: https://firebasestorage.googleapis.com/v0/b/bucket-name/o/path%2Fto%2Ffile.jpg?alt=media
                 const gsUrl = data.imageUrl.replace('gs://', '');
                 const [bucket, ...pathParts] = gsUrl.split('/');
                 const encodedPath = pathParts.join('/').replace(/\//g, '%2F');
                 processedImageUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodedPath}?alt=media`;
                 console.log(`🔥 GS URL converted: "${data.imageUrl}" → "${processedImageUrl}"`);
-              } else if (data.imageUrl.startsWith('/')) {
-                // Public folder URL - convert to full path
-                processedImageUrl = `${window.location.origin}${data.imageUrl}`;
-                console.log(`📁 Public folder URL converted: "${data.imageUrl}" → "${processedImageUrl}"`);
+              } else if (data.imageUrl.startsWith('/') && data.imageUrl.includes('.jpeg')) {
+                // Database URL like "/AnUptownPerspective2.jpeg" - convert to Firebase Storage
+                const fileName = data.imageUrl.substring(1); // Remove leading slash
+                const gsUrl = `gs://lydsart-f6966.firebasestorage.app/artwork/${fileName}`;
+                // Convert to HTTP Firebase Storage URL
+                const encodedPath = `artwork%2F${fileName}`;
+                processedImageUrl = `https://firebasestorage.googleapis.com/v0/b/lydsart-f6966.firebasestorage.app/o/${encodedPath}?alt=media`;
+                console.log(`🔥 Database URL converted: "${data.imageUrl}" → GS: "${gsUrl}" → HTTP: "${processedImageUrl}"`);
               } else {
                 // Unknown format - use as-is and log
                 processedImageUrl = data.imageUrl;
