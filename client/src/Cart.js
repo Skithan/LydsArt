@@ -18,6 +18,37 @@ if (!stripePublicKey) {
 
 const stripePromise = stripePublicKey ? loadStripe(stripePublicKey) : null;
 
+// Helper function to convert image URLs to Firebase Storage URLs (same logic as Artwork.js)
+const convertToFirebaseStorageUrl = (imageUrl) => {
+  if (!imageUrl) return null;
+  
+  if (imageUrl.startsWith('https://firebasestorage.googleapis.com')) {
+    // Already a Firebase Storage HTTP URL - use as-is
+    console.log(`🛒 Cart Firebase Storage HTTP URL: "${imageUrl}"`);
+    return imageUrl;
+  } else if (imageUrl.startsWith('gs://')) {
+    // Google Cloud Storage URL - convert to HTTP Firebase Storage URL
+    const gsUrl = imageUrl.replace('gs://', '');
+    const [bucket, ...pathParts] = gsUrl.split('/');
+    const encodedPath = pathParts.join('/').replace(/\//g, '%2F');
+    const convertedUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodedPath}?alt=media`;
+    console.log(`🛒 Cart GS URL converted: "${imageUrl}" → "${convertedUrl}"`);
+    return convertedUrl;
+  } else if (imageUrl.startsWith('/') && imageUrl.includes('.jpeg')) {
+    // Database URL like "/AnUptownPerspective2.jpeg" - convert to Firebase Storage
+    const fileName = imageUrl.substring(1); // Remove leading slash
+    // Convert to HTTP Firebase Storage URL
+    const encodedPath = `artwork%2F${fileName}`;
+    const convertedUrl = `https://firebasestorage.googleapis.com/v0/b/lydsart-f6966.firebasestorage.app/o/${encodedPath}?alt=media`;
+    console.log(`🛒 Cart Database URL converted: "${imageUrl}" → "${convertedUrl}"`);
+    return convertedUrl;
+  } else {
+    // Unknown format - use as-is
+    console.log(`🛒 Cart Unknown URL format: "${imageUrl}"`);
+    return imageUrl;
+  }
+};
+
 const Cart = () => {
   const navigate = useNavigate();
   const { items, totalPrice, itemCount, isEmpty, removeItem, clearCart } = useCart();
@@ -301,8 +332,18 @@ const Cart = () => {
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                   {item.imgs && item.imgs.length > 0 && (
                     <img 
-                      src={item.imgs[0]} 
+                      src={convertToFirebaseStorageUrl(item.imgs[0])} 
                       alt={item.title} 
+                      onError={(e) => {
+                        console.log(`❌ Cart image failed to load: "${item.imgs[0]}" for "${item.title}"`);
+                        e.target.style.background = 'linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%)';
+                        e.target.style.display = 'flex';
+                        e.target.style.alignItems = 'center';
+                        e.target.style.justifyContent = 'center';
+                        e.target.style.color = '#666';
+                        e.target.style.fontSize = '0.8rem';
+                        e.target.alt = 'Image not available';
+                      }}
                       style={{
                         width: '80px', 
                         height: '80px', 
