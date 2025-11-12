@@ -627,6 +627,7 @@ const Artwork = () => {
             <span>{gridView ? 'Single' : 'Grid'}</span>
           </button>
           
+          {/* 
           <button
             className="filter-dropdown-btn"
             onClick={() => {
@@ -645,6 +646,7 @@ const Artwork = () => {
             </svg>
             <span>{loading ? 'Refreshing...' : 'Clear & Refresh'}</span>
           </button>
+          */}
           {filterOpen && (
             <div
               className="filter-dropdown-menu"
