@@ -41,32 +41,31 @@ LydsArt/
 ### **Core React Components**
 
 #### **`client/src/App.js`**
-- **Purpose**: Main application router and layout wrapper
+- **Purpose**: Main application router 
 - **Connects to**: All page components via React Router
 - **Routes defined**:
   - `/` → Home component
   - `/artwork` → Artwork gallery
-  - `/contact` → Contact form
+  - `/contact` → Instagram Linnk
   - `/cart` → Shopping cart & checkout
   - `/success` → Thank you page after payment
 
 #### **`client/src/Artwork.js`** ⭐ *Core Gallery*
-- **Purpose**: Main artwork gallery with filtering, animations, and Firebase Storage integration
+- **Purpose**: Main artwork gallery with filtering, animations, and Firebase Storage querying
 - **Data Flow**: Firestore → Firebase Storage URL conversion → Cache → UI display
 - **Features**:
   - Fetches artwork from Firestore with automatic refresh
   - **Firebase Storage Integration**: Converts database URLs to Firebase Storage HTTP URLs
   - **URL Conversion**: Handles both `gs://` and `/filename.jpeg` formats automatically
   - Grid/single view toggle with smooth transitions
-  - Advanced filtering by medium, size, sold status
+  - Advanced filtering by medium, size, availability status
   - Smooth fly-in animations with Intersection Observer
   - Responsive touch/swipe navigation for mobile
-  - Smart caching with manual refresh capability
+  - Smart caching
 - **Connects to**: 
   - `firebase.js` for database queries and storage
   - `CartContext.js` for shopping cart functionality
-  - localStorage for performance caching
-  - Firebase Storage for image display
+
 
 #### **`client/src/Cart.js`**
 - **Purpose**: Shopping cart and Stripe checkout integration
