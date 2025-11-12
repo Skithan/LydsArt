@@ -1,6 +1,6 @@
 # LydsArt
 
-A modern art portfolio and e-commerce platform built for artist Lydia Paterson. The application showcases artwork with an elegant gallery interface and handles online art sales with integrated payment processing.
+A modern art portfolio and e-commerce platform built for artist Lydia Paterson. The application showcases artwork with an elegant gallery interface, Firebase Storage image management, and handles online art sales with integrated Stripe payment processing.
 
 ## 🌐 Live Site
 **Production**: https://lydsart-f6966.web.app
@@ -11,22 +11,30 @@ This is a full-stack application built on Firebase with the following architectu
 - **Frontend**: React SPA hosted on Firebase Hosting
 - **Backend**: Firebase Functions (serverless)
 - **Database**: Firestore (NoSQL document database)
-- **Payments**: Stripe integration
+- **Image Storage**: Firebase Storage with automatic URL conversion
+- **Payments**: Stripe integration with admin dashboard
+- **Authentication**: Firebase Auth with admin system
 - **Email**: EmailJS for notifications
 
 ---
 
 ## 📁 Project Structure & File Connections
 
-### **Root Directory**
+### **Root Directory** *(Streamlined Structure)*
 ```
 LydsArt/
-├── client/                 # React frontend application
-├── server/                 # Firebase Functions backend
-├── firebase.json           # Firebase project configuration
+├── .firebase/              # Firebase deployment cache
 ├── .firebaserc            # Firebase project ID settings
-└── README.md              # This file
+├── .git/                  # Git repository
+├── .github/               # GitHub workflows
+├── .gitignore             # Git ignore rules
+├── client/                # React frontend application
+├── server/                # Firebase Functions backend
+├── firebase.json          # Firebase project configuration
+└── README.md              # This documentation
 ```
+
+**Note**: This project has been cleaned and streamlined - temporary files, debug logs, and development scripts have been removed for a production-ready structure.
 
 ---
 
@@ -45,18 +53,22 @@ LydsArt/
   - `/success` → Thank you page after payment
 
 #### **`client/src/Artwork.js`** ⭐ *Core Gallery*
-- **Purpose**: Main artwork gallery with filtering and animations
-- **Data Flow**: Firestore → Cache → UI display
+- **Purpose**: Main artwork gallery with filtering, animations, and Firebase Storage integration
+- **Data Flow**: Firestore → Firebase Storage URL conversion → Cache → UI display
 - **Features**:
-  - Fetches artwork from Firestore (cached for 24h)
-  - Grid/single view toggle
-  - Filter by medium, size, sold status
+  - Fetches artwork from Firestore with automatic refresh
+  - **Firebase Storage Integration**: Converts database URLs to Firebase Storage HTTP URLs
+  - **URL Conversion**: Handles both `gs://` and `/filename.jpeg` formats automatically
+  - Grid/single view toggle with smooth transitions
+  - Advanced filtering by medium, size, sold status
   - Smooth fly-in animations with Intersection Observer
-  - Responsive touch/swipe navigation
+  - Responsive touch/swipe navigation for mobile
+  - Smart caching with manual refresh capability
 - **Connects to**: 
-  - `firebase.js` for database queries
-  - `Cart.js` via navigation (Reserve button)
-  - localStorage for caching artwork data
+  - `firebase.js` for database queries and storage
+  - `CartContext.js` for shopping cart functionality
+  - localStorage for performance caching
+  - Firebase Storage for image display
 
 #### **`client/src/Cart.js`**
 - **Purpose**: Shopping cart and Stripe checkout integration
@@ -97,9 +109,13 @@ LydsArt/
 - **Purpose**: Firebase SDK configuration and initialization
 - **Exports**: 
   - `db` - Firestore database instance
-  - `storage` - Firebase Storage (for future use)
-- **Used by**: Artwork.js for data fetching
-- **Config**: Contains API keys and project settings
+  - `storage` - Firebase Storage for image management
+  - `auth` - Firebase Authentication for admin system
+- **Used by**: 
+  - `Artwork.js` for data fetching and image URL conversion
+  - `AdminDashboard.js` for admin artwork management
+  - `ArtworkForm.js` for image uploads and data management
+- **Config**: Contains API keys, project settings, and Firebase Storage bucket
 
 #### **`client/src/emailService.js`**
 - **Purpose**: EmailJS integration for sending confirmation emails
@@ -176,37 +192,68 @@ Stripe Payment Processing → sessionStatus Function → Firestore Update (sold:
 Collection: artwork/
 ├── title: string
 ├── medium: string  
-├── size: string
-├── date: string
-├── price: number
-├── priceDisplay: string
-├── sold: boolean
-├── imageUrl: string
-├── slug: string
+├── size: string (dimensions)
+├── date: string (year created)
+├── price: number (null if not for sale)
+├── priceDisplay: string (formatted price)
+├── sold: boolean (availability status)
+├── imageUrl: string (Firebase Storage URL or legacy path)
+├── slug: string (URL-friendly identifier)
+├── description: string (optional artwork description)
+├── available: boolean (legacy field, mapped from !sold)
 ├── createdAt: timestamp
 ├── updatedAt: timestamp
-└── soldAt: timestamp (when sold)
-    soldTo: string (customer name)
-    soldToEmail: string (customer email)
+└── [When sold]:
+    ├── soldAt: timestamp
+    ├── soldTo: string (customer name)
+    └── soldToEmail: string (customer email)
+```
+
+### **Firebase Storage Structure**
+```
+gs://lydsart-f6966.firebasestorage.app/
+└── artwork/
+    ├── AnUptownPerspective2.jpeg
+    ├── EndOfSummerFlowers.jpeg
+    ├── ComfortInChange.jpeg
+    └── [other artwork images...]
 ```
 
 ---
 
 ## 🔧 Key Features & Integrations
 
+### **Admin Management System**
+- **Firebase Authentication**: Secure admin login system
+- **Admin Dashboard**: Full CRUD operations for artwork management
+- **Image Upload**: Direct upload to Firebase Storage via admin interface
+- **URL Conversion**: Automatic handling of Firebase Storage URLs
+- **Secure Access**: Admin-only routes and server-side validation
+
+### **Firebase Storage Integration**
+- **Automatic URL Conversion**: Converts `gs://` and legacy paths to HTTP URLs
+- **Image Management**: Centralized storage for all artwork images
+- **Admin Uploads**: New artwork uploads directly to Firebase Storage
+- **URL Processing**: Smart detection and conversion of different URL formats
+
 ### **Performance Optimizations**
-- **Firestore Caching**: Artwork data cached in localStorage for 24 hours
-- **Image Optimization**: Static images served from Firebase Hosting CDN
-- **Lazy Loading**: Intersection Observer for animation triggers
+- **Firestore Caching**: Artwork data cached in localStorage with manual refresh
+- **Firebase Storage CDN**: Images served via Google's CDN for fast loading
+- **Smart Caching**: Cache invalidation with refresh button
+- **Lazy Loading**: Intersection Observer for smooth animations
+- **Mobile Optimization**: Touch gestures and responsive image loading
 
 ### **Payment Security**
 - **Server-side validation**: Artwork availability checked before payment
-- **Stripe integration**: PCI-compliant payment processing
+- **Stripe integration**: PCI-compliant payment processing with embedded checkout
 - **Concurrent purchase prevention**: Database locks prevent duplicate sales
+- **Admin Notifications**: Automatic email alerts for new purchases
 
 ### **User Experience**
 - **Responsive design**: Mobile-first approach with touch gestures
-- **Progressive enhancement**: Works without JavaScript for basic browsing
+- **Smooth Animations**: Fly-in effects and smooth transitions
+- **Advanced Filtering**: Real-time filtering by medium, size, and availability
+- **Grid/Single View**: Toggle between gallery grid and detailed single view
 - **Accessibility**: ARIA labels and keyboard navigation support
 
 ---
@@ -244,15 +291,51 @@ firebase deploy --only functions
 
 - **Frontend**: React.js, CSS3, HTML5
 - **Backend**: Firebase Functions (Node.js 20)
-- **Database**: Firestore (NoSQL)
-- **Hosting**: Firebase Hosting
-- **Payments**: Stripe API
-- **Email**: EmailJS
+- **Database**: Firestore (NoSQL document database)
+- **Storage**: Firebase Storage (Google Cloud Storage)
+- **Authentication**: Firebase Auth
+- **Hosting**: Firebase Hosting with CDN
+- **Payments**: Stripe API with embedded checkout
+- **Email**: EmailJS for notifications
 - **Build Tools**: Create React App, Firebase CLI
-- **Styling**: Custom CSS with responsive design
+- **Styling**: Custom CSS with responsive design and animations
+- **Image Processing**: Automatic Firebase Storage URL conversion
+- **Security**: Firebase Security Rules, admin authentication
 
 ---
 
-## 📞 Support & Maintenance
+---
+
+## 🚀 Recent Updates & Improvements
+
+### **Project Cleanup (November 2025)**
+- ✅ **Streamlined Structure**: Removed temporary files, debug logs, and development scripts
+- ✅ **Firebase Storage Integration**: Implemented automatic URL conversion for artwork images
+- ✅ **Admin Dashboard**: Added comprehensive artwork management system
+- ✅ **Image Management**: Unified Firebase Storage system for all artwork
+- ✅ **Security Cleanup**: Removed credential files and sensitive data
+- ✅ **Performance**: Optimized caching and image loading
+
+### **Current Features**
+- 🎨 **Complete Art Gallery**: Browse artwork with advanced filtering
+- � **E-commerce**: Secure Stripe integration for art purchases
+- 🔐 **Admin System**: Full CRUD operations for artwork management
+- 📱 **Mobile-First**: Responsive design with touch gestures
+- ☁️ **Cloud Storage**: Firebase Storage for scalable image hosting
+- 🚀 **Fast Performance**: Optimized caching and CDN delivery
+
+---
+
+## �📞 Support & Maintenance
 
 For technical issues or feature requests, this README provides the complete architecture overview to understand how each component connects and functions within the LydsArt ecosystem.
+
+### **Admin Access**
+- Admin dashboard: `/admin/dashboard`
+- Add artwork: `/admin/artwork/new`
+- Authentication required via Firebase Auth
+
+### **Key URLs**
+- **Live Site**: https://lydsart-f6966.web.app
+- **Admin Login**: https://lydsart-f6966.web.app/admin
+- **Firebase Console**: https://console.firebase.google.com/project/lydsart-f6966
