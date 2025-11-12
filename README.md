@@ -1,6 +1,6 @@
 # LydsArt
 
-A modern art portfolio and e-commerce platform built for artist Lydia Paterson. The application showcases artwork with an elegant gallery interface, Firebase Storage image management, and handles online art sales with integrated Stripe payment processing.
+A modern art portfolio and e-commerce platform built for none other than my personal friend, teacher, artist, and inspiration, Lydia Paterson. The application showcases artwork with an elegant gallery interface, Firebase Storage photo management, and handles online art sales with embedded Stripe payment processing.
 
 ## 🌐 Live Site
 **Production**: https://lydsart-f6966.web.app
@@ -8,13 +8,13 @@ A modern art portfolio and e-commerce platform built for artist Lydia Paterson. 
 ## 🏗️ Architecture Overview
 
 This is a full-stack application built on Firebase with the following architecture:
-- **Frontend**: React SPA hosted on Firebase Hosting
-- **Backend**: Firebase Functions (serverless)
+- **Frontend**: React Javascript hosted on Firebase Hosting
+- **Backend**: Firebase Serverless Functions 
 - **Database**: Firestore (NoSQL document database)
-- **Image Storage**: Firebase Storage with automatic URL conversion
-- **Payments**: Stripe integration with admin dashboard
+- **Image Storage**: Firebase Storage with URL conversion
+- **Payments**: Embedded Stripe Checkout Sessions
 - **Authentication**: Firebase Auth with admin system
-- **Email**: EmailJS for notifications
+- **Email**: EmailJS for payment confirmations
 
 ---
 
@@ -33,8 +33,6 @@ LydsArt/
 ├── firebase.json          # Firebase project configuration
 └── README.md              # This documentation
 ```
-
-**Note**: This project has been cleaned and streamlined - temporary files, debug logs, and development scripts have been removed for a production-ready structure.
 
 ---
 
