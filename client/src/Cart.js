@@ -152,6 +152,9 @@ const Cart = () => {
       quantity: item.quantity,
     }));
 
+    // Send artwork IDs separately for the Firebase Function
+    const artworkIds = items.map(item => item.id);
+
     
     setIsProcessing(true);
     setError(null);
@@ -170,7 +173,8 @@ const Cart = () => {
         body: JSON.stringify({ 
           line_items: line_items, 
           customer_email: email,
-          customer_name: name
+          customer_name: name,
+          artwork_ids: artworkIds
         }),
       });
       
@@ -201,6 +205,13 @@ const Cart = () => {
   const handleCheckoutComplete = () => {
     setPaymentCompleted(true);
     setIsProcessing(false);
+    // Clear the cart after successful payment
+    clearCart();
+    
+    // Optional: Show success message or redirect
+    setTimeout(() => {
+      navigate('/success');
+    }, 2000);
   };
 
   return (

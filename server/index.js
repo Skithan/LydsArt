@@ -26,33 +26,6 @@ const initStripe = (secretValue) => {
 };
 
 /**
- * Helper function to find artwork by title in Firestore
- * @param {string} title - The title of the artwork to find
- * @return {Object|null} The artwork document or null if not found
- */
-async function findArtworkByTitle(title) {
-  try {
-    const artworkQuery = await db.collection("artwork")
-        .where("title", "==", title)
-        .limit(1)
-        .get();
-
-    if (artworkQuery.empty) {
-      return null;
-    }
-
-    const doc = artworkQuery.docs[0];
-    return {
-      id: doc.id,
-      ...doc.data(),
-    };
-  } catch (error) {
-    logger.error("Error finding artwork:", error);
-    return null;
-  }
-}
-
-/**
  * Helper function to mark artwork as sold
  * @param {string} artworkId - The Firestore document ID of the artwork
  * @param {Object} customerInfo - Customer information object
@@ -88,18 +61,22 @@ exports.createCheckoutSession = onRequest({secrets: [stripeSecretKey]}, (req, re
     }
 
     try {
-      const artworkTitle = req.body.line_items[0].price_data.product_data.name;
+      const artworkIds = req.body.artwork_ids || [];
 
-      // Check if artwork is still available
-      const artwork = await findArtworkByTitle(artworkTitle);
-      if (!artwork) {
-        res.status(404).json({error: "Artwork not found"});
-        return;
-      }
+      // Check if all artworks are still available
+      for (const artworkId of artworkIds) {
+        const artworkDoc = await db.collection("artwork").doc(artworkId).get();
 
-      if (artwork.sold) {
-        res.status(400).json({error: "This artwork has already been sold"});
-        return;
+        if (!artworkDoc.exists) {
+          res.status(404).json({error: `Artwork with ID ${artworkId} not found`});
+          return;
+        }
+
+        const artworkData = artworkDoc.data();
+        if (artworkData.sold) {
+          res.status(400).json({error: `Artwork "${artworkData.title}" has already been sold`});
+          return;
+        }
       }
 
       const stripe = initStripe(stripeSecretKey.value());
@@ -110,8 +87,8 @@ exports.createCheckoutSession = onRequest({secrets: [stripeSecretKey]}, (req, re
         customer_email: req.body.customer_email,
         metadata: {
           customer_name: req.body.customer_name,
-          piece_name: artworkTitle,
-          artwork_id: artwork.id, // Store Firestore document ID
+          piece_name: req.body.line_items[0].price_data.product_data.name,
+          artwork_ids: JSON.stringify(artworkIds), // Store all artwork IDs
         },
         mode: "payment",
         ui_mode: "embedded",
@@ -180,19 +157,24 @@ exports.sessionStatus = onRequest({secrets: [stripeSecretKey]}, (req, res) => {
       });
 
       // Only mark artwork as sold if payment actually succeeded
-      if (isPaymentSuccessful && session.metadata?.artwork_id) {
+      if (isPaymentSuccessful && session.metadata?.artwork_ids) {
         const customerInfo = {
           customer_name: session.metadata.customer_name,
           customer_email: session.customer_email,
         };
 
-        const soldSuccessfully = await markArtworkAsSold(
-            session.metadata.artwork_id,
-            customerInfo,
-        );
+        try {
+          const artworkIds = JSON.parse(session.metadata.artwork_ids);
 
-        if (!soldSuccessfully) {
-          logger.error("Failed to mark artwork as sold in Firestore");
+          // Mark all artworks as sold
+          for (const artworkId of artworkIds) {
+            const soldSuccessfully = await markArtworkAsSold(artworkId, customerInfo);
+            if (!soldSuccessfully) {
+              logger.error(`Failed to mark artwork ${artworkId} as sold in Firestore`);
+            }
+          }
+        } catch (parseError) {
+          logger.error("Error parsing artwork IDs from metadata:", parseError);
         }
       }
 
