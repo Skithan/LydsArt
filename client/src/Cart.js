@@ -203,13 +203,18 @@ const Cart = () => {
 
   // Handle when checkout is complete
   const handleCheckoutComplete = () => {
+    console.log('🎉 handleCheckoutComplete called - payment successful!');
     setPaymentCompleted(true);
     setIsProcessing(false);
+    
     // Clear the cart after successful payment
+    console.log('🛒 Clearing cart after successful payment...');
     clearCart();
+    console.log('✅ Cart cleared successfully');
     
     // Optional: Show success message or redirect
     setTimeout(() => {
+      console.log('🔄 Redirecting to success page...');
       navigate('/success');
     }, 2000);
   };
@@ -579,7 +584,7 @@ const Cart = () => {
           textAlign: 'center',
           maxWidth: '400px'
         }}>
-          Stripe configuration error. Please check environment variables.
+          Payment configuration error. 
         </div>
       )}
     </section>

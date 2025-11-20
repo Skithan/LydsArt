@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { sendConfirmationEmail, sendArtistNotification } from './emailService';
+import { useCart } from './CartContext';
 
 
 const ThankYou = () => {
+  const { clearCart } = useCart();
   const [customerEmail, setCustomerEmail] = useState('');
   const [customerName, setCustomerName] = useState('');
   const [status, setStatus] = useState('');
@@ -34,6 +36,13 @@ const ThankYou = () => {
           console.log('Payment intent status:', data.payment_intent_status);
           console.log('Payment verified:', data.payment_verified);
           console.log('Full session data:', data);
+
+          // Clear cart if payment is verified (backup to Cart.js clearing)
+          if (data.payment_verified) {
+            console.log('💳 Payment verified - clearing cart as backup...');
+            clearCart();
+            console.log('✅ Cart cleared in ThankYou page');
+          }
 
           // Send emails only if payment is fully verified and successful
           if(data.customer_email && data.payment_verified){
@@ -67,7 +76,7 @@ const ThankYou = () => {
     }
 
    
-  }, []);
+  }, [clearCart]);
 
   return (
     <div style={{ 

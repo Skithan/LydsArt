@@ -48,92 +48,6 @@ const Artwork = () => {
   const navigate = useNavigate();
   const { addItem } = useCart();
 
-  // Force refresh data from database
-  const refreshArtworkData = async () => {
-    localStorage.removeItem('lydsart_artwork_cache');
-    localStorage.removeItem('lydsart_artwork_cache_timestamp');
-    setLoading(true);
-    
-    try {
-      const artworkCollection = collection(db, 'artwork');
-      const artworkQuery = query(artworkCollection, orderBy('createdAt', 'desc'));
-      const querySnapshot = await getDocs(artworkQuery);
-      
-      if (querySnapshot.empty) {
-        setError('No artwork found in database.');
-        setCards([]);
-      } else {
-        const artworkData = querySnapshot.docs.map(doc => {
-          const data = doc.data();
-          
-          console.log(`🎨 Refresh processing artwork: "${data.title}"`);
-          console.log(`📸 Refresh image URL from database: "${data.imageUrl}"`);
-          console.log(`✅ Refresh has image URL: ${!!data.imageUrl}`);
-          
-          // Convert database URLs to Firebase Storage URLs
-          let refreshProcessedImageUrl = null;
-          if (data.imageUrl) {
-            if (data.imageUrl.startsWith('https://firebasestorage.googleapis.com')) {
-              // Already a Firebase Storage HTTP URL - use as-is
-              refreshProcessedImageUrl = data.imageUrl;
-              console.log(`🔥 Refresh Firebase Storage HTTP URL: "${data.imageUrl}"`);
-            } else if (data.imageUrl.startsWith('gs://')) {
-              // Google Cloud Storage URL - convert to HTTP Firebase Storage URL
-              const gsUrl = data.imageUrl.replace('gs://', '');
-              const [bucket, ...pathParts] = gsUrl.split('/');
-              const encodedPath = pathParts.join('/').replace(/\//g, '%2F');
-              refreshProcessedImageUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodedPath}?alt=media`;
-              console.log(`🔥 Refresh GS URL converted: "${data.imageUrl}" → "${refreshProcessedImageUrl}"`);
-            } else if (data.imageUrl.startsWith('/') && data.imageUrl.includes('.jpeg')) {
-              // Database URL like "/AnUptownPerspective2.jpeg" - convert to Firebase Storage
-              const fileName = data.imageUrl.substring(1); // Remove leading slash
-              const gsUrl = `gs://lydsart-f6966.firebasestorage.app/artwork/${fileName}`;
-              // Convert to HTTP Firebase Storage URL
-              const encodedPath = `artwork%2F${fileName}`;
-              refreshProcessedImageUrl = `https://firebasestorage.googleapis.com/v0/b/lydsart-f6966.firebasestorage.app/o/${encodedPath}?alt=media`;
-              console.log(`🔥 Refresh Database URL converted: "${data.imageUrl}" → GS: "${gsUrl}" → HTTP: "${refreshProcessedImageUrl}"`);
-            } else {
-              // Unknown format - use as-is and log
-              refreshProcessedImageUrl = data.imageUrl;
-              console.log(`❓ Refresh unknown URL format: "${data.imageUrl}"`);
-            }
-          }
-          
-          return {
-            id: doc.id,
-            title: data.title || 'Untitled',
-            // Support both Firebase Storage URLs and public folder URLs
-            img: refreshProcessedImageUrl,
-            imgs: refreshProcessedImageUrl ? [refreshProcessedImageUrl] : null,
-            price: data.price !== null ? `$${data.price}` : null,
-            size: data.size || data.dimensions || 'Size not specified',
-            medium: data.medium || 'Medium not specified',
-            date: data.date || (data.createdAt ? new Date(data.createdAt.toDate()).getFullYear().toString() : null),
-            sold: data.sold !== undefined ? data.sold : !data.available,
-            description: data.description || null,
-            slug: data.slug || null,
-            _originalData: data
-          };
-        });
-        
-        // Log final refresh processed artwork data
-        console.log('🔄 Final refresh processed artwork data:');
-        artworkData.forEach((artwork, index) => {
-          console.log(`${index + 1}. "${artwork.title}" - img: "${artwork.img}" - imgs: ${JSON.stringify(artwork.imgs)}`);
-        });
-        
-        setCards(artworkData);
-        setError(null);
-      }
-    } catch (err) {
-      console.error('Error refreshing data:', err);
-      setError(`Failed to refresh data: ${err.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-
 
   // Fetch artwork from Firestore (always fresh data to avoid database connection issues)
   useEffect(() => {
@@ -141,11 +55,7 @@ const Artwork = () => {
       try {
         setLoading(true);
         
-        // Clear cache to ensure fresh data
-        localStorage.removeItem('lydsart_artwork_cache');
-        localStorage.removeItem('lydsart_artwork_cache_timestamp');
-        
-        // Bypass cache check for now
+        // Check for cached data first
         const cachedData = localStorage.getItem('lydsart_artwork_cache');
         const cacheTimestamp = localStorage.getItem('lydsart_artwork_cache_timestamp');
         const cacheExpiry = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
@@ -235,6 +145,15 @@ const Artwork = () => {
           artworkData.forEach((artwork, index) => {
             console.log(`${index + 1}. "${artwork.title}" - img: "${artwork.img}" - imgs: ${JSON.stringify(artwork.imgs)}`);
           });
+          
+          // Cache the processed artwork data
+          try {
+            localStorage.setItem('lydsart_artwork_cache', JSON.stringify(artworkData));
+            localStorage.setItem('lydsart_artwork_cache_timestamp', Date.now().toString());
+            console.log('💾 Artwork data cached successfully');
+          } catch (cacheError) {
+            console.warn('Failed to cache artwork data:', cacheError);
+          }
           
           setCards(artworkData);
           setError(null);
@@ -627,26 +546,7 @@ const Artwork = () => {
             <span>{gridView ? 'Single' : 'Grid'}</span>
           </button>
           
-          {/* 
-          <button
-            className="filter-dropdown-btn"
-            onClick={() => {
-              localStorage.removeItem('lydsart_artwork_cache');
-              localStorage.removeItem('lydsart_artwork_cache_timestamp');
-              refreshArtworkData();
-            }}
-            disabled={loading}
-            title="Clear cache and refresh artwork data from database"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#333333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle' }}>
-              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
-              <path d="M21 3v5h-5"/>
-              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
-              <path d="M3 21v-5h5"/>
-            </svg>
-            <span>{loading ? 'Refreshing...' : 'Clear & Refresh'}</span>
-          </button>
-          */}
+         
           {filterOpen && (
             <div
               className="filter-dropdown-menu"
