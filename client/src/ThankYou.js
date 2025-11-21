@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { sendConfirmationEmail, sendArtistNotification } from './emailService';
 import { useCart } from './CartContext';
 
@@ -10,10 +10,18 @@ const ThankYou = () => {
   const [status, setStatus] = useState('');
   const [pieceName, setPieceName] = useState('');
   const [paymentVerified, setPaymentVerified] = useState(false);
+  const emailsSentRef = useRef(false); // Use ref to avoid useEffect dependency issues
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get('session_id');
     console.log('Session ID from URL:', sessionId);
+    
+    // BULLETPROOF: Check if emails were already sent for this session
+    const emailSentKey = `emails_sent_${sessionId}`;
+    const emailsAlreadySent = localStorage.getItem(emailSentKey) === 'true';
+    
+    console.log(`🔍 Checking if emails already sent for session ${sessionId}: ${emailsAlreadySent}`);
+    
     if (sessionId) {
       const statusUrl = process.env.REACT_APP_SESSION_STATUS_URL || 'https://sessionstatus-pdcnged4ca-uc.a.run.app';
       console.log('Using session status URL:', statusUrl);
@@ -37,15 +45,18 @@ const ThankYou = () => {
           console.log('Payment verified:', data.payment_verified);
           console.log('Full session data:', data);
 
-          // Clear cart if payment is verified (backup to Cart.js clearing)
-          if (data.payment_verified) {
-            console.log('💳 Payment verified - clearing cart as backup...');
-            clearCart();
-            console.log('✅ Cart cleared in ThankYou page');
-          }
 
-          // Send emails only if payment is fully verified and successful
-          if(data.customer_email && data.payment_verified){
+
+          // BULLETPROOF EMAIL PROTECTION: Triple-layer check
+          const localStorageCheck = localStorage.getItem(emailSentKey) === 'true';
+          
+          if(data.customer_email && data.payment_verified && !emailsSentRef.current && !localStorageCheck){
+              console.log('� BULLETPROOF: Sending emails for the first time...');
+              
+              // IMMEDIATELY lock both protection layers
+              emailsSentRef.current = true;
+              localStorage.setItem(emailSentKey, 'true');
+              
               // Prepare order details for email
               const emailOrderDetails = {
                 session_id: sessionId,
@@ -57,26 +68,44 @@ const ThankYou = () => {
               // Send confirmation email using the email service
               sendConfirmationEmail(data.customer_email, emailOrderDetails).then((result) => {
                 if (result.success) {
-                  console.log('Confirmation email sent successfully');
+                  console.log('✅ Customer confirmation email sent successfully');
                 } else {
-                  console.error('Failed to send confirmation email:', result.error);
+                  console.error('❌ Failed to send confirmation email:', result.error);
+                  // If failed, unlock so it can retry later
+                  localStorage.removeItem(emailSentKey);
+                  emailsSentRef.current = false;
                 }
               });
 
               // Send notification to artist
               sendArtistNotification(data.customer_email, emailOrderDetails).then((result) => {
                 if (result.success) {
-                  console.log('Artist notification sent successfully');
+                  console.log('✅ Artist notification sent successfully');
+                  console.log('🔒 All emails confirmed sent and permanently locked for session:', sessionId);
                 } else {
-                  console.error('Failed to send artist notification:', result.error);
+                  console.error('❌ Failed to send artist notification:', result.error);
+                  // If failed, unlock so it can retry later
+                  localStorage.removeItem(emailSentKey);
+                  emailsSentRef.current = false;
                 }
               });
+           } else {
+             console.log('📧 BULLETPROOF: Emails already sent - localStorage:', localStorageCheck, 'useRef:', emailsSentRef.current);
            }
         });
     }
 
    
-  }, [clearCart]);
+  }, []); // No dependencies needed - runs once on mount
+
+  // Separate useEffect for cart clearing when payment is verified
+  useEffect(() => {
+    if (paymentVerified) {
+      console.log('💳 Payment verified - clearing cart as backup...');
+      clearCart();
+      console.log('✅ Cart cleared in ThankYou page');
+    }
+  }, [paymentVerified, clearCart]);
 
   return (
     <div style={{ 
